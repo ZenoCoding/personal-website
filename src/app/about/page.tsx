@@ -124,13 +124,33 @@ export default function About() {
 
                     {/* Bio Section */}
                     <section className={styles.section}>
-                        <div className={styles.glassCard}>
+                        <div className={styles.glassCard} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                             <div className={styles.headerRow}>
                                 <h2 className="section-title">Biography</h2>
                             </div>
-                            <p className={styles.bioText}>
-                                {portfolio.about.bio}
-                            </p>
+
+                            <div style={{ display: 'flex', gap: '2rem', alignItems: 'start', flexWrap: 'wrap' }}>
+                                {/* Headshot */}
+                                <div style={{ flexShrink: 0 }}>
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                        src={portfolio.about.headshot}
+                                        alt={portfolio.personalInfo.name}
+                                        style={{
+                                            width: '120px',
+                                            height: '120px',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            border: '2px solid rgba(255,255,255,0.1)'
+                                        }}
+                                    />
+                                </div>
+
+                                {/* Bio Text */}
+                                <p className={styles.bioText} style={{ flex: 1, margin: 0 }}>
+                                    {portfolio.about.bio}
+                                </p>
+                            </div>
                         </div>
                     </section>
 

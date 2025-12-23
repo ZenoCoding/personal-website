@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import styles from './lightbox.module.css';
 
 interface Photo {
@@ -8,7 +9,9 @@ interface Photo {
     caption: string;
     title?: string;
     date?: string;
+    location?: string;
     details?: string;
+    link?: string;
 }
 
 interface LightboxProps {
@@ -61,17 +64,45 @@ export default function Lightbox({ photo, isOpen, onClose, onNext, onPrev }: Lig
                         <div className={styles.navAreaRight} onClick={onNext} title="Next (Right Arrow)" />
 
                         {/* Image */}
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={photo.url} alt={photo.caption} className={styles.image} />
+                        {/* Image */}
+                        <div className={styles.imageContainer}>
+                            <Image
+                                src={photo.url}
+                                alt={photo.caption}
+                                className={styles.image}
+                                fill
+                                sizes="100vw"
+                                style={{ objectFit: 'contain' }}
+                                priority
+                            />
+                        </div>
                     </div>
 
                     <div className={styles.infoColumn}>
                         <div>
-                            <span className={styles.date}>{photo.date}</span>
+                            <div className={styles.metaRow}>
+                                <span className={styles.date}>{photo.date}</span>
+                                {photo.location && (
+                                    <>
+                                        <span className={styles.separator}>•</span>
+                                        <span className={styles.location}>{photo.location}</span>
+                                    </>
+                                )}
+                            </div>
                             <h2 className={styles.title}>{photo.title}</h2>
                             <p className={styles.caption}>{photo.caption}</p>
                             {photo.details && (
                                 <p className={styles.details}>{photo.details}</p>
+                            )}
+                            {photo.link && (
+                                <a href={photo.link} target="_blank" rel="noopener noreferrer" className={styles.linkBtn}>
+                                    Read Full Story
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginLeft: '0.4rem' }}>
+                                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                                        <polyline points="15 3 21 3 21 9"></polyline>
+                                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                                    </svg>
+                                </a>
                             )}
                         </div>
 

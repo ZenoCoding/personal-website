@@ -14,7 +14,12 @@ export const portfolio = {
     about: {
         bio: "I’m a highly motivated high school student with a strong foundation in software engineering seeking an internship to apply and further develop skills in computer science or AI. I’ve built numerous self-directed projects including MathGPT, a Discord application that combines CAS and LLMs to enhance both. I have strong teamwork, communication, problem-solving, and analytical skills.",
         interests: ["Artificial Intelligence", "Robotics", "Game Development", "Mathematics"],
+        headshot: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop", // Placeholder
     },
+    gear: [
+        { name: "Sony Alpha 6400", type: "Camera" },
+        { name: "18-135mm f/3.5-5.6", type: "Lens" }
+    ],
     education: [
         {
             school: "BASIS Independent Fremont",
@@ -167,42 +172,96 @@ export const portfolio = {
             { title: "Shoe Dog", author: "Phil Knight", status: "finished" },
             { title: "One Way", author: "S.J. Morden", status: "finished" },
         ],
-        baking: "Cookies with Mom (Winter Break essentials).",
+        baking: "Cookies with Mama (Winter Break essentials).",
     },
     photos: [
         {
+            url: "/photos/DSC05780.jpeg",
+            caption: "afternoon glow on the east coast",
+            title: "Road Trip Glow",
+            date: "Summer 2025",
+            location: "South Carolina",
+            details: "Road trips have always been a core part of our family—something about being stuck with people in the car for hours on end, singing songs, bickering with siblings, having conversations and playing games, is just magical."
+        },
+        {
+            url: "/photos/DSC03966.jpeg",
+            caption: "reefscape robot in motion",
+            title: "Reefscape Action",
+            date: "Apr 2025",
+            location: "Berkeley, CA",
+            details: "Capturing our 2025 robot in motion at the East Bay Regional. The blurred background highlights the speed and precision needed for the Reefscape game."
+        },
+        {
+            url: "/photos/DSC04293.jpeg",
+            caption: "discussing leadership",
+            title: "The Interview",
+            date: "Apr 2025",
+            location: "Berkeley, CA",
+            details: "I was really nervous leading up to talking in front of everybody, but when I actually did it, I found it natural to speak about my experiences as a leader and as a representative of the team that I had created."
+        },
+        {
+            url: "/photos/news_tabs.jpg",
+            caption: "the attention economy",
+            title: "You Don't Know the News",
+            date: "Nov 2025",
+            location: "Digital Landscape",
+            link: "https://www.typ.news/posts/2025-11-05_You_Don_t_Know_the_News_It_s_a_Problem",
+            details: "\"These days, people don't know the news. They read headlines and envelop themselves in social media feedback loops that support their own worldviews... when we ignore the news, we shut out other human experiences, we shut out other perspectives, and as a result, we shut out our empathy.\""
+        },
+        {
+            url: "/photos/twilight_silhouettes.jpg",
+            caption: "finding beauty in darkness",
+            title: "Twilight Haze",
+            date: "Nov 2025",
+            location: "Fremont, CA",
+            details: "Sometimes life can feel dramatic, with clouds filling the sky, and dark colors setting as if they portend rain. A little haze is necessary, however, to create texture and deep color that can make a sunset that much more beautiful."
+        },
+        {
+            url: "/photos/boston_reflection.jpg",
+            caption: "urban textures upside down",
+            title: "Reflected Reality",
+            date: "June 2025",
+            location: "Boston, MA",
+            details: "What is most obviously reality may in fact be a faceitous.... I'm not really sure what the metaphor is here, I just like puddle photos."
+        },
+        {
             url: "/photos/sunset_hills.jpg",
-            caption: "Golden hour hiking at Vargas Plateau.",
+            caption: "golden hour at vargas plateau",
             title: "Vargas Plateau",
             date: "Nov 2025",
+            location: "Fremont, CA",
             details: "Hiking with my cousins who came up for Thanksgiving. We stopped at the peak to take pictures. This was shot on an iPhone—capturing the stunning sky gradient that lasted for hours over the hills, freshly green from the rain."
         },
         {
             url: "/photos/cookie.jpeg",
-            caption: "Chocolate Chip Crinkle Cookies baked at home.",
+            caption: "homemade chocolate chip crinkle cookies",
             title: "Winter Baking",
             date: "Dec 2025",
+            location: "Fremont, CA",
             details: "The perfect winter comfort food. These were a little scary to make, but the crinkly, chewy, cookie texture is 100% worth it."
         },
         {
             url: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=2669&auto=format&fit=crop",
-            caption: "Alt-F4 (FRC 9470) - 2024 Season",
-            title: "Alt-F4",
+            caption: "artemis, 2024 season",
+            title: "Project Artemis",
             date: "Mar 2024",
+            location: "San Jose, CA",
             details: "Our 2024 competition robot for the FIRST Robotics 'Crescendo' game. Features a high-speed note shooter and swerve drive for omnidirectional movement. I led the autonomous pathfinding code."
         },
         {
             url: "https://images.unsplash.com/photo-1562408590-e32931084e23?q=80&w=2670&auto=format&fit=crop",
-            caption: "First competition match",
+            caption: "first competition match",
             title: "Silicon Valley Regional",
             date: "Feb 2024",
+            location: "San Jose, CA",
             details: "The tension before the first match is unmatched. We spent weeks debugging loop times and motor controllers, but watching it drive flawlessly on the field made it all worth it."
         },
         {
             url: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2670&auto=format&fit=crop",
-            caption: "Web Development",
+            caption: "web development late nights",
             title: "Late Night Code",
             date: "Jan 2024",
+            location: "Fremont, CA",
             details: "Building the architecture for a new React project. There's something peaceful about coding at 2 AM when the world is quiet and it's just you and the logic."
         },
     ],
