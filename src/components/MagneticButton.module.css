@@ -1,0 +1,6 @@
+.magnetic {
+    display: inline-block;
+    transition: transform 0.1s linear;
+    /* Smooth linear movement for the magnetic effect */
+    will-change: transform;
+}

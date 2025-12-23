@@ -1,0 +1,75 @@
+.main {
+    min-height: 100vh;
+    padding: 6rem 2rem 2rem 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(to right, #fff, #888);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+}
+
+.gallery {
+    column-count: 1;
+    column-gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .gallery {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .gallery {
+        column-count: 3;
+    }
+}
+
+.photoCard {
+    background: rgba(var(--background-rgb), 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+    break-inside: avoid;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.photoCard:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent-blue);
+}
+
+.imageWrapper {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    transition: transform 0.5s ease;
+}
+
+.photoCard:hover .image {
+    transform: scale(1.02);
+}
+
+.caption {
+    padding: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+}

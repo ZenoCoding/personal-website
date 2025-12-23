@@ -1,27 +1,37 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* "Modern Scientific" Palette */
+  --color-bg-primary: #050510;
+  /* Darker, Void-like Blue-Black */
+  --color-bg-secondary: #0a0a1a;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  --color-text-primary: #f0f0f5;
+  /* clean white-blue-ish */
+  --color-text-secondary: #8a8ab5;
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
+  --color-accent-primary: #6366f1;
+  /* Indigo/Violet (Space-y) */
+  --color-accent-secondary: #a855f7;
+  /* Purple */
+  --color-accent-highlight: #38bdf8;
+  /* Cyan */
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --color-border: rgba(255, 255, 255, 0.05);
+  /* Very subtle */
+
+  --color-glass: rgba(5, 5, 16, 0.6);
+  --shadow-glow: 0 0 30px -10px rgba(99, 102, 241, 0.2);
+
+
+  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: var(--font-inter);
+
+  /* Spacing */
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+  --container-width: 1000px;
+  /* Slightly tighter measure for elegance */
 }
 
 * {
@@ -30,13 +40,58 @@ body {
   margin: 0;
 }
 
+body {
+  color: var(--color-text-primary);
+  background: var(--color-bg-primary);
+  /* Fallback */
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  overflow-x: hidden;
+  line-height: 1.7;
+  /* increased line-height for readability */
+}
+
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-inter), sans-serif;
+  /* Switched back to Sans for headings */
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-text-primary);
+}
+
 a {
   color: inherit;
   text-decoration: none;
+  transition: opacity 0.2s;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+a:hover {
+  opacity: 0.8;
+}
+
+/* Utilities */
+.glass {
+  background: var(--color-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+}
+
+.section-title {
+  color: var(--color-text-primary);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2.5rem;
+  opacity: 0.6;
 }

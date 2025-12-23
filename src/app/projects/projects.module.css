@@ -1,0 +1,169 @@
+.main {
+    min-height: 100vh;
+    padding-top: 100px;
+    padding-bottom: 4rem;
+}
+
+.header {
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+}
+
+.title {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
+}
+
+.section {
+    margin-bottom: 5rem;
+}
+
+.sectionHeader {
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+}
+
+.line {
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+
+/* Mission Log (Timeline) Styles */
+/* Mission Log (Timeline) Styles */
+.timeline {
+    position: relative;
+    padding-left: 2rem;
+    /* Border removed, handled by items now */
+}
+
+.timelineItem {
+    position: relative;
+    margin-bottom: 3rem;
+    padding: 2rem;
+    background: rgba(10, 10, 20, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Connecting line */
+.timelineItem::before {
+    content: '';
+    position: absolute;
+    left: calc(-2rem - 1px);
+    top: calc(2.1rem + 6px);
+    /* Start from center of marker */
+    /* Extend to center of next marker: down full height + margin + next marker top offset */
+    height: calc(100% + 3rem);
+    width: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 1;
+}
+
+.timelineItem:last-child::before {
+    display: none;
+}
+
+.timelineItem:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(56, 189, 248, 0.1);
+}
+
+.timelineItem:last-child {
+    margin-bottom: 0;
+}
+
+.timelineMarker {
+    position: absolute;
+    left: calc(-2rem - 6px);
+    /* Center 12px marker: -2rem - 6px */
+    top: 2.1rem;
+    width: 12px;
+    height: 12px;
+    background: var(--color-bg-primary);
+    /* Hollow effect (matches bg) */
+    border: 2px solid rgba(56, 189, 248, 0.5);
+    /* Visible border */
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+    transition: all 0.3s ease;
+}
+
+.timelineItem:first-child .timelineMarker {
+    width: 16px;
+    height: 16px;
+    left: calc(-2rem - 8px);
+    /* Center 16px marker: -2rem - 8px */
+    background: white;
+    /* Filled active state */
+    border: none;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.8), 0 0 40px rgba(56, 189, 248, 0.4);
+    z-index: 3;
+}
+
+.timelineItem.featured .timelineMarker {
+    background: linear-gradient(135deg, var(--color-accent-orange), #451a03);
+    border-color: white;
+    box-shadow: 0 0 15px var(--color-accent-orange);
+}
+
+.roleHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.role {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.company {
+    color: var(--color-accent-blue);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+}
+
+.timelineMeta {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.timelineDesc {
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    max-width: 800px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
