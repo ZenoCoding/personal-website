@@ -8,7 +8,12 @@ export default function About() {
         <main className={styles.main}>
             <div className="grid-bg" />
             <div className="container">
-                <h1 className={styles.title}>About</h1>
+                <header className={styles.header}>
+                    <h1 className={styles.title}>About</h1>
+                    <p className={styles.subtitle}>
+                        {portfolio.personalInfo.tagline}
+                    </p>
+                </header>
 
                 <div className={styles.grid}>
                     {/* Now Section (Premium & Personal) */}

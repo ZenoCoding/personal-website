@@ -5,14 +5,30 @@
 }
 
 .header {
-    margin-bottom: 4rem;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 2rem;
+    margin-bottom: 2rem;
 }
 
 .title {
     font-size: 3rem;
     margin-bottom: 1rem;
+}
+
+.title::after {
+    content: '_';
+    color: var(--color-accent-blue);
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 .subtitle {
@@ -40,7 +56,7 @@
 .line {
     flex: 1;
     height: 1px;
-    background: var(--color-border);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* Mission Log (Timeline) Styles */
@@ -48,12 +64,29 @@
 .timeline {
     position: relative;
     padding-left: 2rem;
-    /* Border removed, handled by items now */
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 2rem;
+    bottom: 2rem;
+    width: 2px;
+    background: linear-gradient(to bottom,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 15%,
+            rgba(255, 255, 255, 0.2) 85%,
+            transparent 100%);
 }
 
 .timelineItem {
     position: relative;
     margin-bottom: 3rem;
+    padding-left: 2rem;
+}
+
+.timelineCard {
     padding: 2rem;
     background: rgba(10, 10, 20, 0.75);
     backdrop-filter: blur(16px);
@@ -64,25 +97,7 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Connecting line */
-.timelineItem::before {
-    content: '';
-    position: absolute;
-    left: calc(-2rem - 1px);
-    top: calc(2.1rem + 6px);
-    /* Start from center of marker */
-    /* Extend to center of next marker: down full height + margin + next marker top offset */
-    height: calc(100% + 3rem);
-    width: 2px;
-    background: rgba(255, 255, 255, 0.2);
-    z-index: 1;
-}
-
-.timelineItem:last-child::before {
-    display: none;
-}
-
-.timelineItem:hover {
+.timelineCard:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     border-color: rgba(56, 189, 248, 0.1);
@@ -95,8 +110,9 @@
 .timelineMarker {
     position: absolute;
     left: calc(-2rem - 6px);
-    /* Center 12px marker: -2rem - 6px */
-    top: 2.1rem;
+    /* Center 12px marker on -1px line: -2rem - 6px */
+    top: 50%;
+    transform: translateY(-50%);
     width: 12px;
     height: 12px;
     background: var(--color-bg-primary);
@@ -113,7 +129,7 @@
     width: 16px;
     height: 16px;
     left: calc(-2rem - 8px);
-    /* Center 16px marker: -2rem - 8px */
+    /* Center 16px marker on -1px line: -2rem - 8px */
     background: white;
     /* Filled active state */
     border: none;
@@ -122,9 +138,9 @@
 }
 
 .timelineItem.featured .timelineMarker {
-    background: linear-gradient(135deg, var(--color-accent-orange), #451a03);
-    border-color: white;
-    box-shadow: 0 0 15px var(--color-accent-orange);
+    background: var(--color-accent-orange);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 15px var(--color-accent-orange), 0 0 30px rgba(249, 115, 22, 0.4);
 }
 
 .roleHeader {

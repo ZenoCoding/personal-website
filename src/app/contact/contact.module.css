@@ -3,20 +3,40 @@
     min-height: 100vh;
 }
 
+.header {
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+}
+
 .title {
     font-size: 3rem;
-    font-weight: 800;
     margin-bottom: 1rem;
     color: var(--text-primary);
-    text-align: center;
+}
+
+.title::after {
+    content: '_';
+    color: var(--color-accent-blue);
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
 }
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     max-width: 600px;
-    margin: 0 auto 4rem;
-    text-align: center;
 }
 
 .content {

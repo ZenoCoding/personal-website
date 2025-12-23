@@ -26,35 +26,37 @@ export default function Photos() {
         <main className={styles.main}>
             <div className="grid-bg" />
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
-                    <h1 className={styles.title} style={{ marginBottom: 0 }}>Through the Lens</h1>
+                <header className={styles.header}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                        <h1 className={styles.title} style={{ marginBottom: 0 }}>Through the Lens</h1>
 
-                    {portfolio.gear && (
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem',
-                            padding: '0.4rem 0.8rem',
-                            background: 'rgba(255,255,255,0.05)',
-                            borderRadius: '999px',
-                            border: '1px solid rgba(255,255,255,0.1)',
-                            fontSize: '0.85rem',
-                            color: 'var(--color-text-secondary)',
-                            marginTop: '0.5rem'
-                        }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                                <circle cx="12" cy="13" r="3" />
-                            </svg>
-                            <span>
-                                {portfolio.gear.map(g => g.name).join(' + ')}
-                            </span>
-                        </div>
-                    )}
-                </div>
-                <p style={{ color: 'var(--color-text-secondary)', marginBottom: '3rem', maxWidth: '600px', fontSize: '1.1rem' }}>
-                    A collection of moments from robotics competitions, late-night coding sessions, and everything in between.
-                </p>
+                        {portfolio.gear && (
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                padding: '0.4rem 0.8rem',
+                                background: 'rgba(255,255,255,0.05)',
+                                borderRadius: '999px',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                fontSize: '0.85rem',
+                                color: 'var(--color-text-secondary)',
+                                marginTop: '0.5rem'
+                            }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                                    <circle cx="12" cy="13" r="3" />
+                                </svg>
+                                <span>
+                                    {portfolio.gear.map(g => g.name).join(' + ')}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                    <p className={styles.subtitle}>
+                        A collection of moments from robotics competitions, late-night coding sessions, and everything in between.
+                    </p>
+                </header>
 
                 <div className={styles.gallery}>
                     {portfolio.photos?.map((photo, index) => (

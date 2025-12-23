@@ -28,10 +28,12 @@ export default function Contact() {
     return (
         <main className={styles.main}>
             <div className="container">
-                <h1 className={styles.title}>Get In Touch</h1>
-                <p className={styles.subtitle}>
-                    Have a project in mind or just want to say hi? I&apos;m always open to discussing new opportunities.
-                </p>
+                <header className={styles.header}>
+                    <h1 className={styles.title}>Get In Touch</h1>
+                    <p className={styles.subtitle}>
+                        Have a project in mind or just want to say hi? I&apos;m always open to discussing new opportunities.
+                    </p>
+                </header>
 
                 <div className={styles.content}>
                     <div className={`${styles.card} glass`}>

@@ -4,17 +4,40 @@
     padding-bottom: 4rem;
 }
 
+.header {
+    margin-bottom: 4rem;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 2rem;
+}
+
 .title {
     font-size: 3rem;
-    margin-bottom: 3rem;
-    position: relative;
-    display: inline-block;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary);
 }
 
 .title::after {
     content: '_';
     color: var(--color-accent-blue);
     animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1.1rem;
+    max-width: 600px;
 }
 
 .grid {
@@ -113,16 +136,4 @@
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-}
-
-@keyframes blink {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0;
-    }
 }

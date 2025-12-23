@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Personal Portfolio",
+  title: "Tycho Young",
   description: "A showcase of my work and skills.",
 };
 

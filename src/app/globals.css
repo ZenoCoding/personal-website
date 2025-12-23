@@ -14,6 +14,8 @@
   /* Purple */
   --color-accent-highlight: #38bdf8;
   /* Cyan */
+  --color-accent-orange: #f97316;
+  /* Orange */
 
   --color-border: rgba(255, 255, 255, 0.05);
   /* Very subtle */
@@ -94,4 +96,16 @@ a:hover {
   letter-spacing: 0.1em;
   margin-bottom: 2.5rem;
   opacity: 0.6;
+}
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }

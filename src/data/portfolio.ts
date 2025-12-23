@@ -1,4 +1,29 @@
-export const portfolio = {
+export interface Project {
+    title: string;
+    description: string;
+    tags: string[];
+    date?: string;
+    featured?: boolean;
+    image?: string;
+    link?: string;
+    repo?: string;
+    paper?: string;
+}
+
+export const portfolio: {
+    personalInfo: any;
+    socials: any;
+    about: any;
+    gear: any[];
+    education: any[];
+    experience: any[];
+    projects: Project[];
+    skills: string[];
+    honors: any[];
+    now: any;
+    photos: any[];
+    testScores: any[];
+} = {
     personalInfo: {
         name: "Tycho Young",
         tagline: "Student at BASIS Independent Fremont; Co Executive Director at FIRE",
@@ -51,10 +76,84 @@ export const portfolio = {
     ],
     projects: [
         {
+            title: "Infinite Newton's Cradle",
+            description: "A physics demonstration built using Onshape, Breadboard, Arduino, Electromagnets, and basic wiring.",
+            tags: ["OnShape", "Arduino", "Electronics", "Physics"],
+            date: "Late 2025",
+            featured: false,
+        },
+        {
+            title: "6-Axis Robot Arm",
+            description: "Designed and built from scratch using OnShape and 3D printing. Features stepper motors, custom gearboxes, and inverse kinematics control via Klipper.",
+            tags: ["OnShape", "CAD", "Klipper", "Inverse Kinematics", "3D Printing", "CNC Machining"],
+            image: "/photos/robot_arm.jpg",
+            link: "https://cad.onshape.com/documents/4ccfdf4d735854a05c4ab1ac/w/4130b2d9f3bfeb0af790be04/e/e61e094f6d8f847682f9a1c3?renderMode=0&uiState=694b11b9ccf122f7f5b2851f",
+            date: "Summer 2025",
+            featured: true,
+        },
+        {
+            title: "NHS Garden",
+            description: "Wooden garden structure designed in OnShape for NHS. Currently in construction, involving woodworking and assembly.",
+            tags: ["OnShape", "Woodworking", "Construction", "School Project"],
+            image: "/photos/nhs_garden.jpg",
+            link: "https://cad.onshape.com/documents/d40331c4ca14aaefedf84c09/w/2cfd7cd89fdb87fb8aaa51e5/e/5ba7f069968f848ebc826ba7",
+            date: "Aug 2025",
+            featured: true,
+        },
+        {
+            title: "The Yellow Pages",
+            description: "A custom full-stack news platform built with Next.js and Firebase. Features a React-based UI, Firestore for real-time article management, and Google Auth for secure student contributions.",
+            tags: ["Next.js", "React", "Firestore", "Google Auth"],
+            link: "https://typ.news",
+            repo: "https://github.com/ZenoCoding/yellowpageswebsite",
+            image: "/photos/typ.png",
+            date: "2024 - Present",
+            featured: true,
+        },
+        {
+            title: "AP Physics 1 Spring Energy Project",
+            description: "A computational physics project analyzing spring energy conservation and mechanics.",
+            tags: ["Python", "Physics", "Computational Modeling"],
+            repo: "https://github.com/ZenoCoding/AP-Physics-1",
+            paper: "https://github.com/ZenoCoding/AP-Physics-1/blob/master/spring-work-energy/analysis.md",
+            image: "/photos/spring_analysis.png",
+            date: "May 2024",
+            featured: false,
+        },
+        {
+            title: "Dodgeball Minigame",
+            description: "A Minecraft minigame prototype with instantiated worlds, queuing systems, and powerups.",
+            tags: ["Java", "Minecraft API", "Game Development", "System Design"],
+            date: "Early 2024",
+            featured: false,
+        },
+        {
+            title: "EMPATH",
+            description: "An experiment to prove AI can experience emotion using a chain of LLMs analogous to the human brain. Early implementation of RAG with Pinecone.",
+            tags: ["Python", "LangChain", "Pinecone", "OpenAI API", "RAG"],
+            repo: "https://github.com/ZenoCoding/EMPATH",
+            paper: "https://tychoyoung.notion.site/EMPATH-5b60a6d427934605b320adc0e909ec47?source=copy_link",
+            image: "/photos/empath.png",
+            date: "Summer 2023",
+            featured: true,
+        },
+        {
             title: "MathGPT",
             description: "Discord application that combines CAS and LLMs to enhance mathematical problem solving.",
             tags: ["Python", "LLMs", "CAS", "Discord API"],
+            repo: "https://github.com/ZenoCoding/MathGPT",
+            paper: "https://docs.google.com/document/d/1JSRx4ArHnNyaepVnzyYovBO3OSKnY3CnBVWS2KlXrAw/edit?usp=sharing",
+            image: "/photos/mathgpt.png",
+            date: "May 2023",
             featured: true,
+        },
+        {
+            title: "EvoCraft",
+            description: "Custom Minecraft server plugin using OOP to allow user-defined items, abilities, and bossfights.",
+            tags: ["Java", "Minecraft API", "OOP", "Game Development"],
+            repo: "https://github.com/ZenoCoding/EvoCraft",
+            date: "2022 - 2023",
+            featured: false,
         },
     ],
     skills: [
@@ -214,7 +313,7 @@ export const portfolio = {
             title: "Twilight Haze",
             date: "Nov 2025",
             location: "Fremont, CA",
-            details: "Sometimes life can feel dramatic, with clouds filling the sky, and dark colors setting as if they portend rain. A little haze is necessary, however, to create texture and deep color that can make a sunset that much more beautiful."
+            details: "Sometimes life can feel dramatic, with clouds filling the sky, and dark colors setting as if they portend rain. The weight of it all can feel crushing. A little haze is necessary, however, to create texture and deep color that can make a sunset that much more beautiful."
         },
         {
             url: "/photos/boston_reflection.jpg",
@@ -240,30 +339,7 @@ export const portfolio = {
             location: "Fremont, CA",
             details: "The perfect winter comfort food. These were a little scary to make, but the crinkly, chewy, cookie texture is 100% worth it."
         },
-        {
-            url: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?q=80&w=2669&auto=format&fit=crop",
-            caption: "artemis, 2024 season",
-            title: "Project Artemis",
-            date: "Mar 2024",
-            location: "San Jose, CA",
-            details: "Our 2024 competition robot for the FIRST Robotics 'Crescendo' game. Features a high-speed note shooter and swerve drive for omnidirectional movement. I led the autonomous pathfinding code."
-        },
-        {
-            url: "https://images.unsplash.com/photo-1562408590-e32931084e23?q=80&w=2670&auto=format&fit=crop",
-            caption: "first competition match",
-            title: "Silicon Valley Regional",
-            date: "Feb 2024",
-            location: "San Jose, CA",
-            details: "The tension before the first match is unmatched. We spent weeks debugging loop times and motor controllers, but watching it drive flawlessly on the field made it all worth it."
-        },
-        {
-            url: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=2670&auto=format&fit=crop",
-            caption: "web development late nights",
-            title: "Late Night Code",
-            date: "Jan 2024",
-            location: "Fremont, CA",
-            details: "Building the architecture for a new React project. There's something peaceful about coding at 2 AM when the world is quiet and it's just you and the logic."
-        },
+
     ],
     testScores: [
         { name: "SAT", score: "1550", date: "Oct 2025" },
