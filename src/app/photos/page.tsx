@@ -36,9 +36,9 @@ export default function Photos() {
                                 alignItems: 'center',
                                 gap: '0.5rem',
                                 padding: '0.4rem 0.8rem',
-                                background: 'rgba(255,255,255,0.05)',
+                                background: 'color-mix(in srgb, var(--color-text-primary), transparent 95%)',
                                 borderRadius: '999px',
-                                border: '1px solid rgba(255,255,255,0.1)',
+                                border: '1px solid var(--color-border)',
                                 fontSize: '0.85rem',
                                 color: 'var(--color-text-secondary)',
                                 marginTop: '0.5rem'

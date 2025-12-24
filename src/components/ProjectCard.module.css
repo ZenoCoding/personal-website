@@ -28,14 +28,9 @@
 }
 
 /* Technical grid overlay for placeholder */
+/* Technical grid overlay removed per user request */
 .imagePlaceholder::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(56, 189, 248, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
+    display: none;
 }
 
 .content {

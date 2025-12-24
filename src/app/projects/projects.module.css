@@ -75,8 +75,8 @@
     width: 2px;
     background: linear-gradient(to bottom,
             transparent 0%,
-            color-mix(in srgb, var(--color-border), transparent 20%) 15%,
-            color-mix(in srgb, var(--color-border), transparent 20%) 85%,
+            color-mix(in srgb, var(--color-text-secondary), transparent 85%) 15%,
+            color-mix(in srgb, var(--color-text-secondary), transparent 85%) 85%,
             transparent 100%);
 }
 
