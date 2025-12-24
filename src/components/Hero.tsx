@@ -4,10 +4,11 @@ import Link from 'next/link';
 import styles from './Hero.module.css';
 import { useTypewriter } from '@/hooks/useTypewriter';
 import MagneticButton from '@/components/MagneticButton';
+import { portfolio } from '@/data/portfolio';
 
 const Hero = () => {
     const typewriterText = useTypewriter(
-        ['Autonomous Systems.', 'Neural Architectures.', 'Immersive Worlds.', 'Algorithmic Design.'],
+        ['Autonomous Systems.', 'Real Engineering.', 'Immersive Experiences.', 'Novel Software.'],
         100,
         50,
         2500
@@ -18,7 +19,7 @@ const Hero = () => {
             <div className={`container ${styles.content}`}>
                 <div className={styles.statusBadge}>
                     <div className={styles.statusDot} />
-                    <span>Currently compiling MathGPT v2.0</span>
+                    <span>Currently building {portfolio.projects[0].title}</span>
                 </div>
 
                 <h1 className={styles.title}>
@@ -27,7 +28,7 @@ const Hero = () => {
                     <br />
                     through <span style={{ color: 'var(--color-accent-highlight)' }} className={styles.typewriterWrapper}>
                         {/* Render all phrases invisibly to reserve space */}
-                        {['Autonomous Systems.', 'Neural Architectures.', 'Immersive Worlds.', 'Algorithmic Design.'].map((text) => (
+                        {['Autonomous Systems.', 'Real Engineering.', 'Immersive Experiences.', 'Novel Software.'].map((text) => (
                             <span key={text} aria-hidden="true">{text}</span>
                         ))}
                         {/* Render the visible active text */}

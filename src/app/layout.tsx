@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   description: "A showcase of my work and skills.",
 };
 
+import { ThemeProvider } from "@/context/ThemeContext";
+import ThemeToggle from "@/components/ThemeToggle";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,10 +33,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body>
-        <SpacetimeGrid />
-        <Navbar />
-        {children}
-        <Footer />
+        <ThemeProvider>
+          <SpacetimeGrid />
+          <Navbar />
+          {children}
+          <Footer />
+          <ThemeToggle />
+        </ThemeProvider>
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-EX7SLVMDV3"
           strategy="afterInteractive"

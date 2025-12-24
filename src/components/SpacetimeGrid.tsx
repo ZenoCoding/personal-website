@@ -68,6 +68,11 @@ const SpacetimeGrid = () => {
         const Z_SCALE = 25000;
         const MIN_R = 30; // Event Horizon / Clamp to prevent infinite Z
 
+        // Helper to get CSS variable color
+        const getComputedColor = (varName: string) => {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+        };
+
         const draw = () => {
             // physics step: inertia
             currentMouseRef.current.x += (targetMouseRef.current.x - currentMouseRef.current.x) * MOUSE_LERP;
@@ -84,16 +89,37 @@ const SpacetimeGrid = () => {
             const gridCenterX = width / 2;
             const gridCenterY = height / 2;
 
+            // Fetch current theme colors each frame (or optimize if perf issue)
+            // For smooth transition, valid to fetch per frame or use CSS transitions on canvas opacity?
+            // Actually, fetching getComputedStyle every frame is expensive.
+            // But we need to react to theme changes.
+            // Let's rely on standard colors for now, maybe fetch every 60 frames or just cache?
+            // Simpler: Just fetch them. Modern browsers are okay with this for 60fps usually.
+            // Or better: Use CSS variables directly in strokeStyle string if browser supports?
+            // Canvas needs literal color strings.
+
+            const bgPrimary = getComputedColor('--grid-bg');
+            const starColor = getComputedColor('--grid-star');
+            const gridLineColor = getComputedColor('--grid-line');
+            const gridWahoColor = getComputedColor('--grid-line-waho'); // "Wormhole" / Gradient core
+            const vignetteColor = getComputedColor('--color-bg-primary'); // Use primary bg for vignette fade
+
             // Clear
-            ctx.fillStyle = '#0a0a16';
+            ctx.fillStyle = bgPrimary; // Use grid specific background
             ctx.fillRect(0, 0, width, height);
 
             // Draw Stars
             stars.forEach(star => {
-                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                // Parse rgb/rgba to apply star opacity override
+                // Simplified: just assume starColor is rgba-able or uses CSS var
+                // We'll trust the CSS variable to be a full color
+                ctx.fillStyle = starColor;
+                ctx.globalAlpha = star.opacity; // Combine with CSS opacity?
                 ctx.beginPath();
                 ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.globalAlpha = 1.0;
+
                 star.y -= star.speed;
                 if (star.y < 0) star.y = height;
             });
@@ -105,8 +131,8 @@ const SpacetimeGrid = () => {
                 currentMouseRef.current.x, currentMouseRef.current.y, 0,
                 currentMouseRef.current.x, currentMouseRef.current.y, 300
             );
-            gridGradient.addColorStop(0, 'rgba(100, 200, 255, 0.3)'); // Bright Cyan Core
-            gridGradient.addColorStop(1, 'rgba(70, 130, 255, 0.15)'); // Baseline grid
+            gridGradient.addColorStop(0, gridWahoColor);
+            gridGradient.addColorStop(1, gridLineColor);
 
             ctx.strokeStyle = gridGradient;
 
@@ -200,8 +226,23 @@ const SpacetimeGrid = () => {
 
             // Vignette
             const gradient = ctx.createRadialGradient(width / 2, height / 2, width * 0.3, width / 2, height / 2, width);
-            gradient.addColorStop(0, 'rgba(5, 5, 16, 0.0)');
-            gradient.addColorStop(1, 'rgba(5, 5, 16, 0.95)');
+            // We need a transparent version of the bg color for the start
+            // To do this properly with CSS vars is tricky without parsing. 
+            // Workaround: Use simple transparent to full fade.
+            // Ideally should match bg color. 
+            // For now, let's assume the vignette should fade to the configured bg color.
+
+            // Hacky parsing for "rgba(5, 5, 16, 0.95)" replacement
+            // Let's just use the bg color but fully opaque at the edge, and fully transparent at center.
+            // Problem: If bg is hex, we can't easily add alpha.
+            // Solution: We won't use alpha for the center, we'll use `rgba(r,g,b,0)`.
+            // But we don't know r,g,b.
+            // Alternative: Don't draw vignette in light mode? Or just fade to white?
+            // Let's force a "transparent" start and "opaque" end.
+
+            gradient.addColorStop(0, 'rgba(0,0,0,0)'); // Completely transparent center
+            gradient.addColorStop(1, vignetteColor); // Fade to actual BG color
+
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
 
@@ -229,6 +270,7 @@ const SpacetimeGrid = () => {
                 height: '100%',
                 zIndex: -1,
                 pointerEvents: 'none',
+                transition: 'background 0.5s ease', // Smooth transition for canvas bg
             }}
         />
     );

@@ -1,8 +1,8 @@
 .card {
-    background: rgba(10, 10, 20, 0.75);
+    background: var(--color-glass);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--color-border);
     border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -14,10 +14,10 @@
 
 .card:hover {
     transform: translateY(-8px);
-    border-color: rgba(56, 189, 248, 0.3);
+    border-color: color-mix(in srgb, var(--color-accent-highlight), transparent 70%);
     box-shadow:
         0 8px 30px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(56, 189, 248, 0.1);
+        0 0 20px color-mix(in srgb, var(--color-accent-highlight), transparent 90%);
 }
 
 .imagePlaceholder {
@@ -69,9 +69,9 @@
 
 .tag {
     font-size: 0.75rem;
-    color: var(--color-accent-blue);
-    background: rgba(56, 189, 248, 0.05);
-    border: 1px solid rgba(56, 189, 248, 0.2);
+    color: var(--color-accent-highlight);
+    background: color-mix(in srgb, var(--color-accent-highlight), transparent 95%);
+    border: 1px solid color-mix(in srgb, var(--color-accent-highlight), transparent 80%);
     padding: 0.25rem 0.5rem;
     border-radius: 2px;
     font-family: var(--font-mono);

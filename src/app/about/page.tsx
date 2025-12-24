@@ -4,6 +4,11 @@ import styles from './about.module.css';
 import { portfolio } from '@/data/portfolio';
 
 export default function About() {
+    const uniqueSkills = Array.from(new Set([
+        ...portfolio.skills,
+        ...portfolio.projects.flatMap(p => p.tags)
+    ])).sort();
+
     return (
         <main className={styles.main}>
             <div className="grid-bg" />
@@ -19,9 +24,10 @@ export default function About() {
                     {/* Now Section (Premium & Personal) */}
                     <section className={styles.section} style={{ gridColumn: '1 / -1' }}>
                         <div className={styles.glassCard} style={{
-                            background: 'rgba(var(--background-rgb), 0.3)',
-                            border: '1px solid rgba(255, 255, 255, 0.1)',
-                            padding: '1.5rem' // Reduced padding
+                            background: 'color-mix(in srgb, var(--color-glass), transparent 50%)',
+                            border: '1px solid var(--color-border)',
+                            padding: '1.5rem',
+                            boxShadow: '0 4px 20px -5px rgba(0,0,0,0.1)' // Soft shadow for depth
                         }}>
                             <div className={styles.headerRow} style={{ marginBottom: '1rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -53,7 +59,7 @@ export default function About() {
                                     <div>
                                         <h4 style={{ color: 'var(--color-text-secondary)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem', fontWeight: 600 }}>Current Focus</h4>
                                         <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                                            {portfolio.now.focus.map((item, i) => (
+                                            {portfolio.now.focus.map((item: { label: string; description: string }, i: number) => (
                                                 <li key={i} style={{ display: 'flex', gap: '0.8rem', alignItems: 'baseline' }}>
                                                     <span style={{ color: 'var(--color-accent-purple)', fontSize: '0.8rem' }}>▹</span>
                                                     <div style={{ lineHeight: 1.4 }}>
@@ -82,9 +88,9 @@ export default function About() {
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                         {/* Active Reading (Open Book style) */}
                                         <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
-                                            {portfolio.now.reading.filter(b => b.status === 'reading').map((book, i) => (
+                                            {portfolio.now.reading.filter((b: { status: string }) => b.status === 'reading').map((book: { title: string; author: string }, i: number) => (
                                                 <div key={i} style={{
-                                                    background: 'rgba(255, 255, 255, 0.03)',
+                                                    background: 'color-mix(in srgb, var(--color-glass), transparent 70%)',
                                                     borderLeft: '3px solid var(--color-accent-blue)',
                                                     padding: '0.5rem 0.8rem',
                                                     borderRadius: '0 4px 4px 0',
@@ -101,10 +107,10 @@ export default function About() {
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>
                                             <h5 style={{ margin: 0, fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Previously Read</h5>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                                                {portfolio.now.reading.filter(b => b.status === 'finished').map((book, i) => (
+                                                {portfolio.now.reading.filter((b: { status: string }) => b.status === 'finished').map((book: { title: string; author: string }, i: number) => (
                                                     <div key={i} style={{
-                                                        background: 'rgba(255, 255, 255, 0.05)',
-                                                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                                                        background: 'color-mix(in srgb, var(--color-glass), transparent 80%)',
+                                                        border: '1px solid var(--color-border)',
                                                         padding: '0.4rem 0.8rem',
                                                         borderRadius: '6px',
                                                         display: 'flex',
@@ -168,7 +174,7 @@ export default function About() {
                                 <span className={styles.metricLabel}>Years Experience</span>
                             </div>
                             <div className={styles.metricCard}>
-                                <span className={styles.metricValue}>20+</span>
+                                <span className={styles.metricValue}>{portfolio.projects.length}</span>
                                 <span className={styles.metricLabel}>Projects Delivered</span>
                             </div>
                             <div className={styles.metricCard}>
@@ -182,7 +188,7 @@ export default function About() {
                     <section className={styles.section}>
                         <h2 className="section-title">Technical Skills</h2>
                         <div className={styles.skillsGrid}>
-                            {portfolio.skills.map((skill) => (
+                            {uniqueSkills.map((skill) => (
                                 <span key={skill} className={styles.skillPill}>
                                     {skill}
                                 </span>

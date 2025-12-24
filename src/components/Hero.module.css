@@ -89,9 +89,10 @@
 
 .primaryBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 20px var(--color-accent-highlight);
     /* Glow effect */
-    background: white;
+    background: var(--color-accent-highlight);
+    color: #ffffff;
 }
 
 .secondaryBtn {
@@ -169,8 +170,8 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--color-text-primary), transparent 95%);
+    border: 1px solid color-mix(in srgb, var(--color-text-primary), transparent 90%);
     border-radius: 2rem;
     font-size: 0.85rem;
     color: var(--color-text-secondary);
@@ -183,7 +184,7 @@
 
 .statusBadge:hover {
     border-color: var(--color-accent-highlight);
-    background: rgba(255, 255, 255, 0.08);
+    background: color-mix(in srgb, var(--color-text-primary), transparent 92%);
 }
 
 .statusDot {

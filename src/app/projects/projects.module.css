@@ -56,7 +56,7 @@
 .line {
     flex: 1;
     height: 1px;
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--color-border);
 }
 
 /* Mission Log (Timeline) Styles */
@@ -75,8 +75,8 @@
     width: 2px;
     background: linear-gradient(to bottom,
             transparent 0%,
-            rgba(255, 255, 255, 0.2) 15%,
-            rgba(255, 255, 255, 0.2) 85%,
+            color-mix(in srgb, var(--color-border), transparent 20%) 15%,
+            color-mix(in srgb, var(--color-border), transparent 20%) 85%,
             transparent 100%);
 }
 
@@ -88,10 +88,10 @@
 
 .timelineCard {
     padding: 2rem;
-    background: rgba(10, 10, 20, 0.75);
+    background: var(--color-glass);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--color-border);
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -138,9 +138,9 @@
 }
 
 .timelineItem.featured .timelineMarker {
-    background: var(--color-accent-orange);
+    background: var(--color-accent-highlight);
     border-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 15px var(--color-accent-orange), 0 0 30px rgba(249, 115, 22, 0.4);
+    box-shadow: 0 0 15px var(--color-accent-highlight), 0 0 30px color-mix(in srgb, var(--color-accent-highlight), transparent 60%);
 }
 
 .roleHeader {

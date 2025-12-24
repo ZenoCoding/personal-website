@@ -1,28 +1,27 @@
 :root {
-  /* "Modern Scientific" Palette */
+  /* Default Dark Mode (Modern Scientific) */
   --color-bg-primary: #050510;
-  /* Darker, Void-like Blue-Black */
   --color-bg-secondary: #0a0a1a;
-
   --color-text-primary: #f0f0f5;
-  /* clean white-blue-ish */
   --color-text-secondary: #8a8ab5;
-
   --color-accent-primary: #6366f1;
-  /* Indigo/Violet (Space-y) */
+  /* Indigo/Violet */
   --color-accent-secondary: #a855f7;
   /* Purple */
   --color-accent-highlight: #38bdf8;
   /* Cyan */
   --color-accent-orange: #f97316;
   /* Orange */
-
   --color-border: rgba(255, 255, 255, 0.05);
-  /* Very subtle */
-
   --color-glass: rgba(5, 5, 16, 0.6);
+  --background-rgb: 5, 5, 16;
   --shadow-glow: 0 0 30px -10px rgba(99, 102, 241, 0.2);
 
+  /* Spacetime Grid Specifics (Dark) */
+  --grid-bg: #0a0a16;
+  --grid-star: rgba(255, 255, 255, 0.8);
+  --grid-line: rgba(70, 130, 255, 0.15);
+  --grid-line-waho: rgba(100, 200, 255, 0.3);
 
   --font-mono: var(--font-jetbrains-mono);
   --font-sans: var(--font-inter);
@@ -33,7 +32,38 @@
   --space-lg: 2rem;
   --space-xl: 4rem;
   --container-width: 1000px;
-  /* Slightly tighter measure for elegance */
+}
+
+[data-theme='light'] {
+  /* Light Mode Palette */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f0f9ff;
+  --color-text-primary: #0f172a;
+  /* Slate 900 */
+  --color-text-secondary: #475569;
+  /* Slate 600 */
+  --color-accent-primary: #0ea5e9;
+  /* Sky Blue 500 */
+  --color-accent-secondary: #6366f1;
+  /* Indigo 500 */
+  --color-accent-highlight: #0284c7;
+  /* Sky Blue 600 */
+  --color-accent-orange: #f97316;
+  /* Orange */
+
+  --color-border: rgba(15, 23, 42, 0.08);
+  /* Dark text low opacity */
+  --color-glass: rgba(255, 255, 255, 0.7);
+  --background-rgb: 255, 255, 255;
+  --shadow-glow: 0 0 25px -5px rgba(14, 165, 233, 0.15);
+
+  /* Spacetime Grid Specifics (Light) */
+  --grid-bg: #ffffff;
+  --grid-star: rgba(15, 23, 42, 0.4);
+  --grid-line: rgba(14, 165, 233, 0.2);
+  /* Sky Blue lines */
+  --grid-line-waho: rgba(14, 165, 233, 0.6);
+  /* Brighter Blue core */
 }
 
 * {
