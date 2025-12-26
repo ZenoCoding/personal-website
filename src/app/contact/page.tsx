@@ -27,6 +27,7 @@ export default function Contact() {
 
     return (
         <main className={styles.main}>
+            <div className="grid-bg" />
             <div className="container">
                 <header className={styles.header}>
                     <h1 className={styles.title}>Get In Touch</h1>

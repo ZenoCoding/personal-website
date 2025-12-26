@@ -9,7 +9,17 @@
     z-index: 10;
 }
 
+.activeContainer {
+    pointer-events: auto;
+    cursor: grabbing;
+}
+
 .trackSvg {
+    position: absolute;
+    overflow: visible;
+}
+
+.lidarSvg {
     position: absolute;
     top: 0;
     left: 0;
@@ -17,6 +27,7 @@
     height: 100%;
     pointer-events: none;
     overflow: visible;
+    z-index: 100;
 }
 
 .roverWrapper {
@@ -118,50 +129,73 @@
         12px 6px 0 0 var(--color-accent-secondary), 18px 6px 0 0 var(--color-accent-secondary);
 }
 
-/* Radar - sweeping with gradient trail like ship radar */
+/* Radar - circular container rotating with logic */
 .radar {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120px;
-    height: 120px;
-    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    transform-origin: center;
+    /* Rotation handled in JS now */
     border-radius: 50%;
-    background: conic-gradient(from 0deg,
-            transparent 0deg,
-            transparent 320deg,
-            var(--color-accent-secondary) 345deg,
-            var(--color-accent-highlight) 358deg,
-            transparent 360deg);
-    opacity: 0;
     pointer-events: none;
+    z-index: 10;
 }
 
-.roverWrapper.scanning .radar {
-    animation: radarSweep 2.5s linear infinite;
-    opacity: 0.6;
-}
+/* Visualization of the Radar Cone/Beam - DEPRECATED/REMOVED */
 
-@keyframes radarSweep {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
 
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
+/* The actual laser beam line */
+.laser {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    width: 1px;
+    height: 0;
+    background: var(--color-accent-highlight);
+    box-shadow: 0 0 4px var(--color-accent-highlight);
+    transform-origin: bottom center;
+    /* Height is set in JS */
+    opacity: 0;
+    transition: opacity 0.1s;
 }
 
 /* Radar-detected lidar dot */
+.telemetry {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    /* Moved to top-right */
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    /* Or standard monospace */
+    font-size: 10px;
+    color: var(--color-text-tertiary);
+    line-height: 1.4;
+    white-space: pre;
+    z-index: 10;
+    pointer-events: auto;
+    /* Enable clicks */
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.telemetry:hover {
+    opacity: 1;
+}
+
 .radarPing {
     position: absolute;
-    width: 4px;
-    height: 4px;
+    width: 2px;
+    height: 2px;
     border-radius: 50%;
     background: var(--color-accent-highlight);
     pointer-events: none;
-    animation: dotFade 1.5s ease-out forwards;
-    box-shadow: 0 0 6px 2px var(--color-accent-highlight), 0 0 12px 4px var(--color-accent-secondary);
+    animation: dotFade 2s ease-out forwards;
+    box-shadow: 0 0 4px 1px var(--color-accent-highlight);
+    z-index: 100;
 }
 
 @keyframes dotFade {
@@ -171,13 +205,13 @@
     }
 
     50% {
-        opacity: 0.6;
-        transform: scale(0.8);
+        opacity: 0.8;
+        transform: scale(1.2);
     }
 
     100% {
         opacity: 0;
-        transform: scale(0.3);
+        transform: scale(0.2);
     }
 }
 
@@ -321,6 +355,46 @@
 
     100% {
         transform: translateY(-20px) scale(1.2);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Time-based visualizations */
+.trackSegment {
+    opacity: 0.3;
+    animation: fadeTrack 4s linear forwards;
+}
+
+.beamSegment {
+    animation: fadeBeam 0.6s linear forwards;
+}
+
+@keyframes fadeBeam {
+    0% {
+        opacity: 0.2;
+    }
+
+    /* Start visible */
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeTrack {
+    0% {
+        opacity: 0.3;
+    }
+
+    100% {
         opacity: 0;
     }
 }

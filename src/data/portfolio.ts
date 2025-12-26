@@ -26,9 +26,9 @@ export const portfolio: {
 } = {
     personalInfo: {
         name: "Tycho Young",
-        tagline: "Student at BASIS Independent Fremont; Co Executive Director at FIRE",
+        tagline: "Student at BASIS Independent Fremont; Executive Director at Fremont Institute of Robotics Education",
         location: "Fremont, California, United States",
-        role: "Co Executive Director",
+        role: "Executive Director",
         availability: "Open to Summer Intern roles",
         email: "tychoyoung@gmail.com",
     },
@@ -56,7 +56,7 @@ export const portfolio: {
     ],
     experience: [
         {
-            role: "Co Executive Director",
+            role: "Executive Director",
             company: "Fremont Institute of Robotics Education (FIRE)",
             date: "Aug 2023 – Present",
             location: "Fremont, CA (Hybrid)",
@@ -272,6 +272,9 @@ export const portfolio: {
             { title: "One Way", author: "S.J. Morden", status: "finished" },
         ],
         baking: "Cookies with Mama (Winter Break essentials).",
+        coolStuff: [
+            { title: "Cursed Units", url: "https://www.youtube.com/watch?v=kkfIXUjkYqE", type: "video" }
+        ],
     },
     photos: [
         {

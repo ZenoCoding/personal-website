@@ -10,12 +10,24 @@ interface Track {
     x: number;
     y: number;
     angle: number;
+    createdAt: number;
+}
+
+interface RadarBeam {
+    id: string;
+    x1: number;
+    y1: number;
+    x2: number;
+    y2: number;
+    angle: number;
+    createdAt: number;
 }
 
 interface RadarPing {
     id: string;
     x: number;
     y: number;
+    createdAt: number;
 }
 
 export default function PixelRover() {
@@ -27,17 +39,32 @@ export default function PixelRover() {
     const containerRef = useRef<HTMLDivElement>(null);
     const roverRef = useRef<HTMLDivElement>(null);
 
+    const radarRef = useRef<HTMLDivElement>(null);
+    const laserRef = useRef<HTMLDivElement>(null);
+
     // React State for rendering non-physics UI
     const [uiMode, setUiMode] = useState<Mode>('idle');
     const [tracks, setTracks] = useState<Track[]>([]);
     const [radarPings, setRadarPings] = useState<RadarPing[]>([]);
+    // Store last ~30 beams for visual trail
+    const [radarBeams, setRadarBeams] = useState<RadarBeam[]>([]);
     const frameId = useRef<number>(0);
     const lastTrackTime = useRef<number>(0);
     const bumpUntil = useRef<number>(0);
-    const mousePos = useRef({ x: 0, y: 0 });
+    const mousePos = useRef({ x: -9999, y: -9999 });
     const collisionAngle = useRef<number>(0);
     const radarAngle = useRef<number>(0);
+    const scanProgress = useRef<number>(0);
     const lastPingTime = useRef<number>(0);
+    const obstaclesRef = useRef<DOMRect[]>([]);
+    const radarPingsRef = useRef<RadarPing[]>([]); // Synced ref for physics loop
+    const collisionHistory = useRef<number[]>([]); // Track recent bumps for frustration scan
+    const telemetryRef = useRef<HTMLDivElement>(null); // Direct DOM manipulation for stats
+    const battery = useRef<number>(100); // Stateful battery level
+
+    // Debug State
+    const [debug, setDebug] = useState(false); // Toggle to show bounding boxes
+    const [debugObstacles, setDebugObstacles] = useState<DOMRect[]>([]);
 
     // Helpers
     const setMode = (m: Mode) => {
@@ -56,7 +83,6 @@ export default function PixelRover() {
 
     // Physics Loop
     useEffect(() => {
-        let obstacles: DOMRect[] = [];
 
         // Cache obstacles occasionally (or just once if static)
         const updateObstacles = () => {
@@ -65,7 +91,7 @@ export default function PixelRover() {
             if (parent) {
                 const els = parent.querySelectorAll('[data-obstacle="true"]');
                 const containerRect = containerRef.current.getBoundingClientRect();
-                obstacles = Array.from(els).map(el => {
+                const obsList = Array.from(els).map(el => {
                     const r = el.getBoundingClientRect();
                     // Convert to relative coords in container
                     return {
@@ -78,6 +104,8 @@ export default function PixelRover() {
                         x: r.x, y: r.y, toJSON: () => { }
                     } as DOMRect;
                 });
+                obstaclesRef.current = obsList;
+                setDebugObstacles(obsList);
             }
         };
 
@@ -102,16 +130,32 @@ export default function PixelRover() {
 
             // --- BEHAVIOR TREE ---
 
-            if (m === 'idle') {
+            if (m === 'sleep') {
+                // Recharging (Slow)
+                battery.current = Math.min(100, battery.current + 0.1); // +0.1% per frame (~16s to 100)
+
+                // Wake up when full
+                if (battery.current >= 100) {
+                    setMode('patrol');
+                    pickTarget();
+                }
+
+                // Hide Laser
+                if (laserRef.current) laserRef.current.style.opacity = '0';
+            }
+            else if (m === 'idle') {
+                // Mouse Check
+                // const dx = mousePos.current.x - pos.current.x;
+                // const dy = mousePos.current.y - pos.current.y;
+                // const dist = Math.sqrt(dx * dx + dy * dy);
+                // if (dist < 150 && battery.current > 0) setMode('investigate');
+
                 if (Math.random() < 0.005) {
                     setMode('patrol');
                     pickTarget();
                 } else if (Math.random() < 0.001) {
                     setMode('sleep');
                 }
-            }
-            else if (m === 'sleep') {
-                if (Math.random() < 0.002) setMode('idle');
             }
             else if (m === 'bump') {
                 // Pause and shake - wait until bumpUntil, then start recoil
@@ -131,9 +175,7 @@ export default function PixelRover() {
                 vel.current.v -= recoilSpeed;
 
                 if (vel.current.v <= 0) {
-                    // Done recoiling - turn AWAY from where we hit
-                    // collisionAngle stores the angle TOWARD the obstacle
-                    // So we want to turn to face roughly opposite (±45° for variety)
+                    // Done recoiling
                     const awayAngle = collisionAngle.current + 180;
                     const turnVariation = (Math.random() - 0.5) * 90; // ±45°
                     vel.current.v = awayAngle + turnVariation;
@@ -141,13 +183,15 @@ export default function PixelRover() {
                 }
             }
             else if (m === 'turning') {
-                // Gradually rotate to the target angle stored in vel.v
+                // Low Battery Sputter (Turning)
+                let turnSpeed = 4;
+                if (battery.current < 20) turnSpeed = 2; // Slower turning
+
                 const targetAngle = vel.current.v;
                 let da = targetAngle - vel.current.angle;
                 while (da > 180) da -= 360;
                 while (da < -180) da += 360;
 
-                const turnSpeed = 4; // degrees per frame
                 if (Math.abs(da) < turnSpeed) {
                     vel.current.angle = targetAngle;
                     setMode('patrol');
@@ -157,48 +201,165 @@ export default function PixelRover() {
                 }
             }
             else if (m === 'patrol' || m === 'investigate') {
-                // Pure wander - no target, just random angle changes
-                const wander = (Math.random() - 0.5) * 2; // ±1 degree drift per frame
-                vel.current.angle += wander;
+                // Low Battery Logic
+                let speed = 0.8; // Relaxed patrol speed
+                if (m === 'investigate') speed = 2.0; // Slightly faster for investigation
+
+                if (battery.current < 20) {
+                    speed *= 0.5; // Half speed
+                    // Sputter/Jitter
+                    if (Math.random() < 0.3) {
+                        pos.current.x += (Math.random() - 0.5) * 2;
+                        pos.current.y += (Math.random() - 0.5) * 2;
+                    }
+                }
+
+                if (m === 'investigate') {
+                    // Chase Mouse
+                    const dx = mousePos.current.x - pos.current.x;
+                    const dy = mousePos.current.y - pos.current.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    // Boredom / Loss
+                    if (dist > 250 || battery.current <= 0) {
+                        setMode('patrol');
+                        pickTarget();
+                    }
+                    else if (dist < 40) {
+                        // "Sniffing" - stop but look
+                        speed = 0;
+                    }
+
+                    // DEBUG: Log state occasionally
+                    if (Math.random() < 0.01) {
+                        console.log('INVESTIGATE:', { dist, speed, mx: mousePos.current.x, my: mousePos.current.y, rx: pos.current.x, ry: pos.current.y });
+                    }
+
+                    // Steer towards mouse
+                    const targetAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+                    let da = targetAngle - vel.current.angle;
+                    while (da > 180) da -= 360;
+                    while (da < -180) da += 360;
+                    vel.current.angle += da * 0.1; // Smooth tracking
+
+                } else {
+                    // Patrol: Random Wander
+                    const wander = (Math.random() - 0.5) * 2;
+                    vel.current.angle += wander;
+
+                    // Mouse Proximity Check to Switch Mode
+                    // const dx = mousePos.current.x - pos.current.x;
+                    // const dy = mousePos.current.y - pos.current.y;
+                    // const dist = Math.sqrt(dx * dx + dy * dy);
+                    // if (dist < 150 && battery.current > 0) setMode('investigate');
+                }
+
+                // Lidar Memory Avoidance
+                // If we recall seeing something nearby, steer away
+                if (radarPingsRef.current.length > 0) {
+                    const cx = pos.current.x + 16;
+                    const cy = pos.current.y + 16;
+                    const avoidRadius = 60;
+
+                    let avoidX = 0;
+                    let avoidY = 0;
+                    let count = 0;
+
+                    // Check recent memory
+                    for (const ping of radarPingsRef.current) {
+                        const dx = cx - ping.x;
+                        const dy = cy - ping.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < avoidRadius) {
+                            // Sum vectors pointing AWAY from danger
+                            avoidX += dx / dist; // Normalize
+                            avoidY += dy / dist;
+                            count++;
+                        }
+                    }
+
+                    if (count > 0) {
+                        // Calculate desired heading (away from obstacles)
+                        // Standard angle is atan2(y, x) * 180/PI + 90 (since 0 is up)
+                        const avoidAngle = Math.atan2(avoidY, avoidX) * (180 / Math.PI) + 90;
+
+                        // Smoothly steer towards safety
+                        let da = avoidAngle - vel.current.angle;
+                        while (da > 180) da -= 360;
+                        while (da < -180) da += 360;
+
+                        // Steer stronger if closer/more danger
+                        vel.current.angle += da * 0.1; // 10% steer per frame
+                    }
+                }
 
                 // Move with variable speed (like bumpy terrain)
-                const baseSpeed = 0.7;
-                const speedVariation = Math.random() * 0.4;
-                const speed = baseSpeed + speedVariation;
                 const rad = (vel.current.angle - 90) * (Math.PI / 180);
 
                 let nextX = pos.current.x + Math.cos(rad) * speed;
                 let nextY = pos.current.y + Math.sin(rad) * speed;
 
-                // Wall Collision - simple reflection, no bump needed
-                const p = 25;
-                if (nextX < p) {
-                    nextX = p;
+                // Wall Collision - Center based (Radius 12 - 24px body)
+                const wallBuffer = 0; // Tighter walls
+
+                // Check centers
+                // If the div is 32x32, center is ALWAYS +16.
+                // Physics body is smaller, but usually centered in the 32x32 div.
+                // So cx is STILL nextX + 16. The LIMIT changes because the body is smaller.
+
+                const visualCenter = 16;
+                const physicsR = 12;
+
+                const cx_world = nextX + visualCenter;
+                const cy_world = nextY + visualCenter;
+
+                // Check against walls using physics radius
+                if (cx_world < physicsR) {
+                    nextX = physicsR - visualCenter; // push back
                     vel.current.angle = -vel.current.angle + (Math.random() * 30 - 15);
-                } else if (nextX > clientWidth - p) {
-                    nextX = clientWidth - p;
+                } else if (cx_world > clientWidth - physicsR) {
+                    nextX = clientWidth - physicsR - visualCenter;
                     vel.current.angle = -vel.current.angle + (Math.random() * 30 - 15);
                 }
-                if (nextY < p) {
-                    nextY = p;
+
+                if (cy_world < physicsR) {
+                    nextY = physicsR - visualCenter;
                     vel.current.angle = 180 - vel.current.angle + (Math.random() * 30 - 15);
-                } else if (nextY > clientHeight - p) {
-                    nextY = clientHeight - p;
+                } else if (cy_world > clientHeight - physicsR) {
+                    nextY = clientHeight - physicsR - visualCenter;
                     vel.current.angle = 180 - vel.current.angle + (Math.random() * 30 - 15);
                 }
 
                 // Obstacle Collision (skip if in grace period)
                 let collided = false;
                 if (time > bumpUntil.current) {
-                    for (const obs of obstacles) {
-                        const buffer = 5; // Tighter collision detection
-                        if (nextX > obs.left - buffer && nextX < obs.right + buffer &&
-                            nextY > obs.top - buffer && nextY < obs.bottom + buffer) {
+                    for (const obs of obstaclesRef.current) {
+                        const buffer = 4; // Tighter object buffer
+                        // Hitbox is center +/- (radius + buffer)
+
+                        if (cx_world > obs.left - (physicsR + buffer) && cx_world < obs.right + (physicsR + buffer) &&
+                            cy_world > obs.top - (physicsR + buffer) && cy_world < obs.bottom + (physicsR + buffer)) {
+
 
                             collided = true;
+
+                            // Frustration Scan Logic
+                            // Record this collision
+                            collisionHistory.current.push(time);
+                            // Keep only recent (last 8s)
+                            collisionHistory.current = collisionHistory.current.filter(t => time - t < 8000);
+
+                            // If bumped 3 times recently, stop and look
+                            if (collisionHistory.current.length >= 3) {
+                                collisionHistory.current = []; // Clear frustration
+                                setMode('scan');
+                                break;
+                            }
+
                             // Calculate angle toward obstacle center for smart turning
                             const obsCenter = { x: (obs.left + obs.right) / 2, y: (obs.top + obs.bottom) / 2 };
-                            collisionAngle.current = Math.atan2(obsCenter.y - pos.current.y, obsCenter.x - pos.current.x) * (180 / Math.PI) + 90;
+                            collisionAngle.current = Math.atan2(obsCenter.y - pos.current.y, obsCenter.x - obsCenter.x) * (180 / Math.PI) + 90;
                             bumpUntil.current = time + 500;
                             setMode('bump');
                             break;
@@ -213,9 +374,14 @@ export default function PixelRover() {
                     // Tracks
                     if (time - lastTrackTime.current > 30) {
                         setTracks(prev => {
-                            const next = [...prev, { id: `${time}-${nextX}-${nextY}`, x: nextX, y: nextY, angle: vel.current.angle }];
-                            if (next.length > 50) return next.slice(next.length - 50);
-                            return next;
+                            const next = [...prev, {
+                                id: `${time}-${nextX}-${nextY}`,
+                                x: nextX,
+                                y: nextY,
+                                angle: vel.current.angle,
+                                createdAt: time
+                            }];
+                            return next; // Don't slice here, cleanup in loop
                         });
                         lastTrackTime.current = time;
                     }
@@ -228,45 +394,207 @@ export default function PixelRover() {
             }
             else if (m === 'scan') {
                 // Update radar angle (2.5s per rotation = 144 deg/sec = ~2.4 deg/frame at 60fps)
-                radarAngle.current = (radarAngle.current + 2.4) % 360;
+                const rotSpeed = 2.4;
+                radarAngle.current = (radarAngle.current + rotSpeed) % 360;
+                scanProgress.current += rotSpeed;
 
-                // Check if radar sweep hits any obstacle
-                const radarRange = 60; // 60px radius
-                const radarRad = (radarAngle.current - 90) * (Math.PI / 180);
-                const sweepEndX = pos.current.x + Math.cos(radarRad) * radarRange;
-                const sweepEndY = pos.current.y + Math.sin(radarRad) * radarRange;
+                // Sync Visual Radar
+                if (radarRef.current) {
+                    radarRef.current.style.transform = `translate(-50%, -50%) rotate(${radarAngle.current}deg)`;
+                }
 
-                // Line-box intersection check for each obstacle
-                if (time - lastPingTime.current > 30) {
-                    for (const obs of obstacles) {
-                        if (sweepEndX > obs.left && sweepEndX < obs.right &&
-                            sweepEndY > obs.top && sweepEndY < obs.bottom) {
-                            const pingId = `ping-${time}-${sweepEndX.toFixed(0)}-${sweepEndY.toFixed(0)}`;
-                            setRadarPings(prev => {
-                                const newPings = [...prev, { id: pingId, x: sweepEndX, y: sweepEndY }];
-                                if (newPings.length > 100) return newPings.slice(-100);
-                                return newPings;
-                            });
-                            lastPingTime.current = time;
-                            break;
+                // Raycasting Logic
+                const range = 100; // Increased range
+                // Include rover's heading in the logic because the radar is a child of the rotated rover
+                const angleRad = (vel.current.angle + radarAngle.current - 90) * (Math.PI / 180);
+                // Offset start to center of rover (32x32 div, so +16)
+                const start = { x: pos.current.x + 16, y: pos.current.y + 16 };
+                const end = {
+                    x: start.x + Math.cos(angleRad) * range,
+                    y: start.y + Math.sin(angleRad) * range
+                };
+
+                // Define all collidable lines (Walls + Obstacles)
+                // Format: {x1, y1, x2, y2}
+                const lines: { x1: number, y1: number, x2: number, y2: number }[] = [];
+
+                // 1. Add Container Walls
+                // Top
+                lines.push({ x1: 0, y1: 0, x2: clientWidth, y2: 0 });
+                // Bottom
+                lines.push({ x1: 0, y1: clientHeight, x2: clientWidth, y2: clientHeight });
+                // Left
+                lines.push({ x1: 0, y1: 0, x2: 0, y2: clientHeight });
+                // Right
+                lines.push({ x1: clientWidth, y1: 0, x2: clientWidth, y2: clientHeight });
+
+                // 2. Add Obstacles (as 4 lines each)
+                obstaclesRef.current.forEach(obs => {
+                    const pad = 2; // Slight padding so points appear on surface
+                    lines.push({ x1: obs.left - pad, y1: obs.top - pad, x2: obs.right + pad, y2: obs.top - pad }); // Top
+                    lines.push({ x1: obs.right + pad, y1: obs.top - pad, x2: obs.right + pad, y2: obs.bottom + pad }); // Right
+                    lines.push({ x1: obs.right + pad, y1: obs.bottom + pad, x2: obs.left - pad, y2: obs.bottom + pad }); // Bottom
+                    lines.push({ x1: obs.left - pad, y1: obs.bottom + pad, x2: obs.left - pad, y2: obs.top - pad }); // Left
+                });
+
+                // Helper: Line-Line Intersection
+                const getIntersection = (p0: { x: number, y: number }, p1: { x: number, y: number },
+                    p2: { x: number, y: number }, p3: { x: number, y: number }) => {
+                    const s1_x = p1.x - p0.x;
+                    const s1_y = p1.y - p0.y;
+                    const s2_x = p3.x - p2.x;
+                    const s2_y = p3.y - p2.y;
+
+                    const s = (-s1_y * (p0.x - p2.x) + s1_x * (p0.y - p2.y)) / (-s2_x * s1_y + s1_x * s2_y);
+                    const t = (s2_x * (p0.y - p2.y) - s2_y * (p0.x - p2.x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+                    if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
+                        return {
+                            x: p0.x + (t * s1_x),
+                            y: p0.y + (t * s1_y),
+                            dist: t * Math.sqrt(s1_x * s1_x + s1_y * s1_y) // approximate dist factor
+                        };
+                    }
+                    return null;
+                };
+
+                // Find closest intersection
+                let closestHit: { x: number, y: number, dist: number } | null = null;
+                let closestDist = Infinity;
+
+                for (const line of lines) {
+                    const hit = getIntersection(start, end, { x: line.x1, y: line.y1 }, { x: line.x2, y: line.y2 });
+                    if (hit) {
+                        const d = (hit.x - start.x) ** 2 + (hit.y - start.y) ** 2;
+                        if (d < closestDist) {
+                            closestDist = d;
+                            closestHit = hit;
                         }
                     }
                 }
 
-                // Clean up old pings only every 500ms to reduce re-renders
-                if (time % 500 < 20) {
-                    setRadarPings(prev => prev.filter(p => {
-                        const pingTime = parseInt(p.id.split('-')[1]);
-                        return time - pingTime < 1500;
-                    }));
+                // Update Visual Laser Length (cut short if hit)
+                if (laserRef.current) {
+                    // Calculate distance to draw
+                    let drawDist = range;
+                    if (closestHit) {
+                        drawDist = Math.sqrt(closestDist);
+                    }
+                    // The laser is inside the rotated radar container, so we just set height/width
+                    // The radar rotates, so the laser just needs to be the length of the radius
+                    laserRef.current.style.height = `${drawDist}px`;
+                    laserRef.current.style.opacity = '1';
                 }
 
-                // Scan for at least 3 full rotations (7.5s), then exit
-                if (radarAngle.current > 360 * 3) {
-                    setMode('patrol');
-                    radarAngle.current = 0;
-                    setRadarPings([]); // Clear pings when done
+                // Register Beam Trail
+                const beamEnd = closestHit ? closestHit : end;
+                const beamId = `beam-${time}-${Math.random()}`;
+
+                setRadarBeams(prev => {
+                    const next = [...prev, {
+                        id: beamId,
+                        x1: start.x,
+                        y1: start.y,
+                        x2: beamEnd.x,
+                        y2: beamEnd.y,
+                        angle: angleRad,
+                        createdAt: time
+                    }];
+                    return next; // GC handles cleanup
+                });
+
+                // Register Ping if hit
+                if (closestHit) { // No throttle - every frame
+                    const hit = closestHit; // Capture for closure
+                    const pingId = `ping-${time}-${Math.random()}`; // Unique ID
+
+                    setRadarPings(prev => {
+                        const newPings = [...prev, { id: pingId, x: hit.x, y: hit.y, createdAt: time }];
+                        radarPingsRef.current = newPings; // Sync for physics
+                        return newPings; // GC handles cleanup
+                    });
+                    lastPingTime.current = time;
                 }
+
+                // Scan for limited time (3 full rotations = 1080 degrees)
+                if (scanProgress.current > 1080) {
+                    setMode('patrol');
+                    scanProgress.current = 0;
+                    radarAngle.current = 0;
+                    if (laserRef.current) laserRef.current.style.opacity = '0';
+                }
+            }
+
+
+            // Global Cleanup (Garbage Collection)
+            // Run every ~200ms
+            if (time % 200 < 20) {
+                // Tracks last 4s
+                setTracks(prev => {
+                    if (prev.length === 0) return prev;
+                    if (time - prev[0].createdAt > 4500) {
+                        return prev.filter(t => time - t.createdAt < 4500);
+                    }
+                    return prev;
+                });
+                // Beams last 0.6s
+                setRadarBeams(prev => {
+                    if (prev.length === 0) return prev;
+                    if (time - prev[0].createdAt > 1000) {
+                        return prev.filter(b => time - b.createdAt < 1000);
+                    }
+                    return prev;
+                });
+                // Pings last 2s
+                setRadarPings(prev => {
+                    if (prev.length === 0) return prev;
+                    // Sync ref
+                    let next = prev;
+                    if (time - prev[0].createdAt > 5000) {
+                        next = prev.filter(p => time - p.createdAt < 5000);
+                    }
+                    radarPingsRef.current = next;
+                    return next;
+                });
+            }
+
+
+
+            // Update Telemetry
+            if (telemetryRef.current) {
+                const m = mode.current.toUpperCase();
+                const x = Math.round(pos.current.x).toString().padStart(3, '0');
+                const y = Math.round(pos.current.y).toString().padStart(3, '0');
+                const hdg = Math.round((vel.current.angle % 360 + 360) % 360).toString().padStart(3, '0');
+                const pings = radarPingsRef.current.length.toString().padStart(2, '0');
+                // Battery Logic
+                // Scan = High Drain (0.05 per frame ~ 3%/sec)
+                // Move = Normal Drain (0.02 per frame ~ 1.2%/sec)
+                // Stop = Zero Drain
+                let drain = 0;
+                if (m === 'SCAN') drain = 0.05;
+                else if (m === 'PATROL' || m === 'INVESTIGATE' || m === 'TURNING' || m === 'BUMP') drain = 0.02;
+
+                battery.current = Math.max(0, battery.current - drain);
+                const bat = Math.floor(battery.current).toString().padStart(3, '0');
+
+                // Trigger Sleep at 0%
+                if (battery.current <= 0 && m !== 'SLEEP' && m !== 'HELD' && m !== 'IDLE') {
+                    setMode('sleep');
+                }
+
+                let sysText = m;
+                if (m === 'SLEEP') {
+                    // Charging Bar [|||||.....]
+                    const bars = Math.floor(battery.current / 10);
+                    const visual = '[' + '|'.repeat(bars) + '.'.repeat(10 - bars) + ']';
+                    sysText = `CHRG ${visual}`;
+                } else if (battery.current < 20) {
+                    // Flash Low Battery
+                    if (Math.floor(time / 500) % 2 === 0) sysText = `${m} (LOW BAT)`;
+                }
+
+                telemetryRef.current.innerText = `SYS: ${sysText}\nPOS: ${x},${y}\nHDG: ${hdg}°\nLDR: ${pings}\nBAT: ${bat}%`;
             }
 
             roverRef.current.style.transform = `translate(${pos.current.x}px, ${pos.current.y}px) rotate(${vel.current.angle}deg)`;
@@ -293,6 +621,12 @@ export default function PixelRover() {
             const rect = containerRef.current.getBoundingClientRect();
             mousePos.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
             setMode('held');
+
+            // Clear laser if we interrupt a scan
+            if (laserRef.current) {
+                laserRef.current.style.opacity = '0';
+                laserRef.current.style.height = '0px';
+            }
         }
     };
 
@@ -302,16 +636,17 @@ export default function PixelRover() {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
 
+        // Always track mouse for investigation
+        mousePos.current = { x: mx, y: my };
+
         if (mode.current === 'held') {
             // Follow cursor when held
-            mousePos.current = { x: mx, y: my };
             pos.current.x = mx;
             pos.current.y = my;
             if (roverRef.current) {
                 roverRef.current.style.transform = `translate(${mx}px, ${my}px) rotate(${vel.current.angle}deg)`;
             }
         }
-        // Removed investigate behavior - it was causing unexpected mode changes
     };
 
     const handleMouseLeave = (e: React.MouseEvent) => {
@@ -352,11 +687,8 @@ export default function PixelRover() {
             const cL = getWheelPos(pt, -wheelOffset);
             const cR = getWheelPos(pt, wheelOffset);
 
-            // Opacity fades based on index
-            const alpha = (i / tracks.length) * 0.3; // max opacity 0.3
-
             return (
-                <g key={pt.id} stroke="var(--color-text-secondary)" strokeOpacity={alpha} strokeWidth="2" strokeLinecap="round">
+                <g key={pt.id} stroke="var(--color-text-secondary)" strokeWidth="2" strokeLinecap="round" className={styles.trackSegment}>
                     <line x1={pL.x} y1={pL.y} x2={cL.x} y2={cL.y} />
                     <line x1={pR.x} y1={pR.y} x2={cR.x} y2={cR.y} />
                 </g>
@@ -364,23 +696,137 @@ export default function PixelRover() {
         });
     };
 
+    const handleContainerClick = () => {
+        if (mode.current === 'held') {
+            bumpUntil.current = performance.now() + 500;
+            setMode('idle');
+        }
+    };
+
     return (
-        <div ref={containerRef} className={styles.container} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+        <div
+            ref={containerRef}
+            className={`${styles.container} ${uiMode === 'held' ? styles.activeContainer : ''}`}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleContainerClick}
+        >
             <svg className={styles.trackSvg}>
                 {renderTrackSegments()}
             </svg>
 
-            {/* Radar pings - lidar dots */}
-            {radarPings.map(ping => (
-                <div
-                    key={ping.id}
-                    className={styles.radarPing}
-                    style={{
-                        left: ping.x - 2,
-                        top: ping.y - 2
-                    }}
-                />
-            ))}
+            <div
+                ref={telemetryRef}
+                className={styles.telemetry}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setDebug(prev => !prev);
+                }}
+            />
+
+            {/* Radar pings - Continuous Lines */}
+            <svg className={styles.lidarSvg}>
+                <defs>
+                    <filter id="beam-blur">
+                        <feGaussianBlur stdDeviation="2" />
+                    </filter>
+                </defs>
+
+                {/* Visual Beam Trail */}
+                <g filter="url(#beam-blur)">
+                    {radarBeams.map((beam) => {
+                        // Calculate cone vertices
+                        const dx = beam.x2 - beam.x1;
+                        const dy = beam.y2 - beam.y1;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        // Rotation is 2.4 deg/frame. Spread should be half that (1.2) + tiny overlap
+                        const spread = 1.3 * (Math.PI / 180);
+
+                        const pLeft = {
+                            x: beam.x1 + Math.cos(beam.angle - spread) * dist,
+                            y: beam.y1 + Math.sin(beam.angle - spread) * dist
+                        };
+                        const pRight = {
+                            x: beam.x1 + Math.cos(beam.angle + spread) * dist,
+                            y: beam.y1 + Math.sin(beam.angle + spread) * dist
+                        };
+
+                        return (
+                            <polygon
+                                key={beam.id}
+                                points={`${beam.x1},${beam.y1} ${pLeft.x},${pLeft.y} ${pRight.x},${pRight.y}`}
+                                fill="var(--color-accent-secondary)"
+                                className={styles.beamSegment}
+                                style={{ mixBlendMode: 'screen' }} // Help blending
+                            />
+                        );
+                    })}
+                </g>
+
+                {radarPings.map((ping, i) => {
+                    if (i === 0) return null;
+                    const prev = radarPings[i - 1];
+
+                    // Check for depth jump/occlusion - don't connect if points are too far apart
+                    const dist = Math.sqrt(Math.pow(ping.x - prev.x, 2) + Math.pow(ping.y - prev.y, 2));
+                    if (dist > 20) return null; // Break line on jumps
+
+                    return (
+                        <line
+                            key={ping.id}
+                            x1={prev.x}
+                            y1={prev.y}
+                            x2={ping.x}
+                            y2={ping.y}
+                            stroke="var(--color-accent-highlight)"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            style={{ animation: `${styles.fadeBeam} 5s linear forwards` }}
+                        />
+                    );
+                })}
+
+                {/* Debug Overlays */}
+                {debug && (
+                    <>
+                        {/* Obstacles */}
+                        {debugObstacles.map((obs, i) => (
+                            <rect
+                                key={i}
+                                x={obs.left}
+                                y={obs.top}
+                                width={obs.width}
+                                height={obs.height}
+                                fill="none"
+                                stroke="cyan"
+                                strokeWidth="1"
+                                strokeDasharray="4 2"
+                                opacity="0.5"
+                            />
+                        ))}
+                    </>
+                )}
+
+                {/* Debug Rover Body - Syncs with physics r=12 (24x24) */}
+                {debug && (
+                    <rect
+                        x={pos.current.x + 16 - 12} // Center (16) - Physics Radius (12)
+                        y={pos.current.y + 16 - 12}
+                        width="24"
+                        height="24"
+                        fill="none"
+                        stroke="magenta"
+                        strokeWidth="1"
+                        transform={`rotate(${vel.current.angle}, ${pos.current.x + 16}, ${pos.current.y + 16})`}
+                    />
+                )}
+            </svg>
+
+            {/* Rover Debug Box (Rendered outside SVG for simplicity or inside? Inside trackSvg is easiest if it has pointer-events: none) 
+                Wait, pos.current is REF, it won't re-render. 
+                We need to use a synced state or just trust the roverWrapper's div? 
+                Actually, let's just add a border to the roverWrapper if debug is on.
+            */}
 
             <div
                 ref={roverRef}
@@ -389,7 +835,11 @@ export default function PixelRover() {
             >
                 <div className={styles.roverBody}>
                     <div className={styles.rover} />
-                    <div className={styles.radar} />
+                    {/* Visual Radar Container */}
+                    <div className={styles.radar} ref={radarRef}>
+                        {/* The visible laser beam */}
+                        <div className={styles.laser} ref={laserRef} />
+                    </div>
 
                     {uiMode === 'sleep' && (
                         <>

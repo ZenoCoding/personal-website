@@ -80,31 +80,40 @@ export default function About() {
                                     </div>
                                 </div>
 
-                                {/* Right Column: Bookshelf */}
+                                {/* Right Column: Bookshelf & Watching */}
                                 <div>
                                     <h4 style={{ color: 'var(--color-text-secondary)', marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem', fontWeight: 600 }}>Reading Log</h4>
 
                                     {/* Virtual Bookshelf */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                         {/* Active Reading (Open Book style) */}
-                                        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                             {portfolio.now.reading.filter((b: { status: string }) => b.status === 'reading').map((book: { title: string; author: string }, i: number) => (
                                                 <div key={i} style={{
-                                                    background: 'color-mix(in srgb, var(--color-glass), transparent 70%)',
-                                                    borderLeft: '3px solid var(--color-accent-blue)',
-                                                    padding: '0.5rem 0.8rem',
-                                                    borderRadius: '0 4px 4px 0',
-                                                    flex: '1 1 45%'
+                                                    background: 'color-mix(in srgb, var(--color-glass), transparent 80%)',
+                                                    border: '1px solid var(--color-border)',
+                                                    padding: '0.4rem 0.8rem',
+                                                    borderRadius: '6px',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.5rem',
+                                                    width: '100%'
                                                 }}>
-                                                    <p style={{ margin: 0, fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-text-primary)' }}>{book.title}</p>
-                                                    <p style={{ margin: 0, fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>by {book.author}</p>
-                                                    <span style={{ fontSize: '0.7rem', color: 'var(--color-accent-blue)', marginTop: '0.2rem', display: 'block' }}>Currently Reading</span>
+                                                    <span style={{ color: 'var(--color-accent-blue)', display: 'flex' }}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" /><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                                                        </svg>
+                                                    </span>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'baseline' }}>
+                                                        <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 500, color: 'var(--color-text-primary)' }}>{book.title}</p>
+                                                        <p style={{ margin: 0, fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>{book.author}</p>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
 
                                         {/* Finished Stack (Clean List) */}
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                             <h5 style={{ margin: 0, fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Previously Read</h5>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                                                 {portfolio.now.reading.filter((b: { status: string }) => b.status === 'finished').map((book: { title: string; author: string }, i: number) => (
@@ -118,7 +127,11 @@ export default function About() {
                                                         gap: '0.5rem',
                                                         width: '100%' // Full width
                                                     }}>
-                                                        <span style={{ color: 'var(--color-accent-green, #4ade80)', fontSize: '0.8rem' }}>✓</span>
+                                                        <span style={{ color: 'var(--color-accent-green, #4ade80)', display: 'flex' }}>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <polyline points="20 6 9 17 4 12" />
+                                                            </svg>
+                                                        </span>
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'baseline' }}>
                                                             <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 500, color: 'var(--color-text-primary)' }}>{book.title}</p>
                                                             <p style={{ margin: 0, fontSize: '0.7rem', color: 'var(--color-text-secondary)' }}>{book.author}</p>
@@ -127,6 +140,53 @@ export default function About() {
                                                 ))}
                                             </div>
                                         </div>
+
+                                        {/* Cool Stuff Links */}
+                                        {portfolio.now.coolStuff && portfolio.now.coolStuff.length > 0 && (
+                                            <div>
+                                                <h5 style={{ margin: 0, marginBottom: '0.8rem', fontSize: '0.7rem', color: 'var(--color-text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Cool Stuff</h5>
+                                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                                    {portfolio.now.coolStuff.map((item: { title: string; url: string; type: string }, i: number) => (
+                                                        <a
+                                                            key={i}
+                                                            href={item.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            style={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '0.5rem',
+                                                                padding: '0.5rem 0.8rem',
+                                                                background: 'color-mix(in srgb, var(--color-glass), transparent 80%)',
+                                                                border: '1px solid var(--color-border)',
+                                                                borderRadius: '6px',
+                                                                color: 'var(--color-text-primary)',
+                                                                textDecoration: 'none',
+                                                                fontSize: '0.85rem',
+                                                                transition: 'all 0.2s ease'
+                                                            }}
+                                                        >
+                                                            <span style={{ display: 'flex', alignItems: 'center' }}>
+                                                                {item.type === 'video' ? (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                                                        <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                                                                    </svg>
+                                                                ) : item.type === 'article' ? (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+                                                                    </svg>
+                                                                ) : (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                                                    </svg>
+                                                                )}
+                                                            </span>
+                                                            {item.title}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -136,8 +196,8 @@ export default function About() {
                     {/* Bio Section */}
                     <section className={styles.section}>
                         <div className={styles.glassCard} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                            <div className={styles.headerRow}>
-                                <h2 className="section-title">Biography</h2>
+                            <div className={styles.headerRow} style={{ marginBottom: '0.5rem' }}>
+                                <h2 className="section-title" style={{ marginBottom: 0 }}>Biography</h2>
                             </div>
 
                             <div style={{ display: 'flex', gap: '2rem', alignItems: 'start', flexWrap: 'wrap' }}>
