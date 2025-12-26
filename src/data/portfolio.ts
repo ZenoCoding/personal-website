@@ -39,7 +39,7 @@ export const portfolio: {
     about: {
         bio: "I’m a highly motivated high school student with a strong foundation in software engineering seeking an internship to apply and further develop skills in computer science or AI. I’ve built numerous self-directed projects including MathGPT, a Discord application that combines CAS and LLMs to enhance both. I have strong teamwork, communication, problem-solving, and analytical skills.",
         interests: ["Artificial Intelligence", "Robotics", "Game Development", "Mathematics"],
-        headshot: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop", // Placeholder
+        headshot: "/photos/head.jpeg",
     },
     gear: [
         { name: "Sony Alpha 6400", type: "Camera" },
@@ -273,7 +273,8 @@ export const portfolio: {
         ],
         baking: "Cookies with Mama (Winter Break essentials).",
         coolStuff: [
-            { title: "Cursed Units", url: "https://www.youtube.com/watch?v=kkfIXUjkYqE", type: "video" }
+            { title: "Cursed Units", url: "https://www.youtube.com/watch?v=kkfIXUjkYqE", type: "video" },
+            { title: "Power Laws", url: "https://www.youtube.com/watch?v=HBluLfX2F_k", type: "video" }
         ],
     },
     photos: [

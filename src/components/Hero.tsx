@@ -1,52 +1,43 @@
 'use client';
 
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import styles from './Hero.module.css';
-import { useTypewriter } from '@/hooks/useTypewriter';
 import MagneticButton from '@/components/MagneticButton';
 import { portfolio } from '@/data/portfolio';
 
 const Hero = () => {
-    const typewriterText = useTypewriter(
-        ['Autonomous Systems.', 'Real Engineering.', 'Immersive Experiences.', 'Novel Software.'],
-        100,
-        50,
-        2500
-    );
-
     return (
         <section className={styles.hero}>
             <div className={`container ${styles.content}`}>
-                <div className={styles.statusBadge}>
+                <Link href="/projects" className={styles.statusBadge}>
                     <div className={styles.statusDot} />
                     <span>Currently building {portfolio.projects[0].title}</span>
-                </div>
+                </Link>
 
                 <h1 className={styles.title}>
-                    <span className={styles.greeting}>Hi, I'm Tycho.</span>
-                    Building Intelligence
+                    <div className={styles.greetingWrapper}>
+                        <img
+                            src={portfolio.about.headshot}
+                            alt={portfolio.personalInfo.name}
+                            className={styles.avatar}
+                        />
+                        <span className={styles.greeting}>Hi, I'm Tycho.</span>
+                    </div>
+                    I engineer <span className={styles.highlight}>robots</span>
                     <br />
-                    through <span style={{ color: 'var(--color-accent-highlight)' }} className={styles.typewriterWrapper}>
-                        {/* Render all phrases invisibly to reserve space */}
-                        {['Autonomous Systems.', 'Real Engineering.', 'Immersive Experiences.', 'Novel Software.'].map((text) => (
-                            <span key={text} aria-hidden="true">{text}</span>
-                        ))}
-                        {/* Render the visible active text */}
-                        <span className={styles.typewriterVisible}>
-                            {typewriterText}
-                            <span className={styles.typewriterCursor}></span>
-                        </span>
-                    </span>
+                    and build <span className={styles.highlight}>intelligent software.</span>
                 </h1>
 
                 <p className={styles.tagline}>
-                    I'm a software engineer and robotics leader focused on AI, game development, and solving complex problems.
+                    I'm a software engineer and robotics leader focused on AI, solving complex problems, and constant learning.
                 </p>
 
                 <div className={styles.actions}>
                     <MagneticButton>
                         <Link href="/projects" className={styles.primaryBtn}>
                             View Projects
+                            <ArrowRight size={20} className={styles.btnIcon} />
                         </Link>
                     </MagneticButton>
                     <MagneticButton>

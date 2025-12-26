@@ -234,11 +234,11 @@ export default function About() {
                                 <span className={styles.metricLabel}>Years Experience</span>
                             </div>
                             <div className={styles.metricCard}>
-                                <span className={styles.metricValue}>{portfolio.projects.length}</span>
+                                <span className={styles.metricValue}>{portfolio.projects.length}+</span>
                                 <span className={styles.metricLabel}>Projects Delivered</span>
                             </div>
                             <div className={styles.metricCard}>
-                                <span className={styles.metricValue}>50+</span>
+                                <span className={styles.metricValue}>75+</span>
                                 <span className={styles.metricLabel}>Students Led</span>
                             </div>
                         </div>

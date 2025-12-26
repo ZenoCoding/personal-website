@@ -13,6 +13,22 @@
     max-width: 800px;
 }
 
+.greetingWrapper {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--color-border);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
 .greeting {
     font-size: 1.5rem;
     background: linear-gradient(90deg, var(--color-text-primary), var(--color-accent-highlight));
@@ -21,7 +37,6 @@
     background-clip: text;
     font-weight: 500;
     display: block;
-    margin-bottom: 0.2rem;
     letter-spacing: -0.02em;
 }
 
@@ -30,7 +45,7 @@
     line-height: 1.1;
     margin-bottom: 2rem;
     color: var(--color-text-primary);
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.04em;
     opacity: 0;
     animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
@@ -61,7 +76,7 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 1px;
+    height: 2px;
     background: var(--color-accent-primary);
     opacity: 0.5;
 }
@@ -84,7 +99,17 @@
     font-weight: 600;
     border-radius: 4px;
     transition: all 0.2s ease;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btnIcon {
+    transition: transform 0.2s ease;
+}
+
+.primaryBtn:hover .btnIcon {
+    transform: translateX(4px);
 }
 
 .primaryBtn:hover {
