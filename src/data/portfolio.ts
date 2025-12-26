@@ -265,6 +265,10 @@ export const portfolio: {
                 label: "Personal Projects",
                 description: "Robotics and web dev, hoping to learn more about mechatronics engineering",
             },
+            {
+                label: "Guitar",
+                description: "Photograph — Nickelback; Undone — Weezer; I Will Follow You Into the Dark — Death Cab for Cutie; bar chords are so hard",
+            },
         ],
         reading: [
             { title: "The Three Body Problem", author: "Cixin Liu", status: "reading" },

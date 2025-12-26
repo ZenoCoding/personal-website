@@ -1,5 +1,5 @@
 .footer {
-    padding: 4rem 0;
+    padding: 1rem 0 4rem 0;
     border-top: 1px solid var(--color-border);
     background: var(--color-bg-secondary);
     color: var(--color-text-secondary);
@@ -12,6 +12,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.quote {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    opacity: 0.6;
+    font-size: 0.75rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 @media (max-width: 768px) {
