@@ -245,24 +245,24 @@ export const portfolio: {
         },
     ],
     now: {
-        status: "Winter Break & Ramp-up Mode",
+        status: "Winter Break",
         location: "Fremont, CA",
         focus: [
             {
                 label: "Physics",
-                description: "Grinding USAPhO mechanics (Kevin Zhou's handouts are gold).",
+                description: "Grinding USAPhO mechanics (kevin zhou is my goat).",
             },
             {
                 label: "Newspaper",
                 description: "Managing the student paper. Graphic design is slow, but meaningful work.",
             },
             {
-                label: "Meta-Learning",
-                description: "Learning to use AI tools for web dev without losing the 'learning' part.",
-            },
-            {
                 label: "Robotics",
                 description: "Prepping for the upcoming FRC season. Things are about to get busy.",
+            },
+            {
+                label: "Personal Projects",
+                description: "Robotics and web dev, hoping to learn more about mechatronics engineering",
             },
         ],
         reading: [
