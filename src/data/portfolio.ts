@@ -78,6 +78,7 @@ export const portfolio: {
         {
             title: "Infinite Newton's Cradle",
             description: "A physics demonstration built using Onshape, Breadboard, Arduino, Electromagnets, and basic wiring.",
+            image: "/photos/wires.jpeg",
             tags: ["OnShape", "Arduino", "Electronics", "Physics"],
             date: "Late 2025 - Present",
             featured: false,
@@ -271,7 +272,7 @@ export const portfolio: {
             { title: "Shoe Dog", author: "Phil Knight", status: "finished" },
             { title: "One Way", author: "S.J. Morden", status: "finished" },
         ],
-        baking: "Cookies with Mama (Winter Break essentials).",
+        baking: "Cookies with Mama.",
         coolStuff: [
             { title: "Cursed Units", url: "https://www.youtube.com/watch?v=kkfIXUjkYqE", type: "video" },
             { title: "Power Laws", url: "https://www.youtube.com/watch?v=HBluLfX2F_k", type: "video" }
