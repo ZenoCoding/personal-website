@@ -1,0 +1,5 @@
+{
+    "name": "doudizhu",
+    "main": "party/doudizhu.ts",
+    "compatibilityDate": "2024-01-01"
+}

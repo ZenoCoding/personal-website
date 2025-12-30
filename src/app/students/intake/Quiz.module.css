@@ -1,0 +1,183 @@
+.quiz {
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.icon {
+    font-size: 1.25rem;
+}
+
+.label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent-primary);
+}
+
+.question {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.option:hover:not(:disabled) {
+    border-color: var(--color-accent-primary);
+    color: var(--color-text-primary);
+}
+
+.option.selected {
+    border-color: var(--color-accent-primary);
+    background: rgba(var(--color-accent-primary-rgb, 99, 102, 241), 0.1);
+    color: var(--color-text-primary);
+}
+
+.option.correct {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.option.incorrect {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.option:disabled {
+    cursor: not-allowed;
+}
+
+.optionLetter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: var(--color-glass);
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+}
+
+.option.selected .optionLetter {
+    background: var(--color-accent-primary);
+    color: white;
+}
+
+.option.correct .optionLetter {
+    background: #22c55e;
+    color: white;
+}
+
+.option.incorrect .optionLetter {
+    background: #ef4444;
+    color: white;
+}
+
+.submitBtn {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--color-accent-primary);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.submitBtn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.submitBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.result {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.resultBanner {
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.resultBanner.success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.resultBanner.failure {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.explanation {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0.75rem;
+    background: var(--color-glass);
+    border-radius: 0.5rem;
+}
+
+.resetBtn {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.resetBtn:hover {
+    border-color: var(--color-text-primary);
+    color: var(--color-text-primary);
+}

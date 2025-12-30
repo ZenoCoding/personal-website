@@ -238,7 +238,7 @@ export default function About() {
                                 <span className={styles.metricLabel}>Projects Delivered</span>
                             </div>
                             <div className={styles.metricCard}>
-                                <span className={styles.metricValue}>75+</span>
+                                <span className={styles.metricValue}>100+</span>
                                 <span className={styles.metricLabel}>Students Led</span>
                             </div>
                         </div>

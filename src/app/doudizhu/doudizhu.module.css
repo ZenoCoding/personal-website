@@ -1,0 +1,461 @@
+.lobby {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--color-bg-primary);
+}
+
+.lobbyCard {
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    text-align: center;
+    transition: border-color 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+}
+
+.input::placeholder {
+    color: var(--color-text-secondary);
+}
+
+.error {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.primaryBtn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.primaryBtn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.secondaryBtn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.secondaryBtn:hover {
+    background: var(--color-glass);
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--color-border);
+}
+
+/* Game Room */
+.gameRoom {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-primary);
+}
+
+.gameHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.roomCode {
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--color-accent-primary);
+}
+
+.gameStatus {
+    color: var(--color-text-secondary);
+}
+
+.gameArea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.otherPlayers {
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+}
+
+.playerSlot {
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    min-width: 150px;
+}
+
+.playerSlot.empty {
+    border-style: dashed;
+    color: var(--color-text-secondary);
+}
+
+.playerSlot.current {
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+.playerSlot.landlord {
+    border-color: #f97316;
+}
+
+.playerName {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.playerRole {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-secondary);
+}
+
+.playerRole.landlord {
+    color: #f97316;
+}
+
+.cardCount {
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.playArea {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+.lastPlay {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.noPlay {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+.myHand {
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+}
+
+.handLabel {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+}
+
+.cards {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.card {
+    width: 50px;
+    height: 70px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s;
+    user-select: none;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card.selected {
+    transform: translateY(-15px);
+    border-color: var(--color-accent-primary);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.card.red {
+    color: #dc2626;
+}
+
+.card.black {
+    color: #1f2937;
+}
+
+.card.joker {
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    color: white;
+    border-color: #f97316;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.playBtn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.playBtn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.playBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.passBtn {
+    padding: 0.75rem 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.passBtn:hover:not(:disabled) {
+    background: var(--color-glass);
+}
+
+.passBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Waiting Room */
+.waitingRoom {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.playerList {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.startBtn {
+    padding: 1rem 3rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.75rem;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.startBtn:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.startBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.waitingText {
+    color: var(--color-text-secondary);
+}
+
+/* Bidding */
+.biddingArea {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.bidButtons {
+    display: flex;
+    gap: 1rem;
+}
+
+.bidBtn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 2px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.bidBtn:hover:not(:disabled) {
+    border-color: var(--color-accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.bidBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.bidBtn.highlight {
+    border-color: #f97316;
+    background: rgba(249, 115, 22, 0.1);
+    color: #f97316;
+}
+
+/* Hole cards preview */
+.holeCards {
+    display: flex;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: var(--color-glass);
+    border-radius: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.holeCardsLabel {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+/* Winner overlay */
+.winnerOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.winnerCard {
+    background: var(--color-bg-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    padding: 3rem;
+    text-align: center;
+}
+
+.winnerTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.winnerTitle.landlord {
+    color: #f97316;
+}
+
+.winnerTitle.peasants {
+    color: #22c55e;
+}

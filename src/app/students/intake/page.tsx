@@ -1,6 +1,25 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import styles from "./Intake.module.css";
+import CodeBlock from "./CodeBlock";
+import LessonNav from "./LessonNav";
+import Quiz from "./Quiz";
+
+const lessonSections = [
+    { id: "intro", label: "Overview" },
+    { id: "prereqs", label: "Prerequisites" },
+    { id: "concepts", label: "Key Concepts" },
+    { id: "architecture", label: "Architecture" },
+    { id: "setup", label: "Project Setup" },
+    { id: "constants", label: "Constants" },
+    { id: "step1", label: "1. Hardware" },
+    { id: "step2", label: "2. Constructor" },
+    { id: "step3", label: "3. periodic()" },
+    { id: "step4", label: "4. Sensors" },
+    { id: "step5", label: "5. Rollers" },
+    { id: "step6", label: "6. Commands" },
+    { id: "summary", label: "Summary" },
+];
 
 export const metadata: Metadata = {
     title: "FRC Intake Subsystem | Student Resources",
@@ -11,6 +30,7 @@ export const metadata: Metadata = {
 export default function IntakeLessonPage() {
     return (
         <main className={styles.page}>
+            <LessonNav sections={lessonSections} />
             <article className={styles.article}>
                 {/* Header */}
                 <Link href="/students" className={styles.backNav}>
@@ -23,6 +43,20 @@ export default function IntakeLessonPage() {
                         Learn how to write a complete WPILib subsystem for a ground intake
                         mechanism with motion-profiled arm control and roller motors.
                     </p>
+
+                    <div className={styles.lessonMeta}>
+                        <span className={`${styles.difficultyBadge} ${styles.intermediate}`}>
+                            ⚡ Intermediate
+                        </span>
+                        <div className={styles.learningTags}>
+                            <span className={styles.tag}>SubsystemBase</span>
+                            <span className={styles.tag}>TalonFX</span>
+                            <span className={styles.tag}>Motion Magic</span>
+                            <span className={styles.tag}>Commands</span>
+                            <span className={styles.tag}>Sensors</span>
+                        </div>
+                    </div>
+
                     <div className={styles.downloadButtons}>
                         <a
                             href="/lessons/intake/IntakeSkeleton.java"
@@ -30,6 +64,13 @@ export default function IntakeLessonPage() {
                             className={`${styles.downloadBtn} ${styles.downloadBtnPrimary}`}
                         >
                             ↓ Download Skeleton
+                        </a>
+                        <a
+                            href="/lessons/intake/IntakeConstants.java"
+                            download
+                            className={`${styles.downloadBtn} ${styles.downloadBtnSecondary}`}
+                        >
+                            ↓ Download Constants
                         </a>
                         <a
                             href="/lessons/intake/Intake.java"
@@ -42,7 +83,7 @@ export default function IntakeLessonPage() {
                 </header>
 
                 {/* Intro */}
-                <Section title="What You'll Build">
+                <Section id="intro" title="What You'll Build">
                     <p>
                         An <strong>intake subsystem</strong> is responsible for picking up
                         game pieces from the floor. Ours has two main parts:
@@ -56,10 +97,18 @@ export default function IntakeLessonPage() {
                             <strong>Rollers:</strong> Spin to pull in or eject the game piece.
                         </li>
                     </ul>
+                    <figure className={styles.diagram}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                            src="/lessons/intake/intake-cad.png"
+                            alt="CAD model of the intake mechanism showing arm and rollers"
+                        />
+                        <figcaption>CAD model of our intake – arm pivots down while rollers spin to grab game pieces</figcaption>
+                    </figure>
                 </Section>
 
                 {/* Prerequisites */}
-                <Section title="Prerequisites & Resources">
+                <Section id="prereqs" title="Prerequisites & Resources">
                     <p>Before diving in, familiarize yourself with these key documentation pages:</p>
                     <ul>
                         <li>
@@ -84,7 +133,7 @@ export default function IntakeLessonPage() {
                 </Section>
 
                 {/* Key Concepts */}
-                <Section title="Key Concepts">
+                <Section id="concepts" title="Key Concepts">
                     <ConceptCard
                         title="What is a SubsystemBase?"
                         emoji="🧩"
@@ -237,8 +286,19 @@ motor.setControl(
                     </ConceptCard>
                 </Section>
 
+                <Quiz
+                    question="How often does the periodic() method run in a WPILib subsystem?"
+                    options={[
+                        { text: "Every 1ms (1000Hz)" },
+                        { text: "Every 20ms (50Hz)", correct: true },
+                        { text: "Every 100ms (10Hz)" },
+                        { text: "Only when called by a Command" },
+                    ]}
+                    explanation="The CommandScheduler calls periodic() every 20ms (50 times per second). This is fast enough for smooth motor control but slow enough to not overwhelm the roboRIO."
+                />
+
                 {/* Architecture */}
-                <Section title="Subsystem Architecture">
+                <Section id="architecture" title="Subsystem Architecture">
                     <p>Every WPILib subsystem follows this general structure:</p>
                     <CodeBlock>{`public class MySubsystem extends SubsystemBase {
     // 1️⃣ HARDWARE - Motors, sensors, pneumatics
@@ -273,8 +333,106 @@ motor.setControl(
 }`}</CodeBlock>
                 </Section>
 
+                {/* Project Setup */}
+                <Section id="setup" title="Project Setup">
+                    <p>
+                        Before writing code, let&apos;s set up the proper file structure. Each subsystem
+                        should live in its own package to keep things organized.
+                    </p>
+                    <p><strong>Create these files in your project:</strong></p>
+                    <CodeBlock>{`📁 src/main/java/frc/robot/
+└── 📁 subsystems/
+    └── 📁 intake/           ← Create this folder
+        ├── Intake.java      ← Main subsystem class
+        └── IntakeConstants.java  ← Constants file`}</CodeBlock>
+                    <InfoBox>
+                        <p>
+                            <strong>Why separate constants?</strong> Putting constants in their own file
+                            makes them easy to find and tune. When you&apos;re at the field adjusting
+                            PID gains or speed limits, you only need to look in one place.
+                        </p>
+                    </InfoBox>
+                    <p>
+                        Download both files using the buttons above, or create them from scratch
+                        following this lesson.
+                    </p>
+                </Section>
+
+                {/* Constants */}
+                <Section id="constants" title="Understanding IntakeConstants">
+                    <p>
+                        The constants file contains all the &quot;magic numbers&quot; for your subsystem.
+                        Let&apos;s break down the key sections:
+                    </p>
+
+                    <ConceptCard title="Arm Positions" emoji="📐">
+                        <p>Define where the arm should be in different states:</p>
+                        <CodeBlock>{`// Arm positions
+public static final Angle RETRACTED_ANGLE = Units.Degrees.of(90);
+public static final Angle DOWN_ANGLE = Units.Degrees.of(-32);`}</CodeBlock>
+                        <Hint>
+                            Use WPILib&apos;s <code>Units</code> class for type-safe measurements.
+                            This prevents accidentally mixing degrees with rotations!
+                        </Hint>
+                    </ConceptCard>
+
+                    <ConceptCard title="Motion Control" emoji="🎯">
+                        <p>Motion Magic parameters control how smoothly the arm moves:</p>
+                        <CodeBlock>{`// Motion control
+public static final double CRUISE_VELOCITY = 2;  // deg/s
+public static final double ACCELERATION = 15;   // deg/s²
+public static final double JERK = 0;            // deg/s³`}</CodeBlock>
+                        <p>
+                            <strong>Cruise velocity</strong> is the max speed. <strong>Acceleration</strong> controls
+                            how quickly it speeds up/slows down. <strong>Jerk</strong> (set to 0) means instant
+                            acceleration changes – increase it for even smoother motion.
+                        </p>
+                    </ConceptCard>
+
+                    <ConceptCard title="Motor Configuration" emoji="⚙️">
+                        <p>The <code>getArmConfig()</code> method builds the TalonFX configuration:</p>
+                        <CodeBlock>{`public static TalonFXConfiguration getArmConfig() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    // Motion Magic parameters
+    config.MotionMagic.MotionMagicCruiseVelocity = CRUISE_VELOCITY;
+    config.MotionMagic.MotionMagicAcceleration = ACCELERATION;
+    
+    // PID + Feedforward gains
+    config.Slot0.kP = 15;    // Proportional gain
+    config.Slot0.kG = 0.31;  // Gravity compensation (for arms!)
+    config.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+    
+    // Gear ratio (motor rotations → mechanism rotations)
+    config.Feedback.SensorToMechanismRatio = GEAR_RATIO;
+    
+    // Safety limits
+    config.CurrentLimits.StatorCurrentLimit = 40;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    
+    return config;
+}`}</CodeBlock>
+                        <Hint>
+                            <code>kG</code> (gravity compensation) is crucial for arms! It adds
+                            extra voltage to hold position against gravity.{" "}
+                            <code>Arm_Cosine</code> adjusts automatically based on angle.
+                        </Hint>
+                    </ConceptCard>
+
+                    <ConceptCard title="Roller Configuration" emoji="🔄">
+                        <p>Rollers are simpler – just basic voltage control with current limits:</p>
+                        <CodeBlock>{`public static TalonFXConfiguration getRollerConfig() {
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    config.CurrentLimits.StatorCurrentLimit = 25;
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    return config;
+}`}</CodeBlock>
+                    </ConceptCard>
+                </Section>
+
                 {/* Step 1 */}
-                <Section title="Step 1: Declare Hardware">
+                <Section id="step1" title="Step 1: Declare Hardware">
                     <p>Start by declaring your motors and sensors as instance variables.</p>
                     <CodeBlock>{`private final TalonFX armMotor;
 private final TalonFX rollerMotor;
@@ -287,7 +445,7 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
                 </Section>
 
                 {/* Step 2 */}
-                <Section title="Step 2: Constructor – Initialize Motors">
+                <Section id="step2" title="Step 2: Constructor – Initialize Motors">
                     <p>
                         In the constructor, create the motor objects and apply configurations.
                         Configurations define PID gains, current limits, and Motion Magic parameters.
@@ -322,7 +480,7 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
                 </Section>
 
                 {/* Step 3 */}
-                <Section title="Step 3: periodic() – The Control Loop">
+                <Section id="step3" title="Step 3: periodic() – The Control Loop">
                     <p>
                         The <code>periodic()</code> method runs every 20ms. This is where
                         you read sensors, apply motor outputs, and log telemetry.
@@ -359,8 +517,19 @@ public void periodic() {
                     </Challenge>
                 </Section>
 
+                <Quiz
+                    question="In Phoenix 6, what pattern do you use to apply motor control?"
+                    options={[
+                        { text: "motor.set(0.5)" },
+                        { text: "motor.setPower(voltage)" },
+                        { text: "motor.setControl(controlRequest)", correct: true },
+                        { text: "motor.run(speed)" },
+                    ]}
+                    explanation="Phoenix 6 uses a 'control request' pattern. You create reusable request objects (like MotionMagicVoltage or VoltageOut) and apply them with setControl(). This is more efficient than creating new objects each loop."
+                />
+
                 {/* Step 4 */}
-                <Section title="Step 4: Sensor Getters">
+                <Section id="step4" title="Step 4: Sensor Getters">
                     <p>
                         Provide methods to read sensor values. These abstract the hardware details
                         so other code doesn't need to know about Phoenix 6 StatusSignals.
@@ -395,7 +564,7 @@ public boolean hasCoral() {
                 </Section>
 
                 {/* Step 5 */}
-                <Section title="Step 5: Roller Control">
+                <Section id="step5" title="Step 5: Roller Control">
                     <p>
                         The rollers use simple voltage control – no fancy Motion Magic needed.
                         Just set a voltage and the motor spins at that power.
@@ -436,7 +605,7 @@ public void reverseRollers() {
                 </Section>
 
                 {/* Step 6 */}
-                <Section title="Step 6: Commands">
+                <Section id="step6" title="Step 6: Commands">
                     <p>
                         Commands are the standard way to trigger subsystem actions in WPILib.
                         They can be chained with <code>.andThen()</code>, run in parallel with{" "}
@@ -480,7 +649,7 @@ public void reverseRollers() {
                 </Section>
 
                 {/* Summary */}
-                <Section title="Summary">
+                <Section id="summary" title="Summary">
                     <p>You now know how to build a complete FRC subsystem! Key takeaways:</p>
                     <ul>
                         <li>
@@ -543,25 +712,19 @@ public void reverseRollers() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 function Section({
+    id,
     title,
     children,
 }: {
+    id?: string;
     title: string;
     children: React.ReactNode;
 }) {
     return (
-        <section className={styles.section}>
+        <section id={id} className={styles.section}>
             <h2 className={styles.sectionTitle}>{title}</h2>
             <div className={styles.sectionContent}>{children}</div>
         </section>
-    );
-}
-
-function CodeBlock({ children }: { children: string }) {
-    return (
-        <pre className={styles.codeBlock}>
-            <code>{children}</code>
-        </pre>
     );
 }
 
