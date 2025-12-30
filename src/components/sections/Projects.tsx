@@ -1,11 +1,11 @@
+
 import ProjectCard from '@/components/ProjectCard';
-import styles from './projects.module.css';
+import styles from './Projects.module.css';
 import { portfolio } from '@/data/portfolio';
 
 export default function Projects() {
     return (
-        <main className={styles.main}>
-            <div className="grid-bg" />
+        <section id="projects" className={styles.section}>
             <div className="container">
                 <header className={styles.header}>
                     <h1 className={styles.title}>Work</h1>
@@ -15,7 +15,7 @@ export default function Projects() {
                 </header>
 
                 {/* Experience (Mission Log) */}
-                <section className={styles.section}>
+                <div className={styles.subSection}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Experience</h2>
                         <div className={styles.line} />
@@ -42,10 +42,10 @@ export default function Projects() {
                             </div>
                         ))}
                     </div>
-                </section>
+                </div>
 
                 {/* Projects (System Modules) */}
-                <section className={styles.section}>
+                <div className={styles.subSection}>
                     <div className={styles.sectionHeader}>
                         <h2 className={styles.sectionTitle}>Featured Projects</h2>
                         <div className={styles.line} />
@@ -66,8 +66,8 @@ export default function Projects() {
                             />
                         ))}
                     </div>
-                </section>
+                </div>
             </div>
-        </main>
+        </section>
     );
 }

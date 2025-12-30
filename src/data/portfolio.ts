@@ -17,6 +17,7 @@ export const portfolio: {
     gear: any[];
     education: any[];
     experience: any[];
+    leadership: any[]; // New Leadership section
     projects: Project[];
     skills: string[];
     honors: any[];
@@ -34,7 +35,7 @@ export const portfolio: {
     },
     socials: {
         github: "https://github.com/zenocoding",
-        linkedin: "https://linkedin.com/in/tycho-young", // Placeholder
+        linkedin: "https://linkedin.com/in/tycho-young",
     },
     about: {
         bio: "I’m a highly motivated high school student with a strong foundation in software engineering seeking an internship to apply and further develop skills in computer science or AI. I’ve built numerous self-directed projects including MathGPT, a Discord application that combines CAS and LLMs to enhance both. I have strong teamwork, communication, problem-solving, and analytical skills.",
@@ -65,6 +66,24 @@ export const portfolio: {
             featured: true,
         },
         {
+            role: "Editor-in-Chief",
+            company: "The Yellow Pages (BIF Student Paper)",
+            date: "Aug 2024 – Present",
+            location: "Fremont, CA",
+            description:
+                "Managing the student paper. Leading graphic design and editorial direction for the school's primary publication.",
+            featured: true,
+        },
+        {
+            role: "Physics Researcher",
+            company: "Independent / USAPhO",
+            date: "Jan 2024 – Present",
+            location: "Remote",
+            description:
+                "Studying advanced mechanics and electromagnetism to prepare for the US Physics Olympiad.",
+            featured: false,
+        },
+        {
             role: "Game Developer",
             company: "Artix Network",
             date: "Apr 2023 – Jan 2024",
@@ -73,6 +92,20 @@ export const portfolio: {
                 "Collaborated with game designers to prototype and implement Java-based game ideas. Translated rough concepts into polished experiences with creative technical solutions.",
             featured: false,
         },
+    ],
+    leadership: [
+        {
+            role: "Vice President",
+            organization: "National Honor Society",
+            date: "June 2025 – Present",
+            description: "Coordinating service projects and fostering scholarship within the school community."
+        },
+        {
+            role: "Spirit Committee Member",
+            organization: "Student Council",
+            date: "Jan 2025 – Present",
+            description: "Planning and organizing school-wide events to build community and engagement."
+        }
     ],
     projects: [
         {
@@ -95,7 +128,7 @@ export const portfolio: {
         {
             title: "NHS Garden",
             description: "Wooden garden structure designed in OnShape for NHS. Currently in construction, involving woodworking and assembly.",
-            tags: ["OnShape", "Woodworking", "Construction"],
+            tags: ["OnShape", "Woodworking"],
             image: "/photos/nhs_garden.jpg",
             link: "https://cad.onshape.com/documents/d40331c4ca14aaefedf84c09/w/2cfd7cd89fdb87fb8aaa51e5/e/5ba7f069968f848ebc826ba7",
             date: "Aug 2025 - Present",
@@ -250,24 +283,8 @@ export const portfolio: {
         location: "Fremont, CA",
         focus: [
             {
-                label: "Physics",
-                description: "Grinding USAPhO mechanics (kevin zhou is my goat).",
-            },
-            {
-                label: "Newspaper",
-                description: "Managing the student paper. Graphic design is slow, but meaningful work.",
-            },
-            {
-                label: "Robotics",
-                description: "Prepping for the upcoming FRC season. Things are about to get busy.",
-            },
-            {
                 label: "Personal Projects",
                 description: "Robotics and web dev, hoping to learn more about mechatronics engineering",
-            },
-            {
-                label: "Guitar",
-                description: "Photograph — Nickelback; Undone — Weezer; I Will Follow You Into the Dark — Death Cab for Cutie; bar chords are so hard",
             },
         ],
         reading: [
@@ -347,6 +364,15 @@ export const portfolio: {
             date: "Dec 2025",
             location: "Fremont, CA",
             details: "The perfect winter comfort food. These were a little scary to make, but the crinkly, chewy, cookie texture is 100% worth it."
+        },
+
+        {
+            url: "/photos/guitar.jpg", // Placeholder
+            caption: "learning to play",
+            title: "Guitar Progress",
+            date: "Ongoing",
+            location: "Home",
+            details: "Photograph — Nickelback; Undone — Weezer; I Will Follow You Into the Dark — Death Cab for Cutie; bar chords are so hard, but satisfying when they ring clear."
         },
 
     ],

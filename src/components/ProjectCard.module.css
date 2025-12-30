@@ -55,21 +55,21 @@
     flex: 1;
 }
 
-.tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+.tagsText {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    line-height: 1.6;
     margin-bottom: 1.5rem;
+    font-family: var(--font-mono);
 }
 
-.tag {
-    font-size: 0.75rem;
+.tagLabel {
     color: var(--color-accent-highlight);
-    background: color-mix(in srgb, var(--color-accent-highlight), transparent 95%);
-    border: 1px solid color-mix(in srgb, var(--color-accent-highlight), transparent 80%);
-    padding: 0.25rem 0.5rem;
-    border-radius: 2px;
-    font-family: var(--font-mono);
+    font-weight: 700;
+    margin-right: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
 }
 
 .links {
@@ -80,12 +80,34 @@
 }
 
 .link {
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
     color: var(--color-text-primary);
-    transition: color 0.2s;
+    text-decoration: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    background: color-mix(in srgb, var(--color-bg-primary), transparent 50%);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
 }
 
 .link:hover {
-    color: var(--color-accent-orange);
+    background: var(--color-accent-highlight);
+    border-color: var(--color-accent-highlight);
+    color: var(--color-bg-primary);
+    transform: translateY(-1px);
+}
+
+.primaryLink {
+    background: color-mix(in srgb, var(--color-accent-highlight), transparent 90%);
+    border-color: color-mix(in srgb, var(--color-accent-highlight), transparent 60%);
+    color: var(--color-text-primary);
+}
+
+.primaryLink:hover {
+    background: var(--color-accent-highlight);
+    color: var(--color-bg-primary);
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--color-accent-highlight), transparent 70%);
 }

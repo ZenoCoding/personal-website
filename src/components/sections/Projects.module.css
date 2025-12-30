@@ -1,16 +1,19 @@
-.main {
-    min-height: 100vh;
-    padding-top: 100px;
-    padding-bottom: 4rem;
+.section {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 80px;
 }
 
 .header {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .title {
     font-size: 3rem;
     margin-bottom: 1rem;
+    color: var(--color-text-primary);
 }
 
 .title::after {
@@ -37,8 +40,8 @@
     max-width: 600px;
 }
 
-.section {
-    margin-bottom: 5rem;
+.subSection {
+    margin-bottom: 3rem;
 }
 
 .sectionHeader {
@@ -59,7 +62,6 @@
     background: var(--color-border);
 }
 
-/* Mission Log (Timeline) Styles */
 /* Mission Log (Timeline) Styles */
 .timeline {
     position: relative;

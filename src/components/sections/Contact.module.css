@@ -1,10 +1,14 @@
-.main {
-    padding: 120px 0 4rem;
-    min-height: 100vh;
+.section {
+    padding-top: 2rem;
+    padding-bottom: 8rem;
+    position: relative;
+    overflow: hidden;
+    min-height: 80vh;
+    scroll-margin-top: 80px;
 }
 
 .header {
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     border-bottom: 1px solid var(--color-border);
     padding-bottom: 2rem;
 }
@@ -47,6 +51,8 @@
     padding: 2.5rem;
     border-radius: 1rem;
     margin-bottom: 2rem;
+    /* ensure bg is visible for glass effect */
+    background: var(--color-glass);
 }
 
 .form {
@@ -76,7 +82,7 @@
     color: var(--text-primary);
     font-family: inherit;
     font-size: 1rem;
-    transition: all var(--transition-fast);
+    transition: all 0.2s;
 }
 
 .input:focus,
@@ -95,7 +101,7 @@
     font-weight: 700;
     font-size: 1rem;
     cursor: pointer;
-    transition: transform var(--transition-fast);
+    transition: transform 0.2s;
 }
 
 .button:hover {

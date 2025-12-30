@@ -105,11 +105,67 @@
 }
 
 .btnIcon {
-    transition: transform 0.2s ease;
+    margin-left: 0.5rem;
+    transition: transform 0.2s;
 }
 
 .primaryBtn:hover .btnIcon {
     transform: translateX(4px);
+}
+
+.scrollIndicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-text-secondary);
+    transition: all 0.2s ease;
+    animation: bounce 2s infinite;
+
+    /* Circle Card Styles */
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0.8;
+}
+
+.scrollIndicator:hover {
+    color: var(--color-accent-primary);
+    background: var(--color-bg-secondary);
+    border-color: var(--color-accent-primary);
+    opacity: 1;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.scrollIcon {
+    transform: rotate(90deg);
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateX(-50%) translateY(0);
+    }
+
+    40% {
+        transform: translateX(-50%) translateY(-6px);
+    }
+
+    60% {
+        transform: translateX(-50%) translateY(-3px);
+    }
 }
 
 .primaryBtn:hover {

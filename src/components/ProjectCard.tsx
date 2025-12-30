@@ -28,11 +28,10 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
                 </div>
                 <p className={styles.description}>{description}</p>
 
-                <div className={styles.tags}>
-                    {tags.map(tag => (
-                        <span key={tag} className={styles.tag}>{tag}</span>
-                    ))}
-                </div>
+                <p className={styles.tagsText}>
+                    <span className={styles.tagLabel}>Technologies: </span>
+                    {tags.join(', ').toLowerCase()}
+                </p>
 
                 <div className={styles.links}>
                     {demoLink && (
@@ -57,8 +56,8 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
                         </Link>
                     )}
                     {paperLink && (
-                        <Link href={paperLink} className={styles.link} target="_blank">
-                            <FileText size={14} style={{ marginRight: '4px' }} />
+                        <Link href={paperLink} className={`${styles.link} ${styles.primaryLink}`} target="_blank">
+                            <FileText size={14} style={{ marginRight: '6px' }} />
                             {paperLink.includes('notion.site') ? 'Read Explainer' : 'Read Paper'}
                         </Link>
                     )}

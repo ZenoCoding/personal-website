@@ -3,14 +3,13 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import styles from './Hero.module.css';
-import MagneticButton from '@/components/MagneticButton';
 import { portfolio } from '@/data/portfolio';
 
 const Hero = () => {
     return (
-        <section className={styles.hero}>
+        <section id="hero" className={styles.hero}>
             <div className={`container ${styles.content}`}>
-                <Link href="/projects" className={styles.statusBadge}>
+                <Link href="#projects" className={styles.statusBadge}>
                     <div className={styles.statusDot} />
                     <span>Currently building {portfolio.projects[0].title}</span>
                 </Link>
@@ -34,20 +33,45 @@ const Hero = () => {
                 </p>
 
                 <div className={styles.actions}>
-                    <MagneticButton>
-                        <Link href="/projects" className={styles.primaryBtn}>
-                            View Projects
-                            <ArrowRight size={20} className={styles.btnIcon} />
-                        </Link>
-                    </MagneticButton>
-                    <MagneticButton>
-                        <Link href="/about" className={styles.secondaryBtn}>
-                            About Me
-                        </Link>
-                    </MagneticButton>
+                    <a
+                        href="#projects"
+                        className={styles.primaryBtn}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+                            window.history.pushState(null, '', '#projects');
+                        }}
+                    >
+                        View Projects
+                        <ArrowRight size={20} className={styles.btnIcon} />
+                    </a>
+                    <a
+                        href="#about"
+                        className={styles.secondaryBtn}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                            window.history.pushState(null, '', '#about');
+                        }}
+                    >
+                        About Me
+                    </a>
                 </div>
             </div>
-        </section>
+
+            <button
+                onClick={() => {
+                    const projectsSection = document.getElementById('projects');
+                    if (projectsSection) {
+                        projectsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }}
+                className={styles.scrollIndicator}
+                aria-label="Scroll to projects"
+            >
+                <ArrowRight size={24} className={styles.scrollIcon} />
+            </button>
+        </section >
     );
 };
 

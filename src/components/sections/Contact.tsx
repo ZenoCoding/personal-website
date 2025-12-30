@@ -1,7 +1,8 @@
+
 'use client';
 
 import { useState } from 'react';
-import styles from './contact.module.css';
+import styles from './Contact.module.css';
 import { portfolio } from '@/data/portfolio';
 
 export default function Contact() {
@@ -26,8 +27,7 @@ export default function Contact() {
     };
 
     return (
-        <main className={styles.main}>
-            <div className="grid-bg" />
+        <section id="contact" className={styles.section}>
             <div className="container">
                 <header className={styles.header}>
                     <h1 className={styles.title}>Get In Touch</h1>
@@ -94,6 +94,6 @@ export default function Contact() {
                     </div>
                 </div>
             </div>
-        </main>
+        </section>
     );
 }
