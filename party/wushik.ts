@@ -190,7 +190,8 @@ export default class WushikServer implements Party.Server {
 
         switch (msg.type) {
             case 'join':
-                this.handleJoin((msg as { name: string }).name, sender);
+                const joinMsg = msg as { name: string; token?: string };
+                this.handleJoin(joinMsg.name, sender, joinMsg.token);
                 break;
             case 'start_game':
                 this.handleStartGame();
@@ -210,14 +211,20 @@ export default class WushikServer implements Party.Server {
         }
     }
 
-    handleJoin(name: string, sender: Party.Connection) {
+    handleJoin(name: string, sender: Party.Connection, token?: string) {
         // Check for reconnection
         const existing = this.state.players.find(p => p.name === name);
         if (existing) {
+            // Verify token for reconnection
+            if (!token || (existing as any).token !== token) {
+                this.sendError(sender, "Name already taken");
+                return;
+            }
             existing.id = sender.id;
             existing.isConnected = true;
             this.saveState();
             this.sendState();
+            sender.send(JSON.stringify({ type: 'token', token: (existing as any).token }));
             return;
         }
 
@@ -231,17 +238,22 @@ export default class WushikServer implements Party.Server {
             return;
         }
 
-        const player: Player = {
+        // Generate unique token
+        const playerToken = Math.random().toString(36).substring(2, 15);
+
+        const player: Player & { token: string } = {
             id: sender.id,
             name,
             hand: [],
             team: null,
-            isConnected: true
+            isConnected: true,
+            token: playerToken
         };
 
         this.state.players.push(player);
         this.saveState();
         this.sendState();
+        sender.send(JSON.stringify({ type: 'token', token: playerToken }));
     }
 
     handleAddBot() {

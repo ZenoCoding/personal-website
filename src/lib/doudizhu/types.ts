@@ -71,7 +71,7 @@ export interface GameState {
 
 // Messages from client to server
 export type ClientMessage =
-    | { type: 'join'; name: string }
+    | { type: 'join'; name: string; token?: string }
     | { type: 'start_game' }
     | { type: 'bid'; value: BidValue }
     | { type: 'play'; cardIds: number[] }

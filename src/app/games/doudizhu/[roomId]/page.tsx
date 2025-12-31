@@ -53,6 +53,9 @@ export default function GameRoom() {
     const roomId = params.roomId as string;
 
     const [name, setName] = useState<string>('');
+    const [pendingName, setPendingName] = useState<string>('');
+    const [needsName, setNeedsName] = useState(false);
+    const [playerToken, setPlayerToken] = useState<string>('');
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
     const [error, setError] = useState<string>('');
@@ -128,28 +131,33 @@ export default function GameRoom() {
     useEffect(() => {
         const storedName = sessionStorage.getItem('doudizhu_name');
         if (!storedName) {
-            router.push('/games/doudizhu');
+            setNeedsName(true);
             return;
         }
         setName(storedName);
-    }, [router]);
+    }, []);
 
     const socket = usePartySocket({
         host: PARTYKIT_HOST,
         room: roomId,
         onMessage: (event) => {
-            const msg: ServerMessage = JSON.parse(event.data);
+            const msg = JSON.parse(event.data);
             if (msg.type === 'state') {
                 setGameState(msg.state);
                 setError('');
             } else if (msg.type === 'error') {
                 setError(msg.message);
                 setTimeout(() => setError(''), 3000);
+            } else if (msg.type === 'token') {
+                // Store token for reconnections
+                setPlayerToken(msg.token);
+                sessionStorage.setItem(`doudizhu_token_${roomId}`, msg.token);
             }
         },
         onOpen: () => {
             if (name) {
-                send({ type: 'join', name });
+                const storedToken = sessionStorage.getItem(`doudizhu_token_${roomId}`);
+                send({ type: 'join', name, token: storedToken || undefined });
             }
         }
     });
@@ -161,9 +169,10 @@ export default function GameRoom() {
     // Join when name is available
     useEffect(() => {
         if (name && socket.readyState === WebSocket.OPEN) {
-            send({ type: 'join', name });
+            const storedToken = sessionStorage.getItem(`doudizhu_token_${roomId}`);
+            send({ type: 'join', name, token: storedToken || undefined });
         }
-    }, [name, socket.readyState, send]);
+    }, [name, socket.readyState, send, roomId]);
 
     const toggleCard = (index: number) => {
         setSelectedCards(prev => {
@@ -194,6 +203,41 @@ export default function GameRoom() {
     const handleStart = () => {
         send({ type: 'start_game' });
     };
+
+    // Name entry for shared links
+    if (needsName) {
+        const handleNameSubmit = () => {
+            if (pendingName.trim()) {
+                sessionStorage.setItem('doudizhu_name', pendingName.trim());
+                setName(pendingName.trim());
+                setNeedsName(false);
+            }
+        };
+
+        return (
+            <main className={styles.lobby}>
+                <div className={styles.lobbyCard}>
+                    <h1 className={styles.title}>斗地主</h1>
+                    <p className={styles.subtitle}>Joining Room: {roomId}</p>
+                    <div className={styles.form}>
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={pendingName}
+                            onChange={(e) => setPendingName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleNameSubmit()}
+                            className={styles.input}
+                            maxLength={20}
+                            autoFocus
+                        />
+                        <button onClick={handleNameSubmit} className={styles.primaryBtn} disabled={!pendingName.trim()}>
+                            Join Game
+                        </button>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     if (!gameState) {
         return (

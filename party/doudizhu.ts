@@ -217,7 +217,8 @@ export default class DoudizhuServer implements Party.Server {
     handleMessage(msg: ClientMessage & { type: string }, sender: Party.Connection) {
         switch (msg.type) {
             case 'join':
-                this.handleJoin((msg as { type: 'join'; name: string }).name, sender);
+                const joinMsg = msg as { type: 'join'; name: string; token?: string };
+                this.handleJoin(joinMsg.name, sender, joinMsg.token);
                 break;
             case 'start_game':
                 this.handleStartGame(sender);
@@ -240,15 +241,22 @@ export default class DoudizhuServer implements Party.Server {
         }
     }
 
-    handleJoin(name: string, sender: Party.Connection) {
-        // Check if player with same name already exists (reconnection)
+    handleJoin(name: string, sender: Party.Connection, token?: string) {
+        // Check if player with same name already exists
         const existingByName = this.state.players.find(p => p.name === name);
         if (existingByName) {
-            // Reconnect - update their connection ID
+            // Verify token for reconnection
+            if (!token || (existingByName as any).token !== token) {
+                this.sendError(sender, "Name already taken");
+                return;
+            }
+            // Valid reconnection - update their connection ID
             existingByName.id = sender.id;
             existingByName.isConnected = true;
             this.saveState();
             this.sendState();
+            // Send token back for confirmation
+            sender.send(JSON.stringify({ type: 'token', token: (existingByName as any).token }));
             return;
         }
 
@@ -263,18 +271,25 @@ export default class DoudizhuServer implements Party.Server {
             return;
         }
 
-        const player: Player = {
+        // Generate unique token for this player
+        const playerToken = Math.random().toString(36).substring(2, 15);
+
+        const player: Player & { token: string } = {
             id: sender.id,
             name,
             hand: [],
             role: null,
             bid: null,
-            isConnected: true
+            isConnected: true,
+            token: playerToken
         };
 
         this.state.players.push(player);
         this.saveState();
         this.sendState();
+
+        // Send token to client for future reconnections
+        sender.send(JSON.stringify({ type: 'token', token: playerToken }));
     }
 
     handleAddBot(sender: Party.Connection) {

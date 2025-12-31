@@ -42,7 +42,7 @@ interface GameState {
 }
 
 type ClientMessage =
-    | { type: 'join'; name: string }
+    | { type: 'join'; name: string; token?: string }
     | { type: 'start_game' }
     | { type: 'set_trump'; suit: Suit }
     | { type: 'play'; cardIndex: number }
@@ -79,6 +79,9 @@ export default function WushikGameRoom() {
     const roomId = params.roomId as string;
 
     const [name, setName] = useState<string>('');
+    const [pendingName, setPendingName] = useState<string>('');
+    const [needsName, setNeedsName] = useState(false);
+    const [playerToken, setPlayerToken] = useState<string>('');
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [error, setError] = useState<string>('');
     const [copied, setCopied] = useState(false);
@@ -129,29 +132,33 @@ export default function WushikGameRoom() {
     useEffect(() => {
         const storedName = sessionStorage.getItem('wushik_name');
         if (!storedName) {
-            router.push('/games/wushik');
+            setNeedsName(true);
             return;
         }
         setName(storedName);
-    }, [router]);
+    }, []);
 
     const socket = usePartySocket({
         host: PARTYKIT_HOST,
         party: 'wushik',
         room: roomId,
         onMessage: (event) => {
-            const msg: ServerMessage = JSON.parse(event.data);
+            const msg = JSON.parse(event.data);
             if (msg.type === 'state') {
                 setGameState(msg.state);
                 setError('');
             } else if (msg.type === 'error') {
                 setError(msg.message);
                 setTimeout(() => setError(''), 3000);
+            } else if (msg.type === 'token') {
+                setPlayerToken(msg.token);
+                sessionStorage.setItem(`wushik_token_${roomId}`, msg.token);
             }
         },
         onOpen: () => {
             if (name) {
-                send({ type: 'join', name });
+                const storedToken = sessionStorage.getItem(`wushik_token_${roomId}`);
+                send({ type: 'join', name, token: storedToken || undefined });
             }
         }
     });
@@ -162,9 +169,10 @@ export default function WushikGameRoom() {
 
     useEffect(() => {
         if (name && socket.readyState === WebSocket.OPEN) {
-            send({ type: 'join', name });
+            const storedToken = sessionStorage.getItem(`wushik_token_${roomId}`);
+            send({ type: 'join', name, token: storedToken || undefined });
         }
-    }, [name, socket.readyState, send]);
+    }, [name, socket.readyState, send, roomId]);
 
     const handlePlay = (cardIndex: number) => {
         send({ type: 'play', cardIndex });
@@ -173,6 +181,41 @@ export default function WushikGameRoom() {
     const handleSetTrump = (suit: Suit) => {
         send({ type: 'set_trump', suit });
     };
+
+    // Name entry for shared links
+    if (needsName) {
+        const handleNameSubmit = () => {
+            if (pendingName.trim()) {
+                sessionStorage.setItem('wushik_name', pendingName.trim());
+                setName(pendingName.trim());
+                setNeedsName(false);
+            }
+        };
+
+        return (
+            <main className={styles.lobby}>
+                <div className={styles.lobbyCard}>
+                    <h1 className={styles.title}>510K</h1>
+                    <p className={styles.subtitle}>Joining Room: {roomId}</p>
+                    <div className={styles.form}>
+                        <input
+                            type="text"
+                            placeholder="Your name"
+                            value={pendingName}
+                            onChange={(e) => setPendingName(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleNameSubmit()}
+                            className={styles.input}
+                            maxLength={20}
+                            autoFocus
+                        />
+                        <button onClick={handleNameSubmit} className={styles.primaryBtn} disabled={!pendingName.trim()}>
+                            Join Game
+                        </button>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     if (!gameState) {
         return (
