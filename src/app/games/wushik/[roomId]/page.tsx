@@ -94,7 +94,8 @@ export default function WushikGameRoom() {
 
     const socket = usePartySocket({
         host: PARTYKIT_HOST,
-        room: `wushik-${roomId}`,
+        party: 'wushik',
+        room: roomId,
         onMessage: (event) => {
             const msg: ServerMessage = JSON.parse(event.data);
             if (msg.type === 'state') {
