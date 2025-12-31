@@ -704,3 +704,117 @@
 .winnerTitle.peasants {
     color: #22c55e;
 }
+
+/* Help Modal */
+.helpBtn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.helpBtn:hover {
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 2rem;
+}
+
+.modal {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    max-width: 500px;
+    max-height: 80vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.modalClose {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modalClose:hover {
+    color: var(--color-text-primary);
+}
+
+.modalContent {
+    padding: 1.5rem;
+    overflow-y: auto;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.modalContent h3 {
+    color: var(--color-text-primary);
+    font-size: 1rem;
+    margin: 1rem 0 0.5rem;
+}
+
+.modalContent h3:first-child {
+    margin-top: 0;
+}
+
+.comboList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.comboItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.comboName {
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.comboExample {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}

@@ -57,6 +57,73 @@ export default function GameRoom() {
     const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
     const [error, setError] = useState<string>('');
     const [copied, setCopied] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
+
+    // Help Modal Component
+    const HelpModal = () => (
+        <div className={styles.modalOverlay} onClick={() => setShowHelp(false)}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
+                <div className={styles.modalHeader}>
+                    <span className={styles.modalTitle}>Dou Di Zhu Combos</span>
+                    <button className={styles.modalClose} onClick={() => setShowHelp(false)}>×</button>
+                </div>
+                <div className={styles.modalContent}>
+                    <h3>Card Rankings (Low → High)</h3>
+                    <p>3 4 5 6 7 8 9 10 J Q K A 2 ★ ✦</p>
+
+                    <h3>Valid Combinations</h3>
+                    <div className={styles.comboList}>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Single</span>
+                            <span className={styles.comboExample}>♠5</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Pair</span>
+                            <span className={styles.comboExample}>♠7 ♥7</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Triple</span>
+                            <span className={styles.comboExample}>♠K ♥K ♦K</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Triple + 1</span>
+                            <span className={styles.comboExample}>♠K ♥K ♦K + ♣3</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Triple + 2 (Full House)</span>
+                            <span className={styles.comboExample}>♠K ♥K ♦K + ♣3 ♠3</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Straight (5+ cards)</span>
+                            <span className={styles.comboExample}>3 4 5 6 7</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Straight Pairs (3+ pairs)</span>
+                            <span className={styles.comboExample}>55 66 77</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Plane (2+ triples)</span>
+                            <span className={styles.comboExample}>555 666</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Bomb (4 of a kind)</span>
+                            <span className={styles.comboExample}>♠8 ♥8 ♦8 ♣8</span>
+                        </div>
+                        <div className={styles.comboItem}>
+                            <span className={styles.comboName}>Rocket (Both Jokers)</span>
+                            <span className={styles.comboExample}>★ ✦</span>
+                        </div>
+                    </div>
+
+                    <h3>Rules</h3>
+                    <p>• Landlord (地主) plays alone against 2 Peasants</p>
+                    <p>• Match or beat the previous combo (same type, higher rank)</p>
+                    <p>• Bombs and Rockets beat any non-bomb</p>
+                    <p>• First to empty their hand wins!</p>
+                </div>
+            </div>
+        </div>
+    );
 
     useEffect(() => {
         const storedName = sessionStorage.getItem('doudizhu_name');
@@ -163,12 +230,14 @@ export default function GameRoom() {
 
         return (
             <main className={styles.gameRoom}>
+                {showHelp && <HelpModal />}
                 <div className={styles.gameHeader}>
                     <button onClick={handleCopyLink} className={styles.roomCode} title="Click to copy link">
                         {copied ? 'Copied!' : `Room: ${roomId}`}
                     </button>
                     <span className={styles.gameTitle}>斗地主</span>
                     <span className={styles.gameStatus}>Waiting for players...</span>
+                    <button className={styles.helpBtn} onClick={() => setShowHelp(true)} title="How to play">?</button>
                 </div>
                 <div className={styles.waitingRoom}>
                     <div className={styles.playerList}>

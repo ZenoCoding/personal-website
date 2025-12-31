@@ -82,7 +82,50 @@ export default function WushikGameRoom() {
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [error, setError] = useState<string>('');
     const [copied, setCopied] = useState(false);
+    const [showHelp, setShowHelp] = useState(false);
 
+    // Help Modal Component
+    const HelpModal = () => (
+        <div className={styles.modalOverlay} onClick={() => setShowHelp(false)}>
+            <div className={styles.modal} onClick={e => e.stopPropagation()}>
+                <div className={styles.modalHeader}>
+                    <span className={styles.modalTitle}>510K Rules</span>
+                    <button className={styles.modalClose} onClick={() => setShowHelp(false)}>×</button>
+                </div>
+                <div className={styles.modalContent}>
+                    <h3>Overview</h3>
+                    <p>510K (五十K) is a Chinese trick-taking game. The goal is to capture point cards.</p>
+
+                    <h3>Point Cards</h3>
+                    <p><strong>5 = 5 pts</strong> | <strong>10 = 10 pts</strong> | <strong>K = 10 pts</strong></p>
+                    <p>Total: 100 points per deck. Capture 40+ to win!</p>
+
+                    <h3>Teams</h3>
+                    <p>• <strong>2 Players:</strong> 1v1 (27 cards each)</p>
+                    <p>• <strong>4 Players:</strong> Teams (A: P1+P3, B: P2+P4)</p>
+
+                    <h3>Trump Selection</h3>
+                    <p>First player chooses the trump suit (♠♥♦♣). Trump cards beat all others.</p>
+
+                    <h3>Card Rankings (High → Low)</h3>
+                    <p>A K Q J 10 9 8 7 6 5 4 3 2</p>
+                    <p>Jokers are always trump and beat everything.</p>
+
+                    <h3>Playing Tricks</h3>
+                    <p>• Lead player plays any card</p>
+                    <p>• Others must follow suit if possible</p>
+                    <p>• If you can't follow, play any card (including trump)</p>
+                    <p>• Highest card of led suit wins (unless trumped)</p>
+                    <p>• Winner leads next trick</p>
+
+                    <h3>Winning</h3>
+                    <p>• Play all cards, then count captured points</p>
+                    <p>• Team/player with 40+ points wins</p>
+                    <p>• Capturing the last trick adds bonus strategy!</p>
+                </div>
+            </div>
+        </div>
+    );
     useEffect(() => {
         const storedName = sessionStorage.getItem('wushik_name');
         if (!storedName) {
@@ -159,12 +202,14 @@ export default function WushikGameRoom() {
 
         return (
             <main className={styles.gameRoom}>
+                {showHelp && <HelpModal />}
                 <div className={styles.gameHeader}>
                     <button onClick={handleCopyLink} className={styles.roomCode} title="Click to copy link">
                         {copied ? 'Copied!' : `Room: ${roomId}`}
                     </button>
                     <span className={styles.gameTitle}>510K</span>
                     <span className={styles.gameStatus}>Waiting for players...</span>
+                    <button className={styles.helpBtn} onClick={() => setShowHelp(true)} title="How to play">?</button>
                     <button onClick={() => router.push('/games/wushik')} className={styles.exitBtn}>
                         Exit
                     </button>
