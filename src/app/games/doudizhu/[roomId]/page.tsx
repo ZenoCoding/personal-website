@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import usePartySocket from 'partysocket/react';
 import styles from '../doudizhu.module.css';
-import { GameState, Card, ClientMessage, ServerMessage, BidValue, Combination } from '@/lib/doudizhu/types';
+import { GameState, Card, ClientMessage, ServerMessage, BidValue, Combination, CombinationType } from '@/lib/doudizhu/types';
 
 // PartyKit host - use localhost for dev, will need to update for production
 const PARTYKIT_HOST = process.env.NEXT_PUBLIC_PARTYKIT_HOST || 'localhost:1999';
@@ -22,6 +22,31 @@ function isRedCard(card: Card): boolean {
     return card.suit === 'hearts' || card.suit === 'diamonds';
 }
 
+function getComboDisplay(combo: Combination): { label: string; emoji: string; type: CombinationType } {
+    const rankNames: Record<number, string> = {
+        3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10',
+        11: 'J', 12: 'Q', 13: 'K', 14: 'A', 15: '2', 16: 'Joker', 17: 'Joker'
+    };
+    const rank = rankNames[combo.primaryValue] || combo.primaryValue.toString();
+
+    const labels: Record<CombinationType, { label: string; emoji: string }> = {
+        single: { label: `Single ${rank}`, emoji: '🎴' },
+        pair: { label: `Pair of ${rank}s`, emoji: '🎴🎴' },
+        triple: { label: `Triple ${rank}s`, emoji: '🎴🎴🎴' },
+        triple_one: { label: `Triple ${rank}s + 1`, emoji: '🎴' },
+        triple_two: { label: `Full House ${rank}s`, emoji: '🏠' },
+        straight: { label: `Straight (${combo.length} cards)`, emoji: '📈' },
+        straight_pairs: { label: `Straight Pairs`, emoji: '📈📈' },
+        plane: { label: `Plane`, emoji: '✈️' },
+        plane_wings: { label: `Plane with Wings`, emoji: '✈️' },
+        four_two: { label: `Four ${rank}s + 2`, emoji: '4️⃣' },
+        bomb: { label: `💣 BOMB ${rank}s!`, emoji: '💣' },
+        rocket: { label: `🚀 ROCKET!`, emoji: '🚀' }
+    };
+
+    return { ...labels[combo.type], type: combo.type };
+}
+
 export default function GameRoom() {
     const params = useParams();
     const router = useRouter();
@@ -31,11 +56,12 @@ export default function GameRoom() {
     const [gameState, setGameState] = useState<GameState | null>(null);
     const [selectedCards, setSelectedCards] = useState<Set<number>>(new Set());
     const [error, setError] = useState<string>('');
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         const storedName = sessionStorage.getItem('doudizhu_name');
         if (!storedName) {
-            router.push('/doudizhu');
+            router.push('/games/doudizhu');
             return;
         }
         setName(storedName);
@@ -120,10 +146,28 @@ export default function GameRoom() {
 
     // Waiting phase
     if (gameState.phase === 'waiting') {
+        const handleAddBot = () => {
+            send({ type: 'add_bot' });
+        };
+
+        const handleReset = () => {
+            send({ type: 'reset' });
+        };
+
+        const handleCopyLink = async () => {
+            const url = window.location.href;
+            await navigator.clipboard.writeText(url);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        };
+
         return (
             <main className={styles.gameRoom}>
                 <div className={styles.gameHeader}>
-                    <span className={styles.roomCode}>Room: {roomId}</span>
+                    <button onClick={handleCopyLink} className={styles.roomCode} title="Click to copy link">
+                        {copied ? 'Copied!' : `Room: ${roomId}`}
+                    </button>
+                    <span className={styles.gameTitle}>斗地主</span>
                     <span className={styles.gameStatus}>Waiting for players...</span>
                 </div>
                 <div className={styles.waitingRoom}>
@@ -135,7 +179,9 @@ export default function GameRoom() {
                             >
                                 {gameState.players[i] ? (
                                     <>
-                                        <div className={styles.playerName}>{gameState.players[i].name}</div>
+                                        <div className={styles.playerName}>
+                                            {gameState.players[i].name}
+                                        </div>
                                         <div className={styles.playerRole}>
                                             {gameState.players[i].name === name ? '(You)' : ''}
                                         </div>
@@ -147,15 +193,30 @@ export default function GameRoom() {
                         ))}
                     </div>
                     {error && <p className={styles.error}>{error}</p>}
-                    <button
-                        onClick={handleStart}
-                        disabled={gameState.players.length !== 3}
-                        className={styles.startBtn}
-                    >
-                        Start Game
-                    </button>
+                    <div className={styles.actions}>
+                        <button
+                            onClick={handleStart}
+                            disabled={gameState.players.length !== 3}
+                            className={styles.startBtn}
+                        >
+                            Start Game
+                        </button>
+                        <button
+                            onClick={handleAddBot}
+                            disabled={gameState.players.length >= 3}
+                            className={styles.secondaryBtn}
+                        >
+                            + Add Bot
+                        </button>
+                        <button
+                            onClick={handleReset}
+                            className={styles.passBtn}
+                        >
+                            Reset Room
+                        </button>
+                    </div>
                     <p className={styles.waitingText}>
-                        Share room code <strong>{roomId}</strong> with friends
+                        Share room code <strong>{roomId}</strong> with friends, or add bots to test
                     </p>
                 </div>
             </main>
@@ -242,10 +303,19 @@ export default function GameRoom() {
     // Playing phase
     if (gameState.phase === 'playing' || gameState.phase === 'finished') {
         const canPass = gameState.lastPlay && gameState.lastPlayerId !== myPlayer?.id;
+        const lastPlayer = gameState.players.find(p => p.id === gameState.lastPlayerId);
+        const comboInfo = gameState.lastPlay ? getComboDisplay(gameState.lastPlay) : null;
 
         return (
             <main className={styles.gameRoom}>
-                <div className={styles.gameHeader}>
+                {/* Turn banner - shows when it's your turn */}
+                {isMyTurn && gameState.phase === 'playing' && (
+                    <div className={styles.turnBanner}>
+                        🎯 YOUR TURN — {gameState.lastPlay ? `Beat the ${comboInfo?.label}!` : 'Play any cards!'}
+                    </div>
+                )}
+
+                <div className={styles.gameHeader} style={isMyTurn && gameState.phase === 'playing' ? { marginTop: '48px' } : {}}>
                     <span className={styles.roomCode}>Room: {roomId}</span>
                     <span className={styles.gameStatus}>
                         {gameState.phase === 'finished'
@@ -253,6 +323,9 @@ export default function GameRoom() {
                             : isMyTurn ? 'Your turn!' : `${gameState.players[gameState.currentPlayerIndex]?.name}'s turn`
                         }
                     </span>
+                    <button onClick={() => router.push('/games/doudizhu')} className={styles.exitBtn}>
+                        ✕ Exit
+                    </button>
                 </div>
 
                 <div className={styles.gameArea}>
@@ -273,26 +346,36 @@ export default function GameRoom() {
 
                     <div className={styles.playArea}>
                         {gameState.lastPlay ? (
-                            <div className={styles.lastPlay}>
-                                {gameState.lastPlay.cards.map((card, i) => (
-                                    <div
-                                        key={i}
-                                        className={`${styles.card} ${card.type === 'joker' ? styles.joker : isRedCard(card) ? styles.red : styles.black}`}
-                                    >
-                                        {getCardDisplay(card)}
-                                    </div>
-                                ))}
-                            </div>
+                            <>
+                                {/* Combo type label */}
+                                <div className={`${styles.comboLabel} ${comboInfo?.type === 'bomb' ? styles.bomb : ''} ${comboInfo?.type === 'rocket' ? styles.rocket : ''}`}>
+                                    {comboInfo?.label}
+                                </div>
+                                <div className={styles.lastPlay}>
+                                    {gameState.lastPlay.cards.map((card, i) => (
+                                        <div
+                                            key={i}
+                                            className={`${styles.card} ${styles.cardPlayed} ${card.type === 'joker' ? `${styles.joker} ${card.jokerType === 'small' ? styles.small : ''}` : isRedCard(card) ? styles.red : styles.black}`}
+                                        >
+                                            {getCardDisplay(card)}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={styles.playedBy}>
+                                    Played by {lastPlayer?.name || 'Unknown'}
+                                    {gameState.passCount > 0 && ` • ${gameState.passCount} passed`}
+                                </div>
+                            </>
                         ) : (
                             <div className={styles.noPlay}>
-                                {isMyTurn ? 'Play any cards!' : 'Waiting...'}
+                                {isMyTurn ? '🎴 Play any cards to start!' : 'Waiting for play...'}
                             </div>
                         )}
                     </div>
 
-                    <div className={styles.myHand}>
+                    <div className={`${styles.myHand} ${isMyTurn && gameState.phase === 'playing' ? styles.myTurn : ''}`}>
                         <div className={styles.handLabel}>
-                            Your cards ({myPlayer?.role === 'landlord' ? '👑 Landlord' : 'Peasant'})
+                            Your cards ({myPlayer?.role === 'landlord' ? '👑 Landlord' : 'Peasant'}) — {myPlayer?.hand.length} remaining
                         </div>
                         <div className={styles.cards}>
                             {myPlayer?.hand
@@ -302,7 +385,8 @@ export default function GameRoom() {
                                     <div
                                         key={originalIndex}
                                         onClick={() => isMyTurn && toggleCard(originalIndex)}
-                                        className={`${styles.card} ${selectedCards.has(originalIndex) ? styles.selected : ''} ${card.type === 'joker' ? styles.joker : isRedCard(card) ? styles.red : styles.black}`}
+                                        className={`${styles.card} ${selectedCards.has(originalIndex) ? styles.selected : ''} ${card.type === 'joker' ? `${styles.joker} ${card.jokerType === 'small' ? styles.small : ''}` : isRedCard(card) ? styles.red : styles.black}`}
+                                        style={{ cursor: isMyTurn ? 'pointer' : 'default' }}
                                     >
                                         {getCardDisplay(card)}
                                     </div>
@@ -317,11 +401,11 @@ export default function GameRoom() {
                                     disabled={selectedCards.size === 0}
                                     className={styles.playBtn}
                                 >
-                                    Play
+                                    ▶ Play Cards
                                 </button>
                                 {canPass && (
                                     <button onClick={handlePass} className={styles.passBtn}>
-                                        Pass
+                                        ⏭ Pass
                                     </button>
                                 )}
                             </div>
@@ -335,7 +419,7 @@ export default function GameRoom() {
                             <h2 className={`${styles.winnerTitle} ${gameState.winner === 'landlord' ? styles.landlord : styles.peasants}`}>
                                 {gameState.winner === 'landlord' ? '👑 Landlord Wins!' : '🎉 Peasants Win!'}
                             </h2>
-                            <button onClick={() => router.push('/doudizhu')} className={styles.primaryBtn}>
+                            <button onClick={() => router.push('/games/doudizhu')} className={styles.primaryBtn}>
                                 Play Again
                             </button>
                         </div>

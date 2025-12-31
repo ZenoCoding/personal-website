@@ -51,3 +51,7 @@
     color: var(--color-accent-primary);
     transform: translateY(-2px);
 }
+
+.cardFront {
+    fill: var(--color-bg-secondary);
+}

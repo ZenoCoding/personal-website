@@ -75,7 +75,9 @@ export type ClientMessage =
     | { type: 'start_game' }
     | { type: 'bid'; value: BidValue }
     | { type: 'play'; cardIds: number[] }
-    | { type: 'pass' };
+    | { type: 'pass' }
+    | { type: 'add_bot' }
+    | { type: 'reset' };
 
 // Messages from server to client
 export type ServerMessage =

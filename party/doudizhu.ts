@@ -214,37 +214,46 @@ export default class DoudizhuServer implements Party.Server {
         }
     }
 
-    handleMessage(msg: ClientMessage, sender: Party.Connection) {
+    handleMessage(msg: ClientMessage & { type: string }, sender: Party.Connection) {
         switch (msg.type) {
             case 'join':
-                this.handleJoin(msg.name, sender);
+                this.handleJoin((msg as { type: 'join'; name: string }).name, sender);
                 break;
             case 'start_game':
                 this.handleStartGame(sender);
                 break;
             case 'bid':
-                this.handleBid(msg.value, sender);
+                this.handleBid((msg as { type: 'bid'; value: BidValue }).value, sender);
                 break;
             case 'play':
-                this.handlePlay(msg.cardIds, sender);
+                this.handlePlay((msg as { type: 'play'; cardIds: number[] }).cardIds, sender);
                 break;
             case 'pass':
                 this.handlePass(sender);
+                break;
+            case 'add_bot':
+                this.handleAddBot(sender);
+                break;
+            case 'reset':
+                this.handleReset();
                 break;
         }
     }
 
     handleJoin(name: string, sender: Party.Connection) {
+        // Check if player with same name already exists (reconnection)
+        const existingByName = this.state.players.find(p => p.name === name);
+        if (existingByName) {
+            // Reconnect - update their connection ID
+            existingByName.id = sender.id;
+            existingByName.isConnected = true;
+            this.saveState();
+            this.sendState();
+            return;
+        }
+
+        // Don't allow new players if game is in progress
         if (this.state.phase !== 'waiting') {
-            // Allow reconnection
-            const existing = this.state.players.find(p => p.name === name);
-            if (existing) {
-                existing.id = sender.id;
-                existing.isConnected = true;
-                this.saveState();
-                this.sendState();
-                return;
-            }
             this.sendError(sender, "Game already in progress");
             return;
         }
@@ -264,6 +273,38 @@ export default class DoudizhuServer implements Party.Server {
         };
 
         this.state.players.push(player);
+        this.saveState();
+        this.sendState();
+    }
+
+    handleAddBot(sender: Party.Connection) {
+        if (this.state.phase !== 'waiting') {
+            this.sendError(sender, "Can only add bots in waiting phase");
+            return;
+        }
+
+        if (this.state.players.length >= 3) {
+            this.sendError(sender, "Room is full");
+            return;
+        }
+
+        const botNum = this.state.players.filter(p => p.name.startsWith('Bot')).length + 1;
+        const bot: Player = {
+            id: `bot-${botNum}-${Date.now()}`,
+            name: `Bot ${botNum}`,
+            hand: [],
+            role: null,
+            bid: null,
+            isConnected: true
+        };
+
+        this.state.players.push(bot);
+        this.saveState();
+        this.sendState();
+    }
+
+    handleReset() {
+        this.state = createInitialState(this.room.id);
         this.saveState();
         this.sendState();
     }

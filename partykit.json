@@ -1,5 +1,8 @@
 {
-    "name": "doudizhu",
+    "name": "card-games",
     "main": "party/doudizhu.ts",
+    "parties": {
+        "wushik": "party/wushik.ts"
+    },
     "compatibilityDate": "2024-01-01"
 }

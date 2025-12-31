@@ -26,7 +26,7 @@ export default function DoudizhuLobby() {
         }
         const code = generateRoomCode();
         sessionStorage.setItem('doudizhu_name', name.trim());
-        router.push(`/doudizhu/${code}`);
+        router.push(`/games/doudizhu/${code}`);
     };
 
     const handleJoin = () => {
@@ -39,7 +39,7 @@ export default function DoudizhuLobby() {
             return;
         }
         sessionStorage.setItem('doudizhu_name', name.trim());
-        router.push(`/doudizhu/${joinCode.toUpperCase()}`);
+        router.push(`/games/doudizhu/${joinCode.toUpperCase()}`);
     };
 
     return (
@@ -80,6 +80,8 @@ export default function DoudizhuLobby() {
                     <button onClick={handleJoin} className={styles.secondaryBtn}>
                         Join Room
                     </button>
+
+                    <a href="/games" className={styles.backLink}>← Back to Games</a>
                 </div>
             </div>
         </main>
