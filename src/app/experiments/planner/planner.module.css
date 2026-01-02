@@ -1,0 +1,959 @@
+.page {
+    min-height: 100vh;
+    padding: 5rem 1.5rem 4rem;
+    background: var(--color-bg-primary);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+}
+
+/* Allocation Bar */
+.allocationBar {
+    max-width: 800px;
+    margin: 0 auto 1rem;
+}
+
+.allocationBarLabel {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.allocationBarTrack {
+    height: 24px;
+    background: var(--color-input-bg);
+    border-radius: 12px;
+    overflow: visible;
+    display: flex;
+    border: 1px solid var(--color-border);
+}
+
+.allocationSegment {
+    height: 100%;
+    transition: width 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.allocationSegment:hover {
+    filter: brightness(1.1);
+}
+
+.allocationSegment:first-child {
+    border-radius: 11px 0 0 11px;
+}
+
+.allocationSegment:last-child {
+    border-radius: 0 11px 11px 0;
+}
+
+.allocationSegment:only-child {
+    border-radius: 11px;
+}
+
+.segmentLabel {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    opacity: 0.9;
+}
+
+/* Tooltip */
+.segmentTooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.15s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+.segmentTooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--color-border);
+}
+
+.allocationSegment:hover .segmentTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+.tooltipColor {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.tooltipContent {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.tooltipName {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.tooltipStats {
+    font-size: 0.65rem;
+    color: var(--color-text-secondary);
+}
+
+/* Flexible Hours Bar */
+.flexibleBar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.flexibleLabel {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    min-width: 50px;
+}
+
+.flexibleBarTrack {
+    flex: 1;
+    height: 16px;
+    background: var(--color-input-bg);
+    border-radius: 8px;
+    overflow: visible;
+    display: flex;
+    border: 1px solid var(--color-border);
+}
+
+.flexibleSegment {
+    height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    transition: width 0.3s ease;
+    background-image: repeating-linear-gradient(135deg,
+            transparent,
+            transparent 2px,
+            rgba(255, 255, 255, 0.15) 2px,
+            rgba(255, 255, 255, 0.15) 4px);
+}
+
+.flexibleSegment:first-child {
+    border-radius: 7px 0 0 7px;
+}
+
+.flexibleSegment:last-child {
+    border-radius: 0 7px 7px 0;
+}
+
+.flexibleSegment:only-child {
+    border-radius: 7px;
+}
+
+.flexibleSegment:hover {
+    filter: brightness(1.15);
+}
+
+.flexibleSegment:hover .segmentTooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
+}
+
+.flexibleSegmentLabel {
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    white-space: nowrap;
+}
+
+.flexibleTotal {
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    font-weight: 600;
+    min-width: 30px;
+    text-align: right;
+}
+
+.allocationLegend {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    row-gap: 0.25rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+}
+
+.legendDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legendFree {
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+}
+
+/* Analytics Bar */
+.analytics {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    min-width: 120px;
+}
+
+.statValue {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.statValue.warning {
+    color: #f97316;
+}
+
+.statValue.danger {
+    color: #ef4444;
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+.settingsButton {
+    padding: 0.75rem;
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.settingsButton:hover {
+    border-color: var(--color-accent-primary);
+    background: var(--color-input-bg);
+}
+
+.settingsButton.inactive {
+    opacity: 0.5;
+}
+
+.commuteSettings {
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+    padding: 1rem;
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+}
+
+.settingsLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.settingsInput {
+    width: 70px;
+    padding: 0.5rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    color: var(--color-text-primary);
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.settingsInput:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+}
+
+/* Commute checkbox in modal */
+.commuteCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.commuteCheckbox:hover {
+    border-color: var(--color-accent-primary);
+}
+
+.commuteCheckbox input {
+    accent-color: var(--color-accent-primary);
+    width: 18px;
+    height: 18px;
+}
+
+.commuteCheckbox span {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+}
+
+.commuteCheckbox.checked {
+    border-color: var(--color-accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.commuteCheckbox.checked span {
+    color: var(--color-text-primary);
+}
+
+/* Main Layout */
+.layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Calendar */
+.calendarContainer {
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1rem;
+    overflow-x: auto;
+}
+
+.calendar {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    min-width: 600px;
+}
+
+.dayHeader {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.dayHeader.today {
+    color: var(--color-accent-primary);
+}
+
+.timeLabel {
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    color: var(--color-text-secondary);
+    text-align: right;
+    height: 40px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-top: 2px;
+}
+
+.timeSlot {
+    height: 40px;
+    border-left: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+}
+
+.timeSlot:hover {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+/* Activity Blocks */
+.activityBlock {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    z-index: 1;
+}
+
+/* Tiny blocks (< 20px) - allow overflow so text is visible */
+.activityBlock.tiny {
+    overflow: visible;
+    font-size: 0.55rem;
+    font-weight: 600;
+    padding: 1px 3px;
+    display: flex;
+    align-items: center;
+}
+
+.activityBlock:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.activityBlock.conflict {
+    outline: 2px solid #ef4444;
+    outline-offset: -2px;
+}
+
+/* Flex blocks (unscheduled hours) - striped translucent style */
+.flexBlock {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    border-radius: 3px;
+    font-size: 0.55rem;
+    font-weight: 500;
+    padding: 2px 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.1s;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    opacity: 0.6;
+    background-image: repeating-linear-gradient(135deg,
+            transparent,
+            transparent 3px,
+            rgba(255, 255, 255, 0.15) 3px,
+            rgba(255, 255, 255, 0.15) 6px);
+    border: 1px dashed rgba(255, 255, 255, 0.4);
+}
+
+.flexBlock:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+
+/* Twilight/Sleep overlay - covers entire cell width as a backdrop */
+.twilightOverlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.twilightOverlay.twilightStart {
+    border-top: 2px solid rgba(99, 102, 241, 0.6);
+}
+
+/* Sidebar */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.addButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    color: white;
+    border: none;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.addButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.activityList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.activityCard {
+    position: relative;
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    padding-right: 2.5rem;
+    transition: border-color 0.2s;
+}
+
+.activityCard:hover {
+    border-color: var(--color-accent-primary);
+}
+
+.activityHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.colorDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.activityName {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--color-text-primary);
+    flex: 1;
+}
+
+.activityCategory {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    background: var(--color-border);
+    border-radius: 0.25rem;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.activityHours {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.flexibleBadge {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15));
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 0.25rem;
+    color: var(--color-accent-primary);
+    font-weight: 500;
+}
+
+.activityTimes {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+}
+
+.activityActions {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.iconButton {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+}
+
+.iconButton:hover {
+    background: var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.iconButton.deleteIcon:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modalTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text-primary);
+}
+
+.formGroup {
+    margin-bottom: 1.25rem;
+}
+
+.label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.input,
+.select {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-primary);
+    font-size: 0.95rem;
+    transition: border-color 0.15s;
+}
+
+.input:focus,
+.select:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+}
+
+.colorPicker {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.colorOption {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.1s;
+}
+
+.colorOption:hover {
+    transform: scale(1.1);
+}
+
+.colorOption.selected {
+    border-color: var(--color-text-primary);
+}
+
+.timeSlotRow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.dayCheckbox {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+}
+
+.dayCheckbox input {
+    accent-color: var(--color-accent-primary);
+}
+
+.timeInputs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex: 1;
+}
+
+.timeInput {
+    padding: 0.5rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    color: var(--color-text-primary);
+    font-size: 0.85rem;
+    width: 90px;
+}
+
+.timeInput:focus {
+    outline: none;
+    border-color: var(--color-accent-primary);
+}
+
+.addTimeSlot {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px dashed var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.addTimeSlot:hover {
+    border-color: var(--color-accent-primary);
+    color: var(--color-accent-primary);
+}
+
+.removeTimeSlot {
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.removeTimeSlot:hover {
+    opacity: 1;
+    color: #ef4444;
+}
+
+.modalActions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.cancelButton {
+    flex: 1;
+    padding: 0.875rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.cancelButton:hover {
+    background: var(--color-border);
+    color: var(--color-text-primary);
+}
+
+.saveButton {
+    flex: 1;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, var(--color-accent-primary), var(--color-accent-secondary));
+    border: none;
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.saveButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Empty state */
+.emptyState {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Category filter */
+.categoryFilters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.categoryFilter {
+    padding: 0.4rem 0.75rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.categoryFilter:hover,
+.categoryFilter.active {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
+}
+
+/* Schedule type toggle */
+.scheduleToggle {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.toggleOption {
+    flex: 1;
+    padding: 0.75rem;
+    background: var(--color-input-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.toggleOption:hover {
+    border-color: var(--color-text-secondary);
+}
+
+.toggleOption.active {
+    background: var(--color-accent-primary);
+    border-color: var(--color-accent-primary);
+    color: white;
+}
+
+/* Hours input for unscheduled activities */
+.hoursInput {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.hoursInput .input {
+    width: 100px;
+    text-align: center;
+}
+
+.hoursLabel {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.hoursHint {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    opacity: 0.8;
+}

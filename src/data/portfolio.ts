@@ -75,15 +75,6 @@ export const portfolio: {
             featured: true,
         },
         {
-            role: "Physics Researcher",
-            company: "Independent / USAPhO",
-            date: "Jan 2024 – Present",
-            location: "Remote",
-            description:
-                "Studying advanced mechanics and electromagnetism to prepare for the US Physics Olympiad.",
-            featured: false,
-        },
-        {
             role: "Game Developer",
             company: "Artix Network",
             date: "Apr 2023 – Jan 2024",
