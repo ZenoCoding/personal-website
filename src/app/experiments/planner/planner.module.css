@@ -561,6 +561,35 @@
     box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
 }
 
+.exportButtons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.exportButton {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    background: var(--color-glass);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.exportButton:hover {
+    color: var(--color-text);
+    border-color: var(--color-accent-primary);
+    background: var(--color-input-bg);
+}
+
 .activityList {
     display: flex;
     flex-direction: column;

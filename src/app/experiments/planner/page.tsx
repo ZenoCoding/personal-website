@@ -537,6 +537,82 @@ export default function PlannerPage() {
         setEditingActivity(null);
     };
 
+    // Export functions
+    const exportJSON = () => {
+        const data = {
+            activities,
+            commuteMinutes,
+            exportedAt: new Date().toISOString()
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'planner-export.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const exportICS = () => {
+        const dayNames = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
+        let ics = 'BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Planner//Export//EN\n';
+
+        for (const activity of activities) {
+            for (const slot of activity.timeSlots) {
+                const days = slot.days.map(d => dayNames[d]).join(',');
+                const startParts = slot.startTime.split(':');
+                const endParts = slot.endTime.split(':');
+
+                ics += 'BEGIN:VEVENT\n';
+                ics += `SUMMARY:${activity.name}\n`;
+                ics += `DTSTART:${new Date().toISOString().slice(0, 10).replace(/-/g, '')}T${startParts[0]}${startParts[1]}00\n`;
+                ics += `DTEND:${new Date().toISOString().slice(0, 10).replace(/-/g, '')}T${endParts[0]}${endParts[1]}00\n`;
+                ics += `RRULE:FREQ=WEEKLY;BYDAY=${days}\n`;
+                ics += `CATEGORIES:${activity.category}\n`;
+                ics += 'END:VEVENT\n';
+            }
+        }
+
+        ics += 'END:VCALENDAR';
+        const blob = new Blob([ics], { type: 'text/calendar' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'planner-export.ics';
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const importJSON = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = (e) => {
+            const file = (e.target as HTMLInputElement).files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const data = JSON.parse(event.target?.result as string);
+                    if (data.activities && Array.isArray(data.activities)) {
+                        setActivities(data.activities);
+                        if (data.commuteMinutes) {
+                            setCommuteMinutes(data.commuteMinutes);
+                        }
+                        alert('Import successful!');
+                    } else {
+                        alert('Invalid file format');
+                    }
+                } catch {
+                    alert('Failed to parse file');
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    };
+
     const handleDelete = (id: string) => {
         setActivities(prev => prev.filter(a => a.id !== id));
     };
@@ -843,6 +919,31 @@ export default function PlannerPage() {
                     <button className={styles.addButton} onClick={() => setIsModalOpen(true)}>
                         + Add Activity
                     </button>
+
+                    {/* Export buttons */}
+                    <div className={styles.exportButtons}>
+                        <button className={styles.exportButton} onClick={importJSON} title="Import from JSON backup">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+                            </svg>
+                            Import
+                        </button>
+                        <button className={styles.exportButton} onClick={exportJSON} title="Export as JSON (for backup)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                            </svg>
+                            JSON
+                        </button>
+                        <button className={styles.exportButton} onClick={exportICS} title="Export as ICS (for Google Calendar, etc.)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                            Calendar
+                        </button>
+                    </div>
 
                     {/* Category filters */}
                     <div className={styles.categoryFilters}>
