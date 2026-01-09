@@ -130,6 +130,48 @@ export default function IntakeLessonPage() {
                             – Motion profiling guide
                         </li>
                     </ul>
+
+                    <h3>1. Install Vendordeps</h3>
+                    <p>
+                        You must install the CTRE Phoenix 6 and Phoenix 5 libraries to use TalonFX motors.
+                        Right-click your <code>build.gradle</code> file in VS Code → "Manage Vendor Libraries" → "Install new libraries (online)" and paste these URLs:
+                    </p>
+                    <InfoBox>
+                        <p><strong>Phoenix 6 (2025):</strong></p>
+                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2025-latest.json"}</CodeBlock>
+                        <p><strong>Phoenix 5 (2025):</strong></p>
+                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix5-frc2025-latest.json"}</CodeBlock>
+                    </InfoBox>
+
+                    <h3>2. Install Team 254 Helper Library</h3>
+                    <p>
+                        We use a few helper classes from Team 254 (The Cheesy Poofs) to make motor configuration safer and easier.
+                    </p>
+                    <div className={styles.downloadButtons} style={{ justifyContent: 'flex-start', margin: '1rem 0' }}>
+                        <a
+                            href="/lessons/lib/team254.zip"
+                            download
+                            className={`${styles.downloadBtn} ${styles.downloadBtnPrimary}`}
+                        >
+                            ↓ Download team254.zip
+                        </a>
+                    </div>
+                    <p>
+                        Extract this folder into your project so that it sits alongside your robot package.
+                        Your file structure should look like this:
+                    </p>
+                    <CodeBlock>{`src/main/java/
+├── com/
+│   └── team254/lib/
+│       ├── drivers/
+│       │   ├── TalonFXFactory.java
+│       │   └── ...
+│       ├── geometry/
+│       └── ...
+└── frc/
+    └── robot/
+        ├── subsystems/
+        └── Robot.java`}</CodeBlock>
                 </Section>
 
                 {/* Key Concepts */}
