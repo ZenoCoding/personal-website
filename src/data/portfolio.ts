@@ -135,8 +135,9 @@ export const portfolio: {
             image: "/photos/shooting_sim.png",
             tags: ["Python", "Matplotlib", "Numpy", "Robotics Physics"],
             date: "February 2026",
-            featured: false,
+            featured: true,
             repo: "https://github.com/ZenoCoding/sotm-animations",
+            paper: "https://docs.google.com/document/d/1uPbsmcOmE1BFAD-sDUZ9YOKeiyFofxDaHPHv66-2OAc/edit?tab=t.d27hoquc4x8v#heading=h.11j9tptrjh8r",
         },
         {
             title: "Minute",

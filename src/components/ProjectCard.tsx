@@ -59,7 +59,7 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
                     {paperLink && (
                         <Link href={paperLink} className={`${styles.link} ${styles.primaryLink}`} target="_blank">
                             <FileText size={14} style={{ marginRight: '6px' }} />
-                            {paperLink.includes('notion.site') ? 'Read Explainer' : 'Read Paper'}
+                            {paperLink.includes('notion.site') || paperLink.includes('docs.google.com') ? 'Read Explainer' : 'Read Paper'}
                         </Link>
                     )}
                 </div>
