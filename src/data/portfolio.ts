@@ -121,7 +121,7 @@ export const portfolio: {
         },
         {
             title: "Period 8",
-            description: "A first-person 3D looping horror-puzzle game built with Three.js as part of a multigenre project. Inspired by Exit 8 and P.T., it explores the existential dread of stagnation and change in a liminal school hallway, challenging players to spot subtle anomalies to break the loop.",
+            description: "A first-person 3D looping horror-puzzle game built with Three.js as part of a multigenre project. Inspired by The Exit 8, it explores the existential dread of stagnation and change in a liminal school hallway, challenging players to spot subtle anomalies to break the loop.",
             image: "/photos/period8_demo.jpg",
             tags: ["Three.js", "Vite", "TypeScript", "Vitest", "3D Web Development"],
             date: "May 2026",
