@@ -131,9 +131,9 @@ export const portfolio: {
         },
         {
             title: "Shoot on the Move Explainer",
-            description: "A math and physics explainer analyzing the circular time-of-flight dependency in robotics projectile launching. Accompanied by Python simulations, the article details an iterative numerical approach to compensate for velocity vector addition in moving coordinate frames.",
+            description: "A math and physics explainer analyzing the circular time-of-flight dependency in robotics projectile launching. Accompanied by Python animations, the article details an iterative numerical approach to compensate for velocity vector addition in moving coordinate frames.",
             image: "/photos/sotm_explainer.png",
-            tags: ["Technical Writing", "Robotics Physics", "Numerical Methods", "Python Simulation"],
+            tags: ["Technical Writing", "Robotics Physics", "Numerical Methods", "Python Animations"],
             date: "February 2026",
             featured: true,
             repo: "https://github.com/ZenoCoding/sotm-animations",
