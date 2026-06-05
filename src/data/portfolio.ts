@@ -8,6 +8,7 @@ export interface Project {
     link?: string;
     repo?: string;
     paper?: string;
+    imagePosition?: string;
 }
 
 export const portfolio: {
@@ -118,16 +119,6 @@ export const portfolio: {
             link: "https://repetition-tycho.vercel.app",
         },
         {
-            title: "Calc3D",
-            description: "An interactive 3D graphing calculator for multivariable calculus. Features real-time plotting of explicit/implicit surfaces, curves, and vector fields, plus an interactive mathematical probe for local derivatives, tangent planes, divergence, and curl.",
-            image: "/photos/calc3d_graph.png",
-            tags: ["React", "TypeScript", "Vite", "HTML5 Canvas", "3D Projection"],
-            date: "May 2026",
-            featured: true,
-            repo: "https://github.com/ZenoCoding/mvc-vis",
-            link: "https://fieldfocus.tychoyoung.com",
-        },
-        {
             title: "FieldFocus",
             description: "An interactive 3D vector field and streamline visualizer helping students build intuitive understanding of divergence, curl, and flow lines.",
             image: "/photos/fieldfocus_demo.jpg",
@@ -136,6 +127,7 @@ export const portfolio: {
             featured: true,
             repo: "https://github.com/ZenoCoding/multivar-animation",
             link: "https://fieldfocus.tychoyoung.com",
+            imagePosition: "top",
         },
         {
             title: "Shooting on the Move (SOTM)",

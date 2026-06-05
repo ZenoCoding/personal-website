@@ -12,13 +12,14 @@ interface ProjectCardProps {
     image?: string;
     date?: string;
     paperLink?: string;
+    imagePosition?: string;
 }
 
-const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, color, image, date }: ProjectCardProps) => {
+const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, color, image, date, imagePosition }: ProjectCardProps) => {
     return (
         <div className={styles.card}>
             <div className={styles.imagePlaceholder} style={{ background: color || 'linear-gradient(135deg, #333, #111)' }}>
-                {image && <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                {image && <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: imagePosition || 'center' }} />}
             </div>
 
             <div className={styles.content}>

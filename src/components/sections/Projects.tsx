@@ -63,6 +63,7 @@ export default function Projects() {
                                 repoLink={project.repo}
                                 date={project.date}
                                 paperLink={project.paper}
+                                imagePosition={project.imagePosition}
                             />
                         ))}
                     </div>
