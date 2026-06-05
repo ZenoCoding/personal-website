@@ -131,13 +131,13 @@ export const portfolio: {
         },
         {
             title: "Shooting on the Move (SOTM)",
-            description: "Physics animation scripts and mathematical models illustrating reference frame transformations (robot frame vs. field frame) and target leading for autonomous robot projectile launching.",
+            description: "A math and physics explainer analyzing the circular time-of-flight dependency in robotics projectile launching. Accompanied by Python simulations, the article details an iterative numerical approach to compensate for velocity vector addition in moving coordinate frames.",
             image: "/photos/shooting_sim.png",
-            tags: ["Python", "Matplotlib", "Numpy", "Robotics Physics"],
+            tags: ["Technical Writing", "Robotics Physics", "Numerical Methods", "Python Simulation"],
             date: "February 2026",
             featured: true,
             repo: "https://github.com/ZenoCoding/sotm-animations",
-            paper: "https://docs.google.com/document/d/1uPbsmcOmE1BFAD-sDUZ9YOKeiyFofxDaHPHv66-2OAc/edit?tab=t.d27hoquc4x8v#heading=h.11j9tptrjh8r",
+            paper: "https://docs.google.com/document/d/e/2PACX-1vRP1jMuuYPG3TYY6w6l5wLsNdZpaawkkKOeP6GGMpAQqErmO3HsDvTr2NXQVp8oJ0w0_sEf1XIRWw0b/pub",
         },
         {
             title: "Minute",
