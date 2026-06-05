@@ -109,13 +109,13 @@ export const portfolio: {
             featured: false,
         },
         {
-            title: "Repetition",
-            description: "A first-person 3D looping puzzle-horror game inspired by Exit 8 and P.T. Players navigate a repeating school hallway and must detect subtle environmental anomalies (shifting objects, tracking security cameras, flickering lights) to escape.",
-            image: "/photos/repetition_game.png",
+            title: "Period 8",
+            description: "A first-person 3D looping horror-puzzle game built with Three.js as part of a multigenre project. Inspired by Exit 8 and P.T., it explores the existential dread of stagnation and change in a liminal school hallway, challenging players to spot subtle anomalies to break the loop.",
+            image: "/photos/period8_demo.jpg",
             tags: ["Three.js", "Vite", "TypeScript", "Vitest", "3D Web Development"],
             date: "May 2026",
             featured: true,
-            repo: "https://github.com/ZenoCoding/Repetition",
+            repo: "https://github.com/ZenoCoding/period-8",
             link: "https://repetition-tycho.vercel.app",
         },
         {
