@@ -100,24 +100,14 @@ export const portfolio: {
         }
     ],
     projects: [
-        {
+        /* {
             title: "Multi-Agent Research",
             description: "An experimental research harness built using LiteLLM to analyze multi-agent LLM dynamics. Investigates reasoning gains, debate models, self-critics, and token efficiency of multi-agent workflows.",
             tags: ["Python", "LiteLLM", "LLMs", "AI Research"],
             repo: "https://github.com/ZenoCoding/MultiAgentResearch",
             date: "June 2026",
             featured: false,
-        },
-        {
-            title: "Period 8",
-            description: "A first-person 3D looping horror-puzzle game built with Three.js as part of a multigenre project. Inspired by Exit 8 and P.T., it explores the existential dread of stagnation and change in a liminal school hallway, challenging players to spot subtle anomalies to break the loop.",
-            image: "/photos/period8_demo.jpg",
-            tags: ["Three.js", "Vite", "TypeScript", "Vitest", "3D Web Development"],
-            date: "May 2026",
-            featured: true,
-            repo: "https://github.com/ZenoCoding/period-8",
-            link: "https://repetition-tycho.vercel.app",
-        },
+        }, */
         {
             title: "FieldFocus",
             description: "An interactive 3D vector field and streamline visualizer helping students build intuitive understanding of divergence, curl, and flow lines.",
@@ -128,6 +118,16 @@ export const portfolio: {
             repo: "https://github.com/ZenoCoding/multivar-animation",
             link: "https://fieldfocus.tychoyoung.com",
             imagePosition: "top",
+        },
+        {
+            title: "Period 8",
+            description: "A first-person 3D looping horror-puzzle game built with Three.js as part of a multigenre project. Inspired by Exit 8 and P.T., it explores the existential dread of stagnation and change in a liminal school hallway, challenging players to spot subtle anomalies to break the loop.",
+            image: "/photos/period8_demo.jpg",
+            tags: ["Three.js", "Vite", "TypeScript", "Vitest", "3D Web Development"],
+            date: "May 2026",
+            featured: true,
+            repo: "https://github.com/ZenoCoding/period-8",
+            link: "https://repetition-tycho.vercel.app",
         },
         {
             title: "Shoot on the Move Explainer",
@@ -157,21 +157,21 @@ export const portfolio: {
             featured: false,
         },
         {
-            title: "6-Axis Robot Arm",
-            description: "Designed and built from scratch using OnShape and 3D printing. Features stepper motors, custom gearboxes, and inverse kinematics control via Klipper.",
-            tags: ["OnShape", "Klipper", "Inverse Kinematics", "CNC Machining"],
-            image: "/photos/robot_arm.jpg",
-            link: "https://cad.onshape.com/documents/4ccfdf4d735854a05c4ab1ac/w/4130b2d9f3bfeb0af790be04/e/e61e094f6d8f847682f9a1c3?renderMode=0&uiState=694b11b9ccf122f7f5b2851f",
-            date: "Summer 2025",
-            featured: true,
-        },
-        {
             title: "NHS Garden",
             description: "Wooden garden structure designed in OnShape for NHS. Currently in construction, involving woodworking and assembly.",
             tags: ["OnShape", "Woodworking"],
             image: "/photos/nhs_garden.jpg",
             link: "https://cad.onshape.com/documents/d40331c4ca14aaefedf84c09/w/2cfd7cd89fdb87fb8aaa51e5/e/5ba7f069968f848ebc826ba7",
             date: "Aug 2025 - Present",
+            featured: true,
+        },
+        {
+            title: "6-Axis Robot Arm",
+            description: "Designed and built from scratch using OnShape and 3D printing. Features stepper motors, custom gearboxes, and inverse kinematics control via Klipper.",
+            tags: ["OnShape", "Klipper", "Inverse Kinematics", "CNC Machining"],
+            image: "/photos/robot_arm.jpg",
+            link: "https://cad.onshape.com/documents/4ccfdf4d735854a05c4ab1ac/w/4130b2d9f3bfeb0af790be04/e/e61e094f6d8f847682f9a1c3?renderMode=0&uiState=694b11b9ccf122f7f5b2851f",
+            date: "Summer 2025",
             featured: true,
         },
         {
