@@ -1,6 +1,11 @@
 import { blogs } from "@/data/blogs";
 import Link from "next/link";
 
+export const metadata = {
+    title: "Writing | Tycho Young",
+    description: "Thoughts, updates, and explorations in engineering, robotics, and design by Tycho Young.",
+};
+
 export default function BlogIndex() {
     const sortedBlogs = [...blogs].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()

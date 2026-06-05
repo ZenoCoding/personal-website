@@ -3,9 +3,24 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import styles from "../blog.module.css";
+import type { Metadata } from "next";
 
 interface Props {
     params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const { slug } = await params;
+    const post = blogs.find((p) => p.slug === slug);
+    if (!post) {
+        return {
+            title: "Post Not Found | Tycho Young"
+        };
+    }
+    return {
+        title: `${post.title} | Tycho Young`,
+        description: post.description,
+    };
 }
 
 export async function generateStaticParams() {
