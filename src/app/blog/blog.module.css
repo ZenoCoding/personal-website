@@ -1,0 +1,103 @@
+.blogContent {
+    color: var(--color-text-primary);
+    line-height: 1.8;
+    font-size: 1.1rem;
+}
+
+.blogContent p {
+    margin-bottom: 1.5rem;
+}
+
+.blogContent h2 {
+    font-size: 2rem;
+    color: var(--color-text-primary);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.blogContent h3 {
+    font-size: 1.5rem;
+    color: var(--color-text-primary);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.blogContent ul, .blogContent ol {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+}
+
+.blogContent li {
+    margin-bottom: 0.5rem;
+}
+
+.blogContent strong {
+    color: var(--color-accent-primary);
+    font-weight: 600;
+}
+
+.blogContent em {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* Custom Components */
+.figure {
+    margin: 2.5rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
+}
+
+.figcaption {
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.codeBlock {
+    padding: 1.5rem;
+    margin: 2rem 0;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 4px solid var(--color-accent-secondary);
+    border-radius: 8px;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    overflow-x: auto;
+    color: var(--color-text-secondary);
+}
+
+.codeLine {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.codeLine:last-child {
+    margin-bottom: 0;
+}
+
+.note {
+    margin-top: 2.5rem;
+    padding: 1.5rem;
+    background: rgba(249, 115, 22, 0.1);
+    border: 1px solid rgba(249, 115, 22, 0.2);
+    border-radius: 12px;
+    color: var(--color-accent-orange);
+    font-size: 0.95rem;
+}
+
+.quoteBox {
+    padding: 1.5rem;
+    margin: 2rem 0;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 12px;
+    color: var(--color-accent-primary);
+    font-style: italic;
+}

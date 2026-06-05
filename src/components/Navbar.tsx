@@ -34,6 +34,7 @@ const Navbar = () => {
                     <a href="#projects" onClick={(e) => handleScroll(e, 'projects')} className={styles.link}>Projects</a>
                     <a href="#about" onClick={(e) => handleScroll(e, 'about')} className={styles.link}>About</a>
                     <Link href="/photos" className={styles.link}>Photos</Link>
+                    <Link href="/blog" className={styles.link}>Blog</Link>
                     <a href="#contact" onClick={(e) => handleScroll(e, 'contact')} className={styles.button}>Contact</a>
                 </div>
             </div>
