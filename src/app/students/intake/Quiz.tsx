@@ -40,7 +40,6 @@ export default function Quiz({ question, options, explanation }: QuizProps) {
     return (
         <div className={styles.quiz}>
             <div className={styles.header}>
-                <span className={styles.icon}>🧠</span>
                 <span className={styles.label}>Quick Check</span>
             </div>
             <p className={styles.question}>{question}</p>
@@ -73,7 +72,7 @@ export default function Quiz({ question, options, explanation }: QuizProps) {
             ) : (
                 <div className={styles.result}>
                     <div className={`${styles.resultBanner} ${isCorrect ? styles.success : styles.failure}`}>
-                        {isCorrect ? '✓ Correct!' : '✗ Not quite'}
+                        {isCorrect ? 'Correct' : 'Not quite'}
                     </div>
                     {explanation && (
                         <p className={styles.explanation}>{explanation}</p>

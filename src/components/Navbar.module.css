@@ -59,3 +59,26 @@
     background: color-mix(in srgb, var(--color-accent-highlight), transparent 80%);
     box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent-highlight), transparent 80%);
 }
+
+@media (max-width: 640px) {
+    .navContainer {
+        justify-content: center;
+        height: 62px;
+        padding-inline: 1rem;
+    }
+
+    .logo,
+    .button {
+        display: none;
+    }
+
+    .links {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.75rem;
+    }
+
+    .link {
+        font-size: 0.78rem;
+    }
+}

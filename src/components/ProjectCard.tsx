@@ -19,7 +19,7 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
     return (
         <div className={styles.card}>
             <div className={styles.imagePlaceholder} style={{ background: color || 'linear-gradient(135deg, #333, #111)' }}>
-                {image && <img src={image} alt={title} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: imagePosition || 'center' }} />}
+                {image && <img src={image} alt={title} className={styles.image} style={{ objectPosition: imagePosition || 'center' }} />}
             </div>
 
             <div className={styles.content}>
@@ -27,7 +27,13 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
                     <h3 className={styles.title} style={{ marginBottom: 0 }}>{title}</h3>
                     {date && <span style={{ fontSize: '0.8rem', color: 'var(--color-text-secondary)', fontFamily: 'var(--font-mono)', marginTop: '4px' }}>{date}</span>}
                 </div>
-                <p className={styles.description}>{description}</p>
+                {description && (
+                    <div className={styles.descriptionGroup}>
+                        {description.split('\n\n').map((paragraph) => (
+                            <p className={styles.description} key={paragraph}>{paragraph}</p>
+                        ))}
+                    </div>
+                )}
 
                 <p className={styles.tagsText}>
                     <span className={styles.tagLabel}>Technologies: </span>

@@ -139,3 +139,94 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
+
+.lifeGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.nowGrid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+}
+
+.nowHeader {
+    margin-bottom: 1rem;
+}
+
+.nowTitleGroup,
+.nowLocation {
+    display: flex;
+    align-items: center;
+}
+
+.nowTitleGroup {
+    gap: 1rem;
+}
+
+.nowLocation {
+    gap: 0.4rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+.lifeCard {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-glass), transparent 35%);
+}
+
+.lifeImage {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+}
+
+.lifeCopy {
+    padding: 0.9rem 1rem 1rem;
+}
+
+.lifeLabel {
+    display: block;
+    margin-bottom: 0.35rem;
+    color: var(--color-accent-blue);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.lifeCopy h3 {
+    margin: 0 0 0.35rem;
+    color: var(--color-text-primary);
+    font-size: 1rem;
+}
+
+.lifeCopy p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 800px) {
+    .nowHeader {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.65rem;
+    }
+
+    .nowGrid,
+    .lifeGrid {
+        grid-template-columns: 1fr;
+    }
+}

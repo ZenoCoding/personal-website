@@ -40,13 +40,14 @@ export default function IntakeLessonPage() {
                 <header className={styles.header}>
                     <h1 className={styles.title}>Building an Intake Subsystem</h1>
                     <p className={styles.subtitle}>
-                        Learn how to write a complete WPILib subsystem for a ground intake
-                        mechanism with motion-profiled arm control and roller motors.
+                        Build the code for a real two-motor intake: a pivoting arm, a roller,
+                        and a beam-break sensor. We will write it in small pieces and test each
+                        piece before combining them.
                     </p>
 
                     <div className={styles.lessonMeta}>
                         <span className={`${styles.difficultyBadge} ${styles.intermediate}`}>
-                            ⚡ Intermediate
+                            Intermediate
                         </span>
                         <div className={styles.learningTags}>
                             <span className={styles.tag}>SubsystemBase</span>
@@ -63,21 +64,21 @@ export default function IntakeLessonPage() {
                             download
                             className={`${styles.downloadBtn} ${styles.downloadBtnPrimary}`}
                         >
-                            ↓ Download Skeleton
+                            ↓ Starter Code
                         </a>
                         <a
                             href="/lessons/intake/IntakeConstants.java"
                             download
                             className={`${styles.downloadBtn} ${styles.downloadBtnSecondary}`}
                         >
-                            ↓ Download Constants
+                            ↓ Constants
                         </a>
                         <a
-                            href="/lessons/intake/Intake.java"
+                            href="/lessons/intake/IntakeLessonSolution.java"
                             download
                             className={`${styles.downloadBtn} ${styles.downloadBtnSecondary}`}
                         >
-                            ↓ Download Solution
+                            ↓ Lesson Solution
                         </a>
                     </div>
                 </header>
@@ -105,11 +106,29 @@ export default function IntakeLessonPage() {
                         />
                         <figcaption>CAD model of our intake – arm pivots down while rollers spin to grab game pieces</figcaption>
                     </figure>
+
+                    <h3>By the end, you should be able to</h3>
+                    <ul>
+                        <li>Explain what belongs inside a subsystem and what belongs in a command.</li>
+                        <li>Configure a TalonFX for mechanism units and Motion Magic.</li>
+                        <li>Read an active-low beam-break sensor without leaking hardware details.</li>
+                        <li>Build a command sequence that behaves safely when it is interrupted.</li>
+                    </ul>
+
+                    <InfoBox>
+                        <p><strong>How to use this lesson:</strong> Start with the starter code. Complete one step,
+                            deploy or compile, and run the checkpoint before opening the solution. The lesson
+                            solution is there for debugging, not for copy-pasting from the start.</p>
+                    </InfoBox>
                 </Section>
 
                 {/* Prerequisites */}
                 <Section id="prereqs" title="Prerequisites & Resources">
-                    <p>Before diving in, familiarize yourself with these key documentation pages:</p>
+                    <p>
+                        You should already be comfortable with Java methods, instance variables, and basic
+                        command-based robot code. Keep these references open; you do not need to read them
+                        cover to cover first.
+                    </p>
                     <ul>
                         <li>
                             <ExternalLink href="https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html">
@@ -131,21 +150,25 @@ export default function IntakeLessonPage() {
                         </li>
                     </ul>
 
-                    <h3>1. Install Vendordeps</h3>
+                    <h3>1. Install the vendor libraries</h3>
                     <p>
-                        You must install the CTRE Phoenix 6 and Phoenix 5 libraries to use TalonFX motors.
-                        Right-click your <code>build.gradle</code> file in VS Code → "Manage Vendor Libraries" → "Install new libraries (online)" and paste these URLs:
+                        This project uses Phoenix 6 for the TalonFX motors. The helper bundle below also contains
+                        one compatibility utility that imports Phoenix 5, so install both vendordeps. In WPILib VS
+                        Code, open the command palette, choose <strong>Manage Vendor Libraries</strong>, then
+                        <strong>Install new libraries (online)</strong>.
                     </p>
                     <InfoBox>
-                        <p><strong>Phoenix 6 (2025):</strong></p>
-                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2025-latest.json"}</CodeBlock>
-                        <p><strong>Phoenix 5 (2025):</strong></p>
-                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix5-frc2025-latest.json"}</CodeBlock>
+                        <p><strong>Phoenix 6 (2026):</strong></p>
+                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix6/latest/Phoenix6-frc2026-latest.json"}</CodeBlock>
+                        <p><strong>Phoenix 5 (2026 compatibility library):</strong></p>
+                        <CodeBlock language="text">{"https://maven.ctr-electronics.com/release/com/ctre/phoenix/Phoenix5-frc2026-latest.json"}</CodeBlock>
                     </InfoBox>
 
                     <h3>2. Install Team 254 Helper Library</h3>
                     <p>
-                        We use a few helper classes from Team 254 (The Cheesy Poofs) to make motor configuration safer and easier.
+                        Our codebase uses a few Team 254 helper classes to create motors with known defaults and
+                        verify that configurations were actually applied. This is team-specific infrastructure,
+                        not a WPILib requirement.
                     </p>
                     <div className={styles.downloadButtons} style={{ justifyContent: 'flex-start', margin: '1rem 0' }}>
                         <a
@@ -176,201 +199,110 @@ export default function IntakeLessonPage() {
 
                 {/* Key Concepts */}
                 <Section id="concepts" title="Key Concepts">
-                    <ConceptCard
-                        title="What is a SubsystemBase?"
-                        emoji="🧩"
-                    >
+                    <ConceptCard title="Subsystems hide hardware details">
                         <p>
-                            A <code>SubsystemBase</code> is a WPILib class that represents a physical
-                            part of your robot (drivetrain, arm, shooter, etc.). It encapsulates
-                            hardware (motors, sensors) and provides methods for commands to control them.
+                            The intake owns its motors and sensor. Other robot code should ask it to
+                            deploy, stow, or run the rollers without knowing CAN IDs, inversion, or how
+                            the beam-break is wired.
                         </p>
                         <CodeBlock>{`public class Intake extends SubsystemBase {
     private final TalonFX motor = new TalonFX(1);
-    
+
     @Override
     public void periodic() {
-        // Called every 20ms automatically
+        // Read hardware and apply the current goal.
     }
 }`}</CodeBlock>
                         <p>
-                            Key features:
+                            <code>SubsystemBase</code> registers with the command scheduler. During the
+                            normal robot loop, the scheduler calls <code>periodic()</code> and makes sure
+                            two commands do not use the same subsystem at once.
                         </p>
-                        <ul>
-                            <li>Automatically registers with the <code>CommandScheduler</code></li>
-                            <li>Has a <code>periodic()</code> method called every 20ms (50Hz)</li>
-                            <li>Can have a "default command" that runs when no other command is using it</li>
-                        </ul>
                         <DocLink href="https://docs.wpilib.org/en/stable/docs/software/commandbased/subsystems.html">
-                            WPILib Subsystems Docs →
+                            WPILib subsystem documentation →
                         </DocLink>
                     </ConceptCard>
 
-                    <ConceptCard
-                        title="What is TalonFX?"
-                        emoji="⚡"
-                    >
+                    <ConceptCard title="Motion Magic runs on the motor controller">
                         <p>
-                            <code>TalonFX</code> is the motor controller class for CTRE's Falcon 500
-                            and Kraken X60 motors. In Phoenix 6, it uses a "control request" pattern
-                            where you create reusable request objects and apply them to the motor.
+                            A TalonFX can generate a motion profile and run its own position loop. We give
+                            it a target using a reusable <code>MotionMagicVoltage</code> request instead of
+                            calculating a new motor voltage in robot code every loop.
                         </p>
-                        <p>
-                            Common control modes:
-                        </p>
-                        <ul>
-                            <li><strong>VoltageOut</strong> – Direct voltage control (simple)</li>
-                            <li><strong>PositionVoltage</strong> – PID position control</li>
-                            <li><strong>VelocityVoltage</strong> – PID velocity control</li>
-                            <li><strong>MotionMagicVoltage</strong> – Smooth motion-profiled position control</li>
-                        </ul>
-                        <CodeBlock>{`// Create a reusable control request
-private final VoltageOut voltage = new VoltageOut(0);
+                        <CodeBlock>{`private final MotionMagicVoltage motionMagic =
+    new MotionMagicVoltage(0);
 
-// Apply it in periodic()
-motor.setControl(voltage.withOutput(6.0)); // 6 volts`}</CodeBlock>
-                        <DocLink href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/index.html">
-                            CTRE TalonFX Docs →
-                        </DocLink>
-                    </ConceptCard>
-
-                    <ConceptCard
-                        title="What is Motion Magic?"
-                        emoji="✨"
-                    >
+motor.setControl(motionMagic.withPosition(targetAngle));`}</CodeBlock>
                         <p>
-                            <strong>Motion Magic</strong> is CTRE's onboard motion profiling feature.
-                            Instead of just commanding "go to position X," Motion Magic generates a
-                            smooth trapezoidal (or S-curve) velocity profile automatically.
+                            Cruise velocity, acceleration, and jerk shape the move. Once the gear ratio is
+                            configured, those values use <em>mechanism rotations</em>, not degrees.
                         </p>
-                        <p>
-                            You configure three parameters:
-                        </p>
-                        <ul>
-                            <li><strong>Cruise Velocity</strong> – Maximum speed during motion</li>
-                            <li><strong>Acceleration</strong> – How fast to speed up/slow down</li>
-                            <li><strong>Jerk</strong> (optional) – Smooths the acceleration curve</li>
-                        </ul>
-                        <p>
-                            Benefits over raw position control:
-                        </p>
-                        <ul>
-                            <li>Smoother motion, less mechanical stress</li>
-                            <li>Better repeatability under varying battery voltage</li>
-                            <li>Respects physical limits of your mechanism</li>
-                        </ul>
-                        <CodeBlock>{`// Configure in TalonFXConfiguration
-config.MotionMagic.MotionMagicCruiseVelocity = 80; // rps
-config.MotionMagic.MotionMagicAcceleration = 160;  // rps/s
-config.MotionMagic.MotionMagicJerk = 1600;         // rps/s/s`}</CodeBlock>
                         <DocLink href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/motion-magic.html">
-                            CTRE Motion Magic Docs →
+                            CTRE Motion Magic documentation →
                         </DocLink>
                     </ConceptCard>
 
-                    <ConceptCard
-                        title="What is periodic()?"
-                        emoji="🔄"
-                    >
+                    <ConceptCard title="Store one goal and update it every loop">
                         <p>
-                            The <code>periodic()</code> method is your subsystem's heartbeat. The
-                            <code>CommandScheduler</code> calls it automatically every 20 milliseconds
-                            (50 times per second).
+                            Commands change <code>targetAngle</code>. The subsystem&apos;s
+                            <code>periodic()</code> method sends that goal to the controller and publishes
+                            the measured position. This keeps the mechanism&apos;s state in one place.
                         </p>
-                        <p>
-                            Use it for:
-                        </p>
-                        <ul>
-                            <li>Applying motor outputs (control requests)</li>
-                            <li>Reading sensor values</li>
-                            <li>Logging telemetry to SmartDashboard/Shuffleboard</li>
-                            <li>Running state machines (like homing sequences)</li>
-                        </ul>
                         <CodeBlock>{`@Override
 public void periodic() {
-    // Apply control
     motor.setControl(motionMagic.withPosition(targetAngle));
-    
-    // Log telemetry
     SmartDashboard.putNumber("Arm/Angle", getAngle());
 }`}</CodeBlock>
                         <Hint>
-                            Never put blocking code or long loops in <code>periodic()</code>.
-                            It must complete quickly or you'll starve other subsystems!
+                            Keep <code>periodic()</code> quick. A long loop or blocking call delays the
+                            rest of the robot program.
                         </Hint>
-                    </ConceptCard>
-
-                    <ConceptCard
-                        title="What is FOC?"
-                        emoji="🧲"
-                    >
-                        <p>
-                            <strong>FOC (Field-Oriented Control)</strong> is an advanced motor control
-                            technique that provides better torque at low speeds and smoother operation
-                            overall. In Phoenix 6, you enable it with <code>.withEnableFOC(true)</code>.
-                        </p>
-                        <p>
-                            When to use FOC:
-                        </p>
-                        <ul>
-                            <li>Mechanisms requiring precise low-speed control</li>
-                            <li>Arms, elevators, and intakes</li>
-                            <li>Any time you want maximum efficiency</li>
-                        </ul>
-                        <CodeBlock>{`// Enable FOC in your control request
-motor.setControl(
-    motionMagic.withPosition(target)
-               .withEnableFOC(true)  // ← Enable FOC here
-);`}</CodeBlock>
-                        <DocLink href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/basic-control.html">
-                            CTRE Basic Control Docs →
-                        </DocLink>
                     </ConceptCard>
                 </Section>
 
                 <Quiz
-                    question="How often does the periodic() method run in a WPILib subsystem?"
+                    question="Why store targetAngle instead of sending a position request only when a button is pressed?"
                     options={[
-                        { text: "Every 1ms (1000Hz)" },
-                        { text: "Every 20ms (50Hz)", correct: true },
-                        { text: "Every 100ms (10Hz)" },
-                        { text: "Only when called by a Command" },
+                        { text: "The TalonFX forgets every target after 20ms" },
+                        { text: "Commands are not allowed to access subsystems" },
+                        { text: "periodic() can consistently apply and log the subsystem's current goal", correct: true },
+                        { text: "SmartDashboard requires a target variable" },
                     ]}
-                    explanation="The CommandScheduler calls periodic() every 20ms (50 times per second). This is fast enough for smooth motor control but slow enough to not overwhelm the roboRIO."
+                    explanation="Commands decide what the intake should do; the subsystem owns how that goal is applied and measured. Storing the goal keeps that boundary clear."
                 />
 
                 {/* Architecture */}
                 <Section id="architecture" title="Subsystem Architecture">
-                    <p>Every WPILib subsystem follows this general structure:</p>
+                    <p>This intake uses the following structure:</p>
                     <CodeBlock>{`public class MySubsystem extends SubsystemBase {
-    // 1️⃣ HARDWARE - Motors, sensors, pneumatics
+    // Hardware
     private final TalonFX motor;
     private final DigitalInput sensor;
 
-    // 2️⃣ CONTROL REQUESTS - Reusable control objects
+    // Reusable control request
     private final MotionMagicVoltage motionMagic = new MotionMagicVoltage(0);
 
-    // 3️⃣ STATE - Track what the subsystem is doing
+    // Desired state
     private Angle targetAngle = Degrees.of(0);
 
-    // 4️⃣ CONSTRUCTOR - Initialize hardware, apply configs
+    // Initialize hardware and apply configuration
     public MySubsystem() {
         motor = new TalonFX(port);
         // Apply configurations...
     }
 
-    // 5️⃣ PERIODIC - Runs every 20ms
+    // Apply the goal and publish useful measurements
     @Override
     public void periodic() {
         motor.setControl(motionMagic.withPosition(targetAngle));
         SmartDashboard.putNumber("Angle", getAngle().in(Degrees));
     }
 
-    // 6️⃣ PUBLIC METHODS - API for commands
+    // Public API used by commands
     public void setTargetAngle(Angle angle) { ... }
     public Angle getAngle() { ... }
 
-    // 7️⃣ COMMANDS - Return Command objects
+    // Commands built from that API
     public Command goToAngleCommand(Angle angle) { ... }
 }`}</CodeBlock>
                 </Section>
@@ -378,13 +310,13 @@ motor.setControl(
                 {/* Project Setup */}
                 <Section id="setup" title="Project Setup">
                     <p>
-                        Before writing code, let&apos;s set up the proper file structure. Each subsystem
-                        should live in its own package to keep things organized.
+                        Put the intake and its constants in one package so the mechanism code is easy
+                        to find and tune.
                     </p>
                     <p><strong>Create these files in your project:</strong></p>
-                    <CodeBlock>{`📁 src/main/java/frc/robot/
-└── 📁 subsystems/
-    └── 📁 intake/           ← Create this folder
+                    <CodeBlock>{`src/main/java/frc/robot/
+└── subsystems/
+    └── intake/
         ├── Intake.java      ← Main subsystem class
         └── IntakeConstants.java  ← Constants file`}</CodeBlock>
                     <InfoBox>
@@ -403,35 +335,44 @@ motor.setControl(
                 {/* Constants */}
                 <Section id="constants" title="Understanding IntakeConstants">
                     <p>
-                        The constants file contains all the &quot;magic numbers&quot; for your subsystem.
-                        Let&apos;s break down the key sections:
+                        The constants file holds the values that describe this particular intake. That
+                        separates tuning from behavior and makes it clear which numbers may change on a
+                        different robot.
                     </p>
 
-                    <ConceptCard title="Arm Positions" emoji="📐">
+                    <ConceptCard title="Arm positions">
                         <p>Define where the arm should be in different states:</p>
                         <CodeBlock>{`// Arm positions
 public static final Angle RETRACTED_ANGLE = Units.Degrees.of(90);
 public static final Angle DOWN_ANGLE = Units.Degrees.of(-32);`}</CodeBlock>
                         <Hint>
-                            Use WPILib&apos;s <code>Units</code> class for type-safe measurements.
-                            This prevents accidentally mixing degrees with rotations!
+                            WPILib&apos;s <code>Units</code> types make degrees and rotations harder to
+                            mix up by accident.
                         </Hint>
                     </ConceptCard>
 
-                    <ConceptCard title="Motion Control" emoji="🎯">
-                        <p>Motion Magic parameters control how smoothly the arm moves:</p>
+                    <ConceptCard title="Motion profile">
+                        <p>Motion Magic uses mechanism rotations once the gear ratio is configured:</p>
                         <CodeBlock>{`// Motion control
-public static final double CRUISE_VELOCITY = 2;  // deg/s
-public static final double ACCELERATION = 15;   // deg/s²
-public static final double JERK = 0;            // deg/s³`}</CodeBlock>
+public static final double CRUISE_VELOCITY = 2;  // mechanism rotations/s
+public static final double ACCELERATION = 15;   // mechanism rotations/s²
+public static final double JERK = 0;            // mechanism rotations/s³`}</CodeBlock>
                         <p>
                             <strong>Cruise velocity</strong> is the max speed. <strong>Acceleration</strong> controls
-                            how quickly it speeds up/slows down. <strong>Jerk</strong> (set to 0) means instant
-                            acceleration changes – increase it for even smoother motion.
+                            how quickly the profile changes speed. <strong>Jerk</strong> limits how quickly
+                            acceleration changes; zero selects a trapezoidal profile.
                         </p>
+                        <InfoBox>
+                            <p>
+                                These are not degrees per second. With
+                                <code> SensorToMechanismRatio</code> set, Phoenix reports and accepts
+                                mechanism rotations. A cruise velocity of 2 means up to two arm
+                                rotations per second.
+                            </p>
+                        </InfoBox>
                     </ConceptCard>
 
-                    <ConceptCard title="Motor Configuration" emoji="⚙️">
+                    <ConceptCard title="Arm motor configuration">
                         <p>The <code>getArmConfig()</code> method builds the TalonFX configuration:</p>
                         <CodeBlock>{`public static TalonFXConfiguration getArmConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -455,14 +396,17 @@ public static final double JERK = 0;            // deg/s³`}</CodeBlock>
     return config;
 }`}</CodeBlock>
                         <Hint>
-                            <code>kG</code> (gravity compensation) is crucial for arms! It adds
-                            extra voltage to hold position against gravity.{" "}
-                            <code>Arm_Cosine</code> adjusts automatically based on angle.
+                            <code>kG</code> adds voltage to counter gravity.
+                            <code>Arm_Cosine</code> changes that feedforward with the arm angle.
                         </Hint>
+                        <p>
+                            The gains shown here were chosen for this intake. Start cautiously and
+                            retune them if the mass, gearing, motor, or geometry changes.
+                        </p>
                     </ConceptCard>
 
-                    <ConceptCard title="Roller Configuration" emoji="🔄">
-                        <p>Rollers are simpler – just basic voltage control with current limits:</p>
+                    <ConceptCard title="Roller motor configuration">
+                        <p>The roller only needs voltage control, braking, and a current limit:</p>
                         <CodeBlock>{`public static TalonFXConfiguration getRollerConfig() {
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -475,12 +419,17 @@ public static final double JERK = 0;            // deg/s³`}</CodeBlock>
 
                 {/* Step 1 */}
                 <Section id="step1" title="Step 1: Declare Hardware">
+                    <InfoBox>
+                        <p><strong>Before enabling:</strong> Put the robot on blocks, clear the mechanism,
+                            check the CAN IDs and sensor port, and keep one person ready to disable.
+                            Make the first movement with the arm supported and away from its hard stops.</p>
+                    </InfoBox>
                     <p>Start by declaring your motors and sensors as instance variables.</p>
                     <CodeBlock>{`private final TalonFX armMotor;
 private final TalonFX rollerMotor;
 private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}</CodeBlock>
                     <Hint>
-                        We use <code>TalonFX</code> for Falcon 500 / Kraken motors and{" "}
+                        We use <code>TalonFX</code> for Falcon 500 or Kraken motors and{" "}
                         <code>DigitalInput</code> for beam-break sensors. The sensor is
                         initialized inline because its port is constant.
                     </Hint>
@@ -505,7 +454,7 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
     // TODO: Apply motor configurations
 }`}</CodeBlock>
                         <Solution>
-                            <CodeBlock>{`public Intake() {
+                            <CodeBlock>{`public IntakeSkeleton() {
     armMotor = TalonFXFactory.createDefaultTalon(Ports.INTAKE_ARM);
     rollerMotor = TalonFXFactory.createDefaultTalon(Ports.INTAKE_ROLLERS);
 
@@ -519,6 +468,11 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
                             </Hint>
                         </Solution>
                     </Challenge>
+                    <InfoBox>
+                        <p><strong>Checkpoint:</strong> Build the project. With the robot disabled,
+                            confirm that both motors appear on the CAN bus and that the configuration
+                            helper reports no errors. Do not continue until the IDs match the constants.</p>
+                    </InfoBox>
                 </Section>
 
                 {/* Step 3 */}
@@ -528,9 +482,8 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
                         you read sensors, apply motor outputs, and log telemetry.
                     </p>
                     <InfoBox>
-                        <strong>Important:</strong> In Phoenix 6, you apply control using the
-                        "control request" pattern. Create a <code>MotionMagicVoltage</code> object
-                        once, then reuse it with <code>.withPosition()</code> each loop.
+                        In Phoenix 6, create a <code>MotionMagicVoltage</code> request once, then reuse
+                        it with <code>.withPosition()</code> each loop.
                     </InfoBox>
                     <Challenge>
                         <p>
@@ -548,8 +501,7 @@ public void periodic() {
 public void periodic() {
     armMotor.setControl(
         motionMagic.withPosition(targetAngle)
-                   .withSlot(0)        // Use PID gains from slot 0
-                   .withEnableFOC(true) // Enable Field-Oriented Control
+                   .withSlot(0)
     );
 
     SmartDashboard.putNumber("Intake/Position", getAngle().in(Degrees));
@@ -557,24 +509,30 @@ public void periodic() {
 }`}</CodeBlock>
                         </Solution>
                     </Challenge>
+                    <InfoBox>
+                        <p><strong>Checkpoint:</strong> With the arm supported, command a small change in
+                            target and watch <code>Intake/Position</code> and <code>Intake/Goal_Deg</code>.
+                            If the measured angle moves away from the goal, disable immediately and fix
+                            inversion or sensor direction before changing PID gains.</p>
+                    </InfoBox>
                 </Section>
 
                 <Quiz
-                    question="In Phoenix 6, what pattern do you use to apply motor control?"
+                    question="The arm moves away from its goal as soon as you enable it. What should you do first?"
                     options={[
-                        { text: "motor.set(0.5)" },
-                        { text: "motor.setPower(voltage)" },
-                        { text: "motor.setControl(controlRequest)", correct: true },
-                        { text: "motor.run(speed)" },
+                        { text: "Increase kP so it reaches the goal faster" },
+                        { text: "Disable and correct motor or sensor inversion", correct: true },
+                        { text: "Negate every requested angle" },
+                        { text: "Increase the current limit" },
                     ]}
-                    explanation="Phoenix 6 uses a 'control request' pattern. You create reusable request objects (like MotionMagicVoltage or VoltageOut) and apply them with setControl(). This is more efficient than creating new objects each loop."
+                    explanation="Positive feedback can drive an arm into a hard stop. Fix the sign convention before tuning gains or trying another target."
                 />
 
                 {/* Step 4 */}
                 <Section id="step4" title="Step 4: Sensor Getters">
                     <p>
-                        Provide methods to read sensor values. These abstract the hardware details
-                        so other code doesn't need to know about Phoenix 6 StatusSignals.
+                        Give the rest of the robot names that describe what the sensor means. Code using
+                        the intake should ask <code>hasCoral()</code>, not reason about a raw voltage.
                     </p>
                     <Challenge>
                         <p>
@@ -587,7 +545,7 @@ public void periodic() {
 
 public boolean hasCoral() {
     // TODO: Return true when beam is broken
-    // Hint: The sensor returns FALSE when broken!
+    // This sensor returns false when the beam is broken.
 }`}</CodeBlock>
                         <Solution>
                             <CodeBlock>{`public Angle getAngle() {
@@ -595,7 +553,7 @@ public boolean hasCoral() {
 }
 
 public boolean hasCoral() {
-    return !coralSensor.get(); // Inverted!
+    return !coralSensor.get();
 }`}</CodeBlock>
                             <Hint>
                                 <code>getPosition()</code> returns a <code>StatusSignal&lt;Angle&gt;</code>.
@@ -603,13 +561,19 @@ public boolean hasCoral() {
                             </Hint>
                         </Solution>
                     </Challenge>
+                    <InfoBox>
+                        <p><strong>Checkpoint:</strong> Publish <code>hasCoral()</code> to the dashboard.
+                            Block and unblock the beam by hand while the robot is disabled. The value
+                            should be true only while the beam is blocked.</p>
+                    </InfoBox>
+                    <CodeBlock>{`SmartDashboard.putBoolean("Intake/Has_Coral", hasCoral());`}</CodeBlock>
                 </Section>
 
                 {/* Step 5 */}
                 <Section id="step5" title="Step 5: Roller Control">
                     <p>
-                        The rollers use simple voltage control – no fancy Motion Magic needed.
-                        Just set a voltage and the motor spins at that power.
+                        The rollers use direct voltage control. Keep the three actions small and give
+                        each one a name that command code can read easily.
                     </p>
                     <Challenge>
                         <p>
@@ -644,25 +608,58 @@ public void reverseRollers() {
 }`}</CodeBlock>
                         </Solution>
                     </Challenge>
+                    <InfoBox>
+                        <p><strong>Checkpoint:</strong> Keep the intake off the floor. Start, stop, and
+                            reverse the roller separately. Verify its direction and begin with a lower
+                            voltage if the mechanism has not been tested before.</p>
+                    </InfoBox>
                 </Section>
 
                 {/* Step 6 */}
                 <Section id="step6" title="Step 6: Commands">
                     <p>
-                        Commands are the standard way to trigger subsystem actions in WPILib.
-                        They can be chained with <code>.andThen()</code>, run in parallel with{" "}
-                        <code>.alongWith()</code>, and interrupted at any time.
+                        Now combine the methods into one behavior. The command must also leave the intake
+                        safe if the driver cancels it or another command interrupts it.
                     </p>
                     <InfoBox>
-                        <strong>Command factories:</strong> SubsystemBase provides helper methods
-                        to create commands:
+                        <strong>The pieces used here:</strong>
                         <ul>
-                            <li><code>run(Runnable)</code> – Runs continuously</li>
-                            <li><code>runOnce(Runnable)</code> – Runs once then finishes</li>
-                            <li><code>.until(BooleanSupplier)</code> – Ends when condition is true</li>
-                            <li><code>.andThen(Command)</code> – Chains commands sequentially</li>
+                            <li><code>runOnce(Runnable)</code> runs an intake action once.</li>
+                            <li><code>Commands.waitUntil(...)</code> waits for the sensor.</li>
+                            <li><code>.andThen(...)</code> runs the steps in order.</li>
+                            <li><code>.finallyDo(...)</code> cleans up after completion or interruption.</li>
                         </ul>
                     </InfoBox>
+                    <Challenge>
+                        <p>
+                            <strong>Your task:</strong> Finish the small methods that change the arm
+                            goal and combine arm and roller actions.
+                        </p>
+                        <Solution>
+                            <CodeBlock>{`public void setTargetAngle(Angle angle) {
+    targetAngle = angle;
+}
+
+public void deploy() {
+    setTargetAngle(IntakeConstants.DOWN_ANGLE);
+    startRollers();
+}
+
+public void stow() {
+    setTargetAngle(IntakeConstants.RETRACTED_ANGLE);
+    stopRollers();
+}
+
+public Command getMoveToAngleCommand(Angle angle) {
+    return runOnce(() -> setTargetAngle(angle))
+        .andThen(Commands.waitUntil(
+            () -> Math.abs(
+                getAngle().in(Degrees) - angle.in(Degrees)
+            ) <= 2.0
+        ));
+}`}</CodeBlock>
+                        </Solution>
+                    </Challenge>
                     <Challenge>
                         <p>
                             <strong>Your task:</strong> Implement <code>autoIntakeCommand()</code>{" "}
@@ -679,36 +676,39 @@ public void reverseRollers() {
                         <Solution>
                             <CodeBlock>{`public Command autoIntakeCommand() {
     return runOnce(this::deploy)
-        .andThen(run(() -> {}).until(this::hasCoral))
-        .andThen(runOnce(this::stow));
+        .andThen(Commands.waitUntil(this::hasCoral))
+        .andThen(runOnce(this::stow))
+        .finallyDo(interrupted -> stopRollers());
 }`}</CodeBlock>
                             <Hint>
-                                The middle command <code>run(() -&gt; &#123;&#125;).until(...)</code> is
-                                a "wait until" pattern – it does nothing but keeps running until coral is detected.
+                                Add <code>import edu.wpi.first.wpilibj2.command.Commands;</code>.
+                                Without the cleanup, canceling while the command is waiting can leave
+                                the roller running.
                             </Hint>
                         </Solution>
                     </Challenge>
+                    <InfoBox>
+                        <p><strong>Checkpoint:</strong> Run the command once with a game piece, then run
+                            it again and cancel before the sensor trips. The roller should stop in both
+                            cases. Also verify that blocking the sensor causes the intake to stow.</p>
+                    </InfoBox>
                 </Section>
 
                 {/* Summary */}
                 <Section id="summary" title="Summary">
-                    <p>You now know how to build a complete FRC subsystem! Key takeaways:</p>
+                    <p>The finished subsystem has a narrow public API and a test for each layer:</p>
                     <ul>
-                        <li>
-                            <code>SubsystemBase</code> encapsulates hardware and provides a control API
-                        </li>
-                        <li>
-                            <code>periodic()</code> is your control loop – runs every 20ms
-                        </li>
-                        <li>
-                            <strong>Motion Magic</strong> provides smooth, repeatable motion profiling
-                        </li>
-                        <li>
-                            Sensor getters abstract hardware details (StatusSignals, inversion)
-                        </li>
-                        <li>
-                            Commands let you compose complex behaviors with <code>.andThen()</code>
-                        </li>
+                        <li>The subsystem owns motors, sensors, goals, and configuration.</li>
+                        <li><code>periodic()</code> applies the arm goal and publishes measurements.</li>
+                        <li>The beam-break getter turns active-low wiring into a useful name.</li>
+                        <li>The command composes actions and stops the roller when interrupted.</li>
+                    </ul>
+                    <h3>Before code review</h3>
+                    <ul>
+                        <li>Show the dashboard value changing when the beam is blocked.</li>
+                        <li>Show the arm reaching both goals without hitting a hard stop.</li>
+                        <li>Cancel auto-intake midway and show that the roller stops.</li>
+                        <li>Identify which gains, limits, and ratios would need retuning on another robot.</li>
                     </ul>
                 </Section>
 
@@ -773,7 +773,7 @@ function Section({
 function Hint({ children }: { children: React.ReactNode }) {
     return (
         <div className={styles.hint}>
-            <strong>💡 Hint:</strong> {children}
+            <strong>Hint:</strong> {children}
         </div>
     );
 }
@@ -797,18 +797,14 @@ function Solution({ children }: { children: React.ReactNode }) {
 
 function ConceptCard({
     title,
-    emoji,
     children,
 }: {
     title: string;
-    emoji: string;
     children: React.ReactNode;
 }) {
     return (
         <div className={styles.conceptCard}>
-            <h3 className={styles.conceptTitle}>
-                <span className={styles.conceptEmoji}>{emoji}</span> {title}
-            </h3>
+            <h3 className={styles.conceptTitle}>{title}</h3>
             <div className={styles.conceptContent}>{children}</div>
         </div>
     );

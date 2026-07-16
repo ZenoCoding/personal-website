@@ -11,12 +11,13 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.*;
 
 /**
- * Simplified Intake subsystem for the 2025 FRC Reefscape game.
+ * Extended team intake example, including a homing state machine.
  * 
  * This version removes the PeriodicIO abstraction for clarity while
  * maintaining identical functionality.
@@ -78,8 +79,7 @@ public class Intake extends SubsystemBase {
         } else {
             armMotor.setControl(
                     motionMagic.withPosition(targetAngle)
-                            .withSlot(0)
-                            .withEnableFOC(true));
+                            .withSlot(0));
         }
 
         // Log telemetry
@@ -201,8 +201,10 @@ public class Intake extends SubsystemBase {
     // COMMANDS
     // ═══════════════════════════════════════════════════════════════════════
     public Command getMoveToAngleCommand(Angle angle) {
-        return run(() -> setTargetAngle(angle))
-                .until(() -> getAngle().isNear(angle, Degrees.of(2)));
+        return runOnce(() -> setTargetAngle(angle))
+                .andThen(Commands.waitUntil(
+                        () -> Math.abs(
+                                getAngle().in(Degrees) - angle.in(Degrees)) <= 2.0));
     }
 
     public Command getHomingCommand() {
@@ -221,9 +223,9 @@ public class Intake extends SubsystemBase {
 
     public Command autoIntakeCommand() {
         return deployCommand()
-                .andThen(run(() -> {
-                }).until(this::hasCoral))
-                .andThen(stowCommand());
+                .andThen(Commands.waitUntil(this::hasCoral))
+                .andThen(stowCommand())
+                .finallyDo(interrupted -> stopRollers());
     }
 
     public Command runRollersCommand() {

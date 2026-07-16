@@ -26,9 +26,10 @@ public final class IntakeConstants {
     public static final Angle HOMING_ANGLE = Units.Degrees.of(118); // Use down position for homing
 
     // Motion control
-    public static final double CRUISE_VELOCITY = 2; // degrees per second
-    public static final double ACCELERATION = 15; // degrees per second squared
-    public static final double JERK = 0;
+    // Phoenix uses mechanism rotations after SensorToMechanismRatio is set.
+    public static final double CRUISE_VELOCITY = 2; // mechanism rotations per second
+    public static final double ACCELERATION = 15; // mechanism rotations per second squared
+    public static final double JERK = 0; // mechanism rotations per second cubed
 
     // Homing
     public static final Current HOMING_THRESHOLD = Units.Amps.of(40); // Current threshold for homing

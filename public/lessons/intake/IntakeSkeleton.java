@@ -9,6 +9,7 @@ import edu.wpi.first.units.measure.*;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.*;
@@ -16,8 +17,7 @@ import static edu.wpi.first.units.Units.*;
 /**
  * Intake Subsystem Skeleton
  * 
- * YOUR TASK: Implement the missing methods marked with TODO.
- * Refer to the lesson guide for help!
+ * Implement the methods marked TODO and test one section at a time.
  */
 public class IntakeSkeleton extends SubsystemBase {
 
@@ -76,7 +76,7 @@ public class IntakeSkeleton extends SubsystemBase {
 
     /**
      * Check if the coral sensor detects a game piece.
-     * Note: The sensor returns false when the beam is broken!
+     * The sensor returns false when the beam is broken.
      * 
      * @return true if coral is detected
      */

@@ -11,6 +11,13 @@ export const metadata: Metadata = {
 export default function StudentsPage() {
     const resources = [
         {
+            title: "Lesson: WPILib Commands in Practice",
+            description:
+                "Command lifecycles, requirements, bindings, composition, defaults, and cleanup patterns.",
+            link: "/students/commands",
+            type: "Lesson",
+        },
+        {
             title: "Lesson: Building an Intake Subsystem",
             description:
                 "Learn to write a WPILib subsystem with Motion Magic arm control and roller motors. Includes interactive exercises with hidden solutions.",

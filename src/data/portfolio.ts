@@ -39,7 +39,7 @@ export const portfolio: {
         linkedin: "https://linkedin.com/in/tycho-young",
     },
     about: {
-        bio: "I’m a highly motivated high school student with a strong foundation in software engineering seeking an internship to apply and further develop skills in computer science or AI. I’ve built numerous self-directed projects including MathGPT, a Discord application that combines CAS and LLMs to enhance both. I have strong teamwork, communication, problem-solving, and analytical skills.",
+        bio: "I’m a high-school student who is excited to use technology to help people in their everyday lives. I strive for the sense of wonder that comes from a beautiful physics problem, a masterful piece of engineering, or the deep message behind a piece of art. I am a maker at heart and have worked on many projects, starting with a treehouse when I was five. Over the years, I’ve accumulated many technical and soft skills, started 9470, a FIRST Robotics team at my school (we were #13 globally last year!), and developed an appetite for interesting problems. Check out some of my work below.",
         interests: ["Artificial Intelligence", "Robotics", "Game Development", "Mathematics"],
         headshot: "/photos/head.jpeg",
     },
@@ -99,7 +99,16 @@ export const portfolio: {
             description: "Planning and organizing school-wide events to build community and engagement."
         }
     ],
-    projects: [
+        projects: [
+            {
+                title: "Split-Flap Display",
+                description: "I’m building this split-flap display for sentimental reasons. Even though I’ll be leaving home soon to go off to college or otherwise, I want to stay connected with my family and make sure they can see a bit of me every day. When complete, I’ll use the 16-character display to send messages to my family at home while I’m away. It’s a nostalgic way to make it feel like I’m still at home.\n\nI designed and manufactured every part, from the body to the flaps to the control system. I had to learn PCB design, improve my CAD skills, and study many prior examples to get to this point. The flaps are the most tedious part, and the PCB design is no joke either!",
+                image: "/photos/split-flap-pcb.jpeg",
+                tags: ["PCB Design", "Mechatronics", "Onshape", "Embedded Systems"],
+                date: "Summer 2026 – Present",
+                featured: true,
+                imagePosition: "center",
+            },
         /* {
             title: "Multi-Agent Research",
             description: "An experimental research harness built using LiteLLM to analyze multi-agent LLM dynamics. Investigates reasoning gains, debate models, self-critics, and token efficiency of multi-agent workflows.",
@@ -318,28 +327,75 @@ export const portfolio: {
                 "Celebrates outstanding success in advancing respect and appreciation for engineering within the school and community.",
         },
     ],
-    now: {
-        status: "Winter Break",
-        location: "Fremont, CA",
-        focus: [
-            {
-                label: "Personal Projects",
-                description: "Robotics and web dev, hoping to learn more about mechatronics engineering",
-            },
-        ],
+        now: {
+            status: "Summer 2026",
+            location: "Fremont, CA",
+            focus: [
+                {
+                    label: "Split-flap display",
+                    description: "SMD components are so hard to solder by hand, especially 0603…",
+                },
+                {
+                    label: "Guitar",
+                    description: "“Let Her Go” has a notoriously difficult intro, and despite my lack of experience with guitar, its message about failing to appreciate things until you lose them—willingly or not—resonates with me deeply. Being able to let go of friends, projects, and home is hard, even if it’s for the best.",
+                },
+            ],
         reading: [
             { title: "The Three Body Problem", author: "Cixin Liu", status: "reading" },
             { title: "The Character of Physical Law", author: "Richard Feynman", status: "reading" },
             { title: "Shoe Dog", author: "Phil Knight", status: "finished" },
             { title: "One Way", author: "S.J. Morden", status: "finished" },
         ],
-        baking: "Cookies with Mama.",
+            life: [
+                {
+                    label: "Building",
+                    title: "Surface mount trouble",
+                    description: "SMD components are so hard to solder by hand, especially 0603…",
+                    image: "/photos/split-flap-pcb.jpeg",
+                },
+                {
+                    label: "Cooking",
+                    title: "Yummy steak",
+                    description: "Learning how to cook steak was one of the best decisions of my life. Butter basting is so easy, and it makes the steaks taste so good.",
+                    image: "/photos/steak-night.jpeg",
+                },
+                {
+                    label: "Travel",
+                    title: "Lake Tahoe",
+                    description: "Hikes are hard, but I’ve come to appreciate the views that make them well worth it.",
+                    image: "/photos/tahoe-clouds.jpeg",
+                },
+            ],
         coolStuff: [
             { title: "Cursed Units", url: "https://www.youtube.com/watch?v=kkfIXUjkYqE", type: "video" },
             { title: "Power Laws", url: "https://www.youtube.com/watch?v=HBluLfX2F_k", type: "video" }
         ],
     },
-    photos: [
+        photos: [
+        {
+            url: "/photos/split-flap-pcb.jpeg",
+            caption: "surface mount trouble",
+            title: "Surface Mount Trouble",
+            date: "Summer 2026",
+            location: "Fremont, CA",
+            details: "SMD components are so hard to solder by hand, especially 0603…"
+        },
+        {
+            url: "/photos/steak-night.jpeg",
+            caption: "yummy steak",
+            title: "Yummy Steak",
+            date: "Summer 2026",
+            location: "Fremont, CA",
+            details: "Learning how to cook steak was one of the best decisions of my life. Butter basting is so easy, and it makes the steaks taste so good."
+        },
+        {
+            url: "/photos/tahoe-lake.jpeg",
+            caption: "flowers, water, mountains",
+            title: "Lakeside View",
+            date: "Summer 2026",
+            location: "Lake Tahoe, CA",
+            details: "What a beautiful lakeside view. Flowers, water, mountains."
+        },
         {
             url: "/photos/DSC05780.jpeg",
             caption: "afternoon glow on the east coast",
@@ -390,7 +446,7 @@ export const portfolio: {
             details: "What is most obviously reality may in fact be a faceitous.... I'm not really sure what the metaphor is here, I just like puddle photos."
         },
         {
-            url: "/photos/sunset_hills.jpg",
+                url: "/photos/sunset_hills.jpeg",
             caption: "golden hour at vargas plateau",
             title: "Vargas Plateau",
             date: "Nov 2025",
@@ -405,19 +461,14 @@ export const portfolio: {
             location: "Fremont, CA",
             details: "The perfect winter comfort food. These were a little scary to make, but the crinkly, chewy, cookie texture is 100% worth it."
         },
-
-        {
-            url: "/photos/guitar.jpg", // Placeholder
-            caption: "learning to play",
-            title: "Guitar Progress",
-            date: "Ongoing",
-            location: "Home",
-            details: "Photograph — Nickelback; Undone — Weezer; I Will Follow You Into the Dark — Death Cab for Cutie; bar chords are so hard, but satisfying when they ring clear."
-        },
-
-    ],
+        ],
     testScores: [
         { name: "SAT", score: "1550", date: "Oct 2025" },
+        { name: "AP Chinese Language & Culture", score: "5", date: "May 2026" },
+        { name: "AP Physics C: Mechanics", score: "5", date: "May 2026" },
+        { name: "AP Physics C: Electricity & Magnetism", score: "5", date: "May 2026" },
+        { name: "AP English Literature & Composition", score: "5", date: "May 2026" },
+        { name: "AP World History: Modern", score: "5", date: "May 2026" },
         { name: "AP Calculus BC", score: "5", date: "May 2025" },
         { name: "AP English Language & Composition", score: "5", date: "May 2025" },
         { name: "AP Macroeconomics", score: "5", date: "May 2025" },

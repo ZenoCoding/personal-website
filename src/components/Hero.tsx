@@ -29,7 +29,7 @@ const Hero = () => {
                 </h1>
 
                 <p className={styles.tagline}>
-                    I'm a software engineer and robotics leader focused on AI, solving complex problems, and constant learning.
+                    Welcome to my site! Feel free to browse many of my weird projects here. You might find some of them interesting. I update things semi-often. I hope you are able to get a sense of who I am through this temporary snapshot in time.
                 </p>
 
                 <div className={styles.actions}>

@@ -28,8 +28,8 @@ export default function About() {
                             padding: '1.5rem',
                             boxShadow: '0 4px 20px -5px rgba(0,0,0,0.1)'
                         }}>
-                            <div className={styles.headerRow} style={{ marginBottom: '1rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div className={`${styles.headerRow} ${styles.nowHeader}`}>
+                                    <div className={styles.nowTitleGroup}>
                                     <h2 className="section-title" style={{ margin: 0, fontSize: '1.5rem' }}>The Now</h2>
                                     <span style={{
                                         background: 'rgba(var(--color-accent-blue-rgb), 0.1)',
@@ -44,7 +44,7 @@ export default function About() {
                                         {portfolio.now.status}
                                     </span>
                                 </div>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--color-text-secondary)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                    <span className={styles.nowLocation}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
                                         <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" />
                                         <circle cx="12" cy="10" r="3" />
@@ -52,7 +52,7 @@ export default function About() {
                                 </span>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '2rem' }}>
+                                <div className={styles.nowGrid}>
                                 {/* Left Column: Focus & Meta */}
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                                     <div>
@@ -67,16 +67,9 @@ export default function About() {
                                                     </div>
                                                 </li>
                                             ))}
-                                            <li style={{ display: 'flex', gap: '0.8rem', alignItems: 'baseline' }}>
-                                                <span style={{ color: 'var(--color-accent-purple)', fontSize: '0.8rem' }}>▹</span>
-                                                <div style={{ lineHeight: 1.4 }}>
-                                                    <strong style={{ color: 'var(--color-text-primary)', fontSize: '0.9rem', marginRight: '0.4rem' }}>Offline</strong>
-                                                    <span style={{ fontSize: '0.85rem', color: 'var(--color-text-secondary)' }}>{portfolio.now.baking}</span>
-                                                </div>
-                                            </li>
                                         </ul>
+                                        </div>
                                     </div>
-                                </div>
 
                                 {/* Right Column: Bookshelf & Watching */}
                                 <div>
@@ -183,6 +176,20 @@ export default function About() {
                                     </div>
                                 </div>
                             </div>
+
+                                <div className={styles.lifeGrid}>
+                                    {portfolio.now.life.map((item: { label: string; title: string; description: string; image: string }) => (
+                                        <article className={styles.lifeCard} key={item.title}>
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={item.image} alt="" className={styles.lifeImage} />
+                                            <div className={styles.lifeCopy}>
+                                                <span className={styles.lifeLabel}>{item.label}</span>
+                                                <h3>{item.title}</h3>
+                                                {item.description && <p>{item.description}</p>}
+                                            </div>
+                                        </article>
+                                    ))}
+                                </div>
                         </div>
                     </div>
 

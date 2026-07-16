@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "Tycho Young",
-  description: "A showcase of my work and skills.",
+  description: "Welcome to my site! Feel free to browse many of my weird projects here. You might find some of them interesting.",
 };
 
 import { ThemeProvider } from "@/context/ThemeContext";
