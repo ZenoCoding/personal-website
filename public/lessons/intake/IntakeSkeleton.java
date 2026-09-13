@@ -91,7 +91,7 @@ public class IntakeSkeleton extends SubsystemBase {
 
     /**
      * Set the desired angle for the arm to move to.
-     * The actual movement happens in periodic().
+     * periodic() sends this target to the motor controller.
      * 
      * @param angle Target angle for the arm
      */

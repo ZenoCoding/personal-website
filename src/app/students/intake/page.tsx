@@ -41,8 +41,7 @@ export default function IntakeLessonPage() {
                     <h1 className={styles.title}>Building an Intake Subsystem</h1>
                     <p className={styles.subtitle}>
                         Build the code for a real two-motor intake: a pivoting arm, a roller,
-                        and a beam-break sensor. We will write it in small pieces and test each
-                        piece before combining them.
+                        and a beam-break sensor. You’ll write each part, then use a sensor and a button to make them work together.
                     </p>
 
                     <div className={styles.lessonMeta}>
@@ -84,6 +83,9 @@ export default function IntakeLessonPage() {
                 </header>
 
                 {/* Intro */}
+                <InfoBox>
+                    <p>For the runnable laptop version, use <Link href="/students/projects/intake-practice">Practice an intake on your laptop</Link>. This walkthrough uses TalonFX motors; you can compile your work now and complete the physical checks when a robot is available.</p>
+                </InfoBox>
                 <Section id="intro" title="What You'll Build">
                     <p>
                         An <strong>intake subsystem</strong> is responsible for picking up
@@ -111,14 +113,12 @@ export default function IntakeLessonPage() {
                     <ul>
                         <li>Explain what belongs inside a subsystem and what belongs in a command.</li>
                         <li>Configure a TalonFX for mechanism units and Motion Magic.</li>
-                        <li>Read an active-low beam-break sensor without leaking hardware details.</li>
+                        <li>Write hasCoral() so it returns true when the beam is blocked.</li>
                         <li>Build a command sequence that behaves safely when it is interrupted.</li>
                     </ul>
 
                     <InfoBox>
-                        <p><strong>How to use this lesson:</strong> Start with the starter code. Complete one step,
-                            deploy or compile, and run the checkpoint before opening the solution. The lesson
-                            solution is there for debugging, not for copy-pasting from the start.</p>
+                        <p><strong>How to use this lesson:</strong> Download the starter and try the first unfinished method. Compile after each step. Compare your attempt with the solution if you get stuck, and ask about any difference you cannot explain. Complete the hardware checkpoint when the mechanism is available.</p>
                     </InfoBox>
                 </Section>
 
@@ -126,8 +126,7 @@ export default function IntakeLessonPage() {
                 <Section id="prereqs" title="Prerequisites & Resources">
                     <p>
                         You should already be comfortable with Java methods, instance variables, and basic
-                        command-based robot code. Keep these references open; you do not need to read them
-                        cover to cover first.
+                        command-based robot code. Use the links below to look up the API calls as you encounter them.
                     </p>
                     <ul>
                         <li>
@@ -167,8 +166,7 @@ export default function IntakeLessonPage() {
                     <h3>2. Install Team 254 Helper Library</h3>
                     <p>
                         Our codebase uses a few Team 254 helper classes to create motors with known defaults and
-                        verify that configurations were actually applied. This is team-specific infrastructure,
-                        not a WPILib requirement.
+                        verify that configurations were actually applied. Install these helpers for the starter used in this lesson.
                     </p>
                     <div className={styles.downloadButtons} style={{ justifyContent: 'flex-start', margin: '1rem 0' }}>
                         <a
@@ -201,7 +199,7 @@ export default function IntakeLessonPage() {
                 <Section id="concepts" title="Key Concepts">
                     <ConceptCard title="Subsystems hide hardware details">
                         <p>
-                            The intake owns its motors and sensor. Other robot code should ask it to
+                            The Intake class stores the motor and sensor objects. Other robot code should ask it to
                             deploy, stow, or run the rollers without knowing CAN IDs, inversion, or how
                             the beam-break is wired.
                         </p>
@@ -234,8 +232,7 @@ export default function IntakeLessonPage() {
 
 motor.setControl(motionMagic.withPosition(targetAngle));`}</CodeBlock>
                         <p>
-                            Cruise velocity, acceleration, and jerk shape the move. Once the gear ratio is
-                            configured, those values use <em>mechanism rotations</em>, not degrees.
+                            Cruise velocity limits speed; acceleration and jerk limit how quickly that speed changes. The constants section below gives the units for each value.
                         </p>
                         <DocLink href="https://v6.docs.ctr-electronics.com/en/stable/docs/api-reference/device-specific/talonfx/motion-magic.html">
                             CTRE Motion Magic documentation →
@@ -246,7 +243,7 @@ motor.setControl(motionMagic.withPosition(targetAngle));`}</CodeBlock>
                         <p>
                             Commands change <code>targetAngle</code>. The subsystem&apos;s
                             <code>periodic()</code> method sends that goal to the controller and publishes
-                            the measured position. This keeps the mechanism&apos;s state in one place.
+                            the measured position. Look here when the requested angle and the measured angle disagree.
                         </p>
                         <CodeBlock>{`@Override
 public void periodic() {
@@ -268,7 +265,7 @@ public void periodic() {
                         { text: "periodic() can consistently apply and log the subsystem's current goal", correct: true },
                         { text: "SmartDashboard requires a target variable" },
                     ]}
-                    explanation="Commands decide what the intake should do; the subsystem owns how that goal is applied and measured. Storing the goal keeps that boundary clear."
+                    explanation="Commands update targetAngle. The subsystem sends that target to the motor controller in periodic() and records the measured angle."
                 />
 
                 {/* Architecture */}
@@ -310,8 +307,7 @@ public void periodic() {
                 {/* Project Setup */}
                 <Section id="setup" title="Project Setup">
                     <p>
-                        Put the intake and its constants in one package so the mechanism code is easy
-                        to find and tune.
+                        Put both files in the intake package:
                     </p>
                     <p><strong>Create these files in your project:</strong></p>
                     <CodeBlock>{`src/main/java/frc/robot/
@@ -319,13 +315,6 @@ public void periodic() {
     └── intake/
         ├── Intake.java      ← Main subsystem class
         └── IntakeConstants.java  ← Constants file`}</CodeBlock>
-                    <InfoBox>
-                        <p>
-                            <strong>Why separate constants?</strong> Putting constants in their own file
-                            makes them easy to find and tune. When you&apos;re at the field adjusting
-                            PID gains or speed limits, you only need to look in one place.
-                        </p>
-                    </InfoBox>
                     <p>
                         Download both files using the buttons above, or create them from scratch
                         following this lesson.
@@ -335,9 +324,7 @@ public void periodic() {
                 {/* Constants */}
                 <Section id="constants" title="Understanding IntakeConstants">
                     <p>
-                        The constants file holds the values that describe this particular intake. That
-                        separates tuning from behavior and makes it clear which numbers may change on a
-                        different robot.
+                        Keep the arm angles, gear ratio, and control gains in IntakeConstants.java. On another intake, you will need to check these values against its geometry and motors.
                     </p>
 
                     <ConceptCard title="Arm positions">
@@ -462,8 +449,7 @@ private final DigitalInput coralSensor = new DigitalInput(Ports.INTAKE_BREAK);`}
     TalonUtil.applyAndCheckConfiguration(rollerMotor, IntakeConstants.getRollerConfig());
 }`}</CodeBlock>
                             <Hint>
-                                <code>TalonFXFactory</code> is a Team 254 helper that creates motors
-                                with sensible defaults. <code>TalonUtil.applyAndCheckConfiguration</code>
+                                <code>TalonFXFactory</code> is a Team 254 helper that creates the TalonFX objects. <code>TalonUtil.applyAndCheckConfiguration</code>
                                 applies a config and verifies it was successful.
                             </Hint>
                         </Solution>
@@ -531,8 +517,7 @@ public void periodic() {
                 {/* Step 4 */}
                 <Section id="step4" title="Step 4: Sensor Getters">
                     <p>
-                        Give the rest of the robot names that describe what the sensor means. Code using
-                        the intake should ask <code>hasCoral()</code>, not reason about a raw voltage.
+                        Name the getter <code>hasCoral()</code> and return true when a piece blocks the beam. The sensor returns false in that case, so the getter will invert its value.
                     </p>
                     <Challenge>
                         <p>
@@ -572,8 +557,7 @@ public boolean hasCoral() {
                 {/* Step 5 */}
                 <Section id="step5" title="Step 5: Roller Control">
                     <p>
-                        The rollers use direct voltage control. Keep the three actions small and give
-                        each one a name that command code can read easily.
+                        The rollers use direct voltage control. Write one method for each action: start, stop, and reverse.
                     </p>
                     <Challenge>
                         <p>
@@ -695,15 +679,8 @@ public Command getMoveToAngleCommand(Angle angle) {
                 </Section>
 
                 {/* Summary */}
-                <Section id="summary" title="Summary">
-                    <p>The finished subsystem has a narrow public API and a test for each layer:</p>
-                    <ul>
-                        <li>The subsystem owns motors, sensors, goals, and configuration.</li>
-                        <li><code>periodic()</code> applies the arm goal and publishes measurements.</li>
-                        <li>The beam-break getter turns active-low wiring into a useful name.</li>
-                        <li>The command composes actions and stops the roller when interrupted.</li>
-                    </ul>
-                    <h3>Before code review</h3>
+                <Section id="summary" title="Demonstrate your intake">
+                    <p>Bring the completed intake to code review. With hardware available, demonstrate these behaviors:</p>
                     <ul>
                         <li>Show the dashboard value changing when the beam is blocked.</li>
                         <li>Show the arm reaching both goals without hitting a hard stop.</li>
@@ -711,6 +688,8 @@ public Command getMoveToAngleCommand(Angle angle) {
                         <li>Identify which gains, limits, and ratios would need retuning on another robot.</li>
                     </ul>
                 </Section>
+
+                <p>Next: <Link href="/students/projects/elevator">write an elevator subsystem</Link> using what you learned here.</p>
 
                 {/* Further Reading */}
                 <Section title="Further Reading">

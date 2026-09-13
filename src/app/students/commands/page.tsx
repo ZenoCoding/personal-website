@@ -37,7 +37,7 @@ export default function CommandsLessonPage() {
                 <header className={styles.header}>
                     <h1 className={styles.title}>WPILib Commands in Practice</h1>
                     <p className={styles.subtitle}>
-                        Common command factories, bindings, requirements, compositions, and cleanup patterns.
+                        A button press is the easy part. Here we’ll also handle what happens when the driver lets go, a sensor trips, or another command interrupts.
                     </p>
 
                     <div className={styles.lessonMeta}>
@@ -55,9 +55,9 @@ export default function CommandsLessonPage() {
                 </header>
 
                 <Section id="overview" title="Prerequisite">
+                    <p>On your first pass, work through the command class and roller exercise, then requirements, bindings, and composition. The other factory and decorator examples are here when you need them. For a runnable project, use <Link href="/students/projects/intake-practice">Practice an intake on your laptop</Link>.</p>
                     <p>
-                        Know basic Java, lambdas, and method references. Read WPILib&apos;s command-based
-                        introduction before starting this lesson.
+                        You should be comfortable with Java methods and fields. In the examples, <code>this::stopRollers</code> passes a method for the command to call later; <code>() -&gt; motor.setVoltage(6)</code> does the same for an action with an argument.
                     </p>
                     <DocLink href="https://docs.wpilib.org/en/stable/docs/software/commandbased/">
                         WPILib command-based programming introduction →
@@ -94,7 +94,7 @@ requirement conflict, button release, or cancel()
 
                     <InfoBox>
                         <p><code>end(false)</code> means normal completion. <code>end(true)</code> means
-                            interruption. Cleanup should usually run in either case.</p>
+                            interruption. For the roller commands below, call <code>stopRollers()</code> in either case.</p>
                     </InfoBox>
                 </Section>
 
@@ -192,6 +192,23 @@ public class RunIntakeCommand extends Command {
 }`}</CodeBlock>
                     </ConceptCard>
 
+                    <Challenge>
+                        <p><strong>Practice:</strong> Run the rollers at 6 volts until the command is canceled.
+                            Stop the motor when it ends.</p>
+                        <CodeBlock>{`public Command runRollersCommand() {
+    // Your code
+}`}</CodeBlock>
+                        <Solution>
+                            <CodeBlock>{`public Command runRollersCommand() {
+    return startEnd(
+        () -> rollerMotor.setVoltage(6.0),
+        rollerMotor::stopMotor
+    );
+}`}</CodeBlock>
+                        </Solution>
+                    </Challenge>
+
+                    <h3>Other factories you may need</h3>
                     <ConceptCard title="runEnd: repeat, then clean up">
                         <p>
                             Use this when an output changes every loop and must be stopped afterward.
@@ -230,22 +247,6 @@ public class RunIntakeCommand extends Command {
 );`}</CodeBlock>
                     </ConceptCard>
 
-                    <Challenge>
-                        <p><strong>Practice:</strong> Run the rollers at 6 volts until the command is canceled.
-                            Stop the motor when it ends.</p>
-                        <CodeBlock>{`public Command runRollersCommand() {
-    // Your code
-}`}</CodeBlock>
-                        <Solution>
-                            <CodeBlock>{`public Command runRollersCommand() {
-    return startEnd(
-        () -> rollerMotor.setVoltage(6.0),
-        rollerMotor::stopMotor
-    );
-}`}</CodeBlock>
-                        </Solution>
-                    </Challenge>
-
                     <DocLink href="https://docs.wpilib.org/en/stable/docs/software/commandbased/commands.html">
                         WPILib command factories and lifecycle documentation →
                     </DocLink>
@@ -270,20 +271,15 @@ Command rumbleAndFeed = Commands.runEnd(
 );`}</CodeBlock>
 
                     <InfoBox>
-                        <p><strong>Requirements protect outputs, not reads.</strong> A command that only
-                            reads a pose, sensor, or setpoint usually does not need to require that
-                            subsystem. A command that sets its motor output or goal usually does.</p>
+                        <p>Declare a requirement for each subsystem whose motor output or goal the command changes. Reading a sensor value alone does not reserve that subsystem.</p>
                     </InfoBox>
 
-                    <ul>
-                        <li>A drive-to-pose command automatically interrupts the drivetrain&apos;s default joystick command.</li>
-                        <li>Two commands that both write to the intake cannot silently fight each other.</li>
-                    </ul>
+                    <p>If both intake commands declare the intake requirement, scheduling one interrupts the other under the default interruption policy. The requirement only works if you declare it; it does not prevent arbitrary code from writing to a motor.</p>
 
                     <h3>Parallel composition rule</h3>
                     <p>
                         Commands inside the same parallel group cannot share requirements. If two parallel
-                        branches both require the arm, the design is contradictory: they cannot both own it.
+                        branches both require the arm, the parallel group cannot run them together.
                         Combine the arm behavior into one branch or restructure the group.
                     </p>
                 </Section>
@@ -327,7 +323,7 @@ Command rumbleAndFeed = Commands.runEnd(
                     <ConceptCard title="toggleOnTrue: available, but easy to lose track of">
                         <p>
                             Toggles make the driver remember hidden state. Prefer hold-to-run or separate
-                            start and stop buttons unless a toggle is clearly the best operator interface.
+                            start and stop buttons when the driver needs to know the mechanism’s state from the button position.
                         </p>
                     </ConceptCard>
 
@@ -343,7 +339,7 @@ driver.leftBumper()
     .onTrue(climber.releaseCommand());`}</CodeBlock>
                         <p>
                             Debounce noisy digital sensors. Compose triggers with <code>and</code>,
-                            <code>or</code>, and <code>negate</code> when an action needs a clear condition.
+                            <code>or</code>, and <code>negate</code> to combine conditions—for example, a button held while a piece is detected.
                         </p>
                     </ConceptCard>
 
@@ -365,8 +361,8 @@ driver.y().onTrue(intake.stowCommand());`}</CodeBlock>
 
                 <Section id="composition" title="Command Composition">
                     <p>
-                        A command composition is itself a command. It owns the combined requirements of
-                        its children and handles starting, ending, and interrupting them.
+                        A command composition is itself a command. It requires all the subsystems required by
+                        its children and starts, ends, or interrupts those commands according to the composition type.
                     </p>
 
                     <ConceptCard title="Sequence: one after another">
@@ -398,7 +394,7 @@ driver.y().onTrue(intake.stowCommand());`}</CodeBlock>
                         </p>
                     </ConceptCard>
 
-                    <ConceptCard title="Deadline: one command decides when the group ends">
+                    <ConceptCard title="Deadline: end with a designated command">
                         <CodeBlock>{`Commands.deadline(
     drivetrain.followPathCommand(path),
     arm.holdScorePositionCommand(),
@@ -406,14 +402,14 @@ driver.y().onTrue(intake.stowCommand());`}</CodeBlock>
 );`}</CodeBlock>
                         <p>
                             The path is the deadline. When it ends, any other running members are
-                            interrupted. Use deadline when one activity clearly defines the duration.
+                            interrupted. Use deadline here so the other actions stop when the path finishes.
                         </p>
                     </ConceptCard>
 
                     <InfoBox>
                         <p>Use <strong>parallel</strong> when all work must
                             finish, <strong>race</strong> when any result is enough, and
-                            <strong> deadline</strong> when one command owns the timeline.</p>
+                            <strong> deadline</strong> when the designated command finishes.</p>
                     </InfoBox>
 
                     <InfoBox>
@@ -471,12 +467,12 @@ driver.y().onTrue(intake.stowCommand());`}</CodeBlock>
 Commands.waitUntil(intake::hasPiece);`}</CodeBlock>
                     </ConceptCard>
 
-                    <ConceptCard title="withTimeout: add a backstop">
+                    <ConceptCard title="withTimeout: limit the duration">
                         <CodeBlock>{`intake.intakeUntilPieceCommand()
     .withTimeout(2.0);`}</CodeBlock>
                         <p>
                             A timeout is useful when a failed sensor would otherwise stall an autonomous
-                            routine. It should not replace a meaningful success condition.
+                            routine. Keep the piece-detection condition as well, so collection can finish as soon as the piece arrives.
                         </p>
                     </ConceptCard>
 
@@ -498,8 +494,7 @@ Commands.either(
     intake.stowCommand()
 ).finallyDo(interrupted -> intake.stopRollers());`}</CodeBlock>
                         <p>
-                            Put essential cleanup close to the behavior that needs it. Do not assume a
-                            later step in a sequence will run after cancellation.
+                            Put <code>stopRollers()</code> in the end callback or <code>finallyDo</code>. Canceling a sequence skips its remaining steps, including a final stow step.
                         </p>
                     </ConceptCard>
 
@@ -545,7 +540,7 @@ Commands.either(
                     <ul>
                         <li><code>whileTrue(runOnce(...))</code> does not repeat the action while held.</li>
                         <li>A command that never finishes will block the next step of a sequence.</li>
-                        <li>Scheduling commands from <code>periodic()</code> usually hides the real trigger and creates churn.</li>
+                        <li>Creating and scheduling a new command every loop can repeatedly interrupt the previous command. Configure button bindings once in RobotContainer.</li>
                         <li>Reusing a command after adding it to a composition can crash the robot program.</li>
                     </ul>
 
@@ -575,7 +570,7 @@ Commands.either(
     intake.acquirePieceCommand().withName("Acquire piece")
 );`}</CodeBlock>
                     <p>
-                        Glass displays scheduled commands and subsystem ownership. Names make it readable.
+                        Glass displays scheduled commands and subsystem ownership. A name such as “Acquire piece” lets you identify the running command in that display.
                     </p>
                     <DocLink href="https://docs.wpilib.org/en/stable/docs/software/dashboards/glass/command-based-widgets.html">
                         WPILib command widgets in Glass →

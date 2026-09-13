@@ -19,8 +19,7 @@ import static edu.wpi.first.units.Units.*;
 /**
  * Extended team intake example, including a homing state machine.
  * 
- * This version removes the PeriodicIO abstraction for clarity while
- * maintaining identical functionality.
+ * Motor requests and sensor readings are handled directly in this class.
  */
 public class Intake extends SubsystemBase {
 

@@ -37,8 +37,8 @@ public final class IntakeConstants {
     public static final Time HOMING_TIMEOUT = Units.Seconds.of(10); // Homing timeout
 
     // Roller control
-    public static final Voltage ROLLER_SPEED = Units.Volts.of(6.0); // Roller intake speed
-    public static final Voltage ROLLER_REVERSE_SPEED = Units.Volts.of(-4.0); // Roller reverse speed
+    public static final Voltage ROLLER_SPEED = Units.Volts.of(6.0); // Roller intake voltage
+    public static final Voltage ROLLER_REVERSE_SPEED = Units.Volts.of(-4.0); // Roller reverse voltage
 
     // Physical properties
     // TODO: Tested to be 28.787878, originally 10
