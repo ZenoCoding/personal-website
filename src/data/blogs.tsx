@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import Image from "next/image";
+import styles from "@/app/blog/blog.module.css";
 
 export interface BlogPost {
     slug: string;
@@ -33,7 +34,7 @@ export const blogs: BlogPost[] = [
                     There are many different kinds of goals that we may want to shoot projectiles into, but for our case, we’ll consider the simple flat, elevated, circular goal. Projectiles must enter from the top, and we’ll aim at the center.
                 </p>
 
-                <figure className="figure">
+                <figure className={styles.figure}>
                     <Image
                         src="/photos/shooting_sim.png"
                         alt="Shooting Simulation Diagram"
@@ -41,7 +42,7 @@ export const blogs: BlogPost[] = [
                         height={450}
                         style={{ width: '100%', height: 'auto', display: 'block' }}
                     />
-                    <figcaption className="figcaption">
+                    <figcaption className={styles.figcaption}>
                         Figure 1: Diagram of projectile motion entering a hub target.
                     </figcaption>
                 </figure>
@@ -61,30 +62,30 @@ export const blogs: BlogPost[] = [
                     Let us consider the exit velocity <strong>v</strong> and angle <strong>θ</strong> from horizontal. We can then define our velocity vector by its components:
                 </p>
 
-                <div className="codeBlock">
-                    <span className="codeLine">v_x = v cos(θ)</span>
-                    <span className="codeLine">v_y = v sin(θ)</span>
+                <div className={styles.codeBlock}>
+                    <span className={styles.codeLine}>v_x = v cos(θ)</span>
+                    <span className={styles.codeLine}>v_y = v sin(θ)</span>
                 </div>
 
                 <p>
                     And then from kinematics, we can write our positions as a function of time <strong>t</strong>, given that gravitational acceleration is <strong>-g</strong>.
                 </p>
 
-                <div className="codeBlock">
-                    <span className="codeLine">x(t) = v cos(θ) Δt</span>
-                    <span className="codeLine">y(t) = v sin(θ) Δt - ½g(Δt)²</span>
+                <div className={styles.codeBlock}>
+                    <span className={styles.codeLine}>x(t) = v cos(θ) Δt</span>
+                    <span className={styles.codeLine}>y(t) = v sin(θ) Δt - ½g(Δt)²</span>
                 </div>
 
                 <p>
                     Then by eliminating <strong>Δt</strong> by substitution, we can transform kinematics into geometry:
                 </p>
 
-                <div className="codeBlock">
-                    <span className="codeLine">x / (v cosθ) = Δt</span>
-                    <span className="codeLine">y(x) = v sinθ (x / v cosθ) - ½ g(x / v cosθ)²</span>
+                <div className={styles.codeBlock}>
+                    <span className={styles.codeLine}>x / (v cosθ) = Δt</span>
+                    <span className={styles.codeLine}>y(x) = v sinθ (x / v cosθ) - ½ g(x / v cosθ)²</span>
                 </div>
 
-                <div className="note">
+                <div className={styles.note}>
                     <p>
                         <strong>Note:</strong> This article is a work in progress. Further analysis on moving reference frames and code implementation will be added soon.
                     </p>
@@ -111,8 +112,8 @@ export const blogs: BlogPost[] = [
                     over the layout and can easily embed interactive components directly
                     into my writing. No parsing required!
                 </p>
-                <div className="quoteBox">
-                    "Simplicity is the ultimate sophistication." — Leonardo da Vinci
+                <div className={styles.quoteBox}>
+                    &quot;Simplicity is the ultimate sophistication.&quot; — Leonardo da Vinci
                 </div>
                 <p>
                     Stay tuned for more updates on my projects, thoughts on engineering,

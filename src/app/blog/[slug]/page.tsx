@@ -38,29 +38,29 @@ export default async function BlogPost({ params }: Props) {
     }
 
     return (
-        <main className="min-h-screen pt-32 pb-20">
-            <article className="container max-w-3xl">
+        <main className={styles.page}>
+            <article className={styles.article}>
                 <Link
                     href="/blog"
-                    className="inline-flex items-center text-secondary hover:text-primary mb-8 transition-colors"
+                    className={styles.backLink}
                 >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className={styles.backIcon} />
                     Back to Writing
                 </Link>
 
-                <header className="mb-12">
-                    <div className="flex items-center gap-3 text-sm text-secondary mb-4">
+                <header className={styles.articleHeader}>
+                    <div className={styles.meta}>
                         <time>{post.date}</time>
                         {post.tags?.map((tag) => (
-                            <span key={tag} className="px-2 py-1 rounded-full bg-secondary/10 text-xs">
+                            <span key={tag} className={styles.tag}>
                                 {tag}
                             </span>
                         ))}
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+                    <h1 className={styles.articleTitle}>
                         {post.title}
                     </h1>
-                    <p className="text-xl text-secondary leading-relaxed">
+                    <p className={styles.description}>
                         {post.description}
                     </p>
                 </header>

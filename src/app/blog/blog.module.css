@@ -1,3 +1,84 @@
+.page {
+    min-height: 100vh;
+    padding: 8rem 0 5rem;
+}
+
+.indexContainer, .article {
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.indexContainer { max-width: var(--container-width); }
+.article { max-width: 800px; }
+.indexHeader { margin-bottom: 3rem; }
+.indexTitle { font-size: 2.5rem; margin-bottom: 1rem; }
+.intro, .description, .cardDescription { color: var(--color-text-secondary); }
+.intro { max-width: 42rem; }
+
+.postGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.postLink { display: block; min-width: 0; border-radius: 1rem; }
+.postLink:hover { opacity: 1; }
+.postLink:focus-visible, .backLink:focus-visible {
+    outline: 2px solid var(--color-accent-highlight);
+    outline-offset: 5px;
+}
+
+.card {
+    height: 100%;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background: var(--color-glass);
+    backdrop-filter: blur(20px);
+    transition: border-color 0.2s;
+}
+
+.postLink:hover .card, .postLink:focus-visible .card {
+    border-color: var(--color-accent-highlight);
+}
+
+.cardBody { display: flex; flex-direction: column; height: 100%; }
+.meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.cardTitle { font-size: 1.25rem; line-height: 1.4; margin-bottom: 0.75rem; }
+.cardDescription { flex-grow: 1; margin-bottom: 1.5rem; }
+.readPost { font-size: 0.875rem; font-weight: 500; color: var(--color-accent-highlight); }
+.arrow { margin-left: 0.25rem; }
+.backLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+}
+
+.backIcon { width: 1rem; height: 1rem; }
+.articleHeader { margin-bottom: 3rem; }
+.articleTitle { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.15; margin-bottom: 1.5rem; }
+.description { font-size: 1.125rem; line-height: 1.7; }
+.tag { padding: 0.25rem 0.5rem; border-radius: 1rem; background: var(--color-input-bg); font-size: 0.75rem; }
+
+@media (max-width: 640px) {
+    .page { padding-top: 6rem; }
+    .indexContainer, .article { padding-inline: 1.25rem; }
+    .postGrid { grid-template-columns: 1fr; }
+    .indexTitle { font-size: 2rem; }
+}
+
 .blogContent {
     color: var(--color-text-primary);
     line-height: 1.8;
@@ -48,7 +129,7 @@
     margin: 2.5rem 0;
     border-radius: 12px;
     overflow: hidden;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-input-bg);
     border: 1px solid var(--color-border);
 }
 
@@ -64,7 +145,7 @@
 .codeBlock {
     padding: 1.5rem;
     margin: 2rem 0;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--color-input-bg);
     border-left: 4px solid var(--color-accent-secondary);
     border-radius: 8px;
     font-family: var(--font-mono);
@@ -101,3 +182,5 @@
     color: var(--color-accent-primary);
     font-style: italic;
 }
+
+.note p:last-child { margin-bottom: 0; }

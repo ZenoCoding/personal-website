@@ -1,5 +1,6 @@
 import { blogs } from "@/data/blogs";
 import Link from "next/link";
+import styles from "./blog.module.css";
 
 export const metadata = {
     title: "Writing | Tycho Young",
@@ -12,25 +13,25 @@ export default function BlogIndex() {
     );
 
     return (
-        <main className="min-h-screen pt-32 pb-20">
-            <div className="container">
-                <header className="mb-16">
-                    <h1 className="text-4xl font-bold mb-4">Writing</h1>
-                    <p className="text-secondary max-w-2xl">
+        <main className={styles.page}>
+            <div className={styles.indexContainer}>
+                <header className={styles.indexHeader}>
+                    <h1 className={styles.indexTitle}>Writing</h1>
+                    <p className={styles.intro}>
                         Thoughts, updates, and explorations in engineering and design.
                     </p>
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className={styles.postGrid}>
                     {sortedBlogs.map((post) => (
                         <Link
                             key={post.slug}
                             href={`/blog/${post.slug}`}
-                            className="group block"
+                            className={styles.postLink}
                         >
-                            <article className="glass p-6 rounded-2xl h-full transition-all duration-300 group-hover:bg-white/5 group-hover:-translate-y-1">
-                                <div className="flex flex-col h-full">
-                                    <div className="flex items-center gap-2 text-sm text-secondary mb-4">
+                            <article className={styles.card}>
+                                <div className={styles.cardBody}>
+                                    <div className={styles.meta}>
                                         <time>{post.date}</time>
                                         {post.tags && post.tags.length > 0 && (
                                             <>
@@ -40,16 +41,16 @@ export default function BlogIndex() {
                                         )}
                                     </div>
 
-                                    <h2 className="text-xl font-bold mb-3 group-hover:text-accent-primary transition-colors">
+                                    <h2 className={styles.cardTitle}>
                                         {post.title}
                                     </h2>
 
-                                    <p className="text-secondary mb-6 flex-grow">
+                                    <p className={styles.cardDescription}>
                                         {post.description}
                                     </p>
 
-                                    <div className="flex items-center text-sm font-medium text-accent-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                                        Read Post <span className="ml-1">→</span>
+                                    <div className={styles.readPost}>
+                                        Read Post <span className={styles.arrow}>→</span>
                                     </div>
                                 </div>
                             </article>
