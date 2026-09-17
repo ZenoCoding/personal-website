@@ -4,11 +4,6 @@ import styles from '@/app/about/about.module.css';
 import { portfolio } from '@/data/portfolio';
 
 export default function About() {
-    const uniqueSkills = Array.from(new Set([
-        ...portfolio.skills,
-        ...portfolio.projects.flatMap(p => p.tags)
-    ])).sort();
-
     return (
         <section id="about" className={styles.main} style={{ paddingTop: '4rem' }}>
             <div className="container">
@@ -201,17 +196,19 @@ export default function About() {
                             </div>
 
                             <div style={{ display: 'flex', gap: '2rem', alignItems: 'start', flexWrap: 'wrap' }}>
-                                <div style={{ flexShrink: 0 }}>
+                                <div style={{ flexShrink: 0, width: '120px', height: '120px', borderRadius: '50%', overflow: 'hidden', border: '2px solid rgba(255,255,255,0.1)' }}>
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                         src={portfolio.about.headshot}
                                         alt={portfolio.personalInfo.name}
                                         style={{
-                                            width: '120px',
-                                            height: '120px',
-                                            borderRadius: '50%',
+                                            display: 'block',
+                                            width: '100%',
+                                            height: '100%',
                                             objectFit: 'cover',
-                                            border: '2px solid rgba(255,255,255,0.1)'
+                                            objectPosition: '50% 85%',
+                                            transform: 'scale(1.8)',
+                                            transformOrigin: '45% 45%'
                                         }}
                                     />
                                 </div>
@@ -238,18 +235,6 @@ export default function About() {
                                 <span className={styles.metricValue}>100+</span>
                                 <span className={styles.metricLabel}>Students Led</span>
                             </div>
-                        </div>
-                    </div>
-
-                    {/* Skills Section */}
-                    <div className={styles.section}>
-                        <h2 className="section-title">Technical Skills</h2>
-                        <div className={styles.skillsGrid}>
-                            {uniqueSkills.map((skill) => (
-                                <span key={skill} className={styles.skillPill}>
-                                    {skill}
-                                </span>
-                            ))}
                         </div>
                     </div>
 

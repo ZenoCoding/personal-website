@@ -75,20 +75,11 @@
 }
 
 .tagsText {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: var(--color-text-secondary);
     line-height: 1.6;
     margin-bottom: 1.5rem;
     font-family: var(--font-mono);
-}
-
-.tagLabel {
-    color: var(--color-accent-highlight);
-    font-weight: 700;
-    margin-right: 0.5rem;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
 }
 
 .links {

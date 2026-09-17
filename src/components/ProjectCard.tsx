@@ -36,8 +36,7 @@ const ProjectCard = ({ title, description, tags, demoLink, repoLink, paperLink, 
                 )}
 
                 <p className={styles.tagsText}>
-                    <span className={styles.tagLabel}>Technologies: </span>
-                    {tags.join(', ').toLowerCase()}
+                    {tags.join(' · ')}
                 </p>
 
                 <div className={styles.links}>

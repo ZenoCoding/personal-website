@@ -16,11 +16,12 @@ const Hero = () => {
 
                 <h1 className={styles.title}>
                     <div className={styles.greetingWrapper}>
-                        <img
-                            src={portfolio.about.headshot}
-                            alt={portfolio.personalInfo.name}
-                            className={styles.avatar}
-                        />
+                        <span className={styles.avatar}>
+                            <img
+                                src={portfolio.about.headshot}
+                                alt={portfolio.personalInfo.name}
+                            />
+                        </span>
                         <span className={styles.greeting}>Hi, I'm Tycho.</span>
                     </div>
                     I engineer <span className={styles.highlight}>robots</span>
