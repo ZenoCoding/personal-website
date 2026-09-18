@@ -4,7 +4,7 @@ import styles from "./blog.module.css";
 
 export const metadata = {
     title: "Writing | Tycho Young",
-    description: "Thoughts, updates, and explorations in engineering, robotics, and design by Tycho Young.",
+    description: "Essays, reporting, and engineering notes by Tycho Young.",
 };
 
 export default function BlogIndex() {
@@ -18,7 +18,7 @@ export default function BlogIndex() {
                 <header className={styles.indexHeader}>
                     <h1 className={styles.indexTitle}>Writing</h1>
                     <p className={styles.intro}>
-                        Thoughts, updates, and explorations in engineering and design.
+                        Essays, reporting, and engineering notes.
                     </p>
                 </header>
 

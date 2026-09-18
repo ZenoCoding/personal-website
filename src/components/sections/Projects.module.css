@@ -185,3 +185,23 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 2rem;
 }
+.archive {
+    margin-top: 2rem;
+}
+
+.archive > summary {
+    width: fit-content;
+    cursor: pointer;
+    color: var(--color-text-primary);
+    font-size: 1.125rem;
+    padding: 0.75rem 0;
+}
+
+.archive > summary:focus-visible {
+    outline: 2px solid var(--color-accent-highlight);
+    outline-offset: 4px;
+}
+
+.archive[open] > summary {
+    margin-bottom: 1rem;
+}

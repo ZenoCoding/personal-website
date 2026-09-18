@@ -4,6 +4,7 @@ export interface Project {
     tags: string[];
     date?: string;
     featured?: boolean;
+    hidden?: boolean;
     image?: string;
     link?: string;
     repo?: string;
@@ -28,9 +29,9 @@ export const portfolio: {
 } = {
     personalInfo: {
         name: "Tycho Young",
-        tagline: "Student at BASIS Independent Fremont; Executive Director at Fremont Institute of Robotics Education",
+        tagline: "Student at BASIS Independent Fremont; Executive Director, Founder at Fremont Institute of Robotics Education",
         location: "Fremont, California, United States",
-        role: "Executive Director",
+        role: "Executive Director, Founder",
         availability: "Open to Summer Intern roles",
         email: "tychoyoung@gmail.com",
     },
@@ -58,12 +59,12 @@ export const portfolio: {
     ],
     experience: [
         {
-            role: "Executive Director",
+            role: "Executive Director, Founder",
             company: "Fremont Institute of Robotics Education (FIRE)",
             date: "Aug 2023 – Present",
             location: "Fremont, CA (Hybrid)",
             description:
-                "Led STEM education for 50+ students via FIRST Robotics Team 9470. Oversaw training operations, coordinated teamwork to build industrial-sized robots under tight deadlines, and managed fundraising totaling over $60,000.",
+                "Led STEM education for 65+ students via FIRST Robotics Team 9470, serving 17 Bay Area schools. Oversaw training operations, coordinated teamwork to build industrial-sized robots under tight deadlines, and managed fundraising totaling over $60,000.",
             featured: true,
         },
         {
@@ -146,7 +147,7 @@ export const portfolio: {
             date: "February 2026",
             featured: true,
             repo: "https://github.com/ZenoCoding/sotm-animations",
-            paper: "https://docs.google.com/document/d/e/2PACX-1vRP1jMuuYPG3TYY6w6l5wLsNdZpaawkkKOeP6GGMpAQqErmO3HsDvTr2NXQVp8oJ0w0_sEf1XIRWw0b/pub",
+            paper: "/blog/shooting-on-the-move",
         },
         {
             title: "Minute",
@@ -218,7 +219,8 @@ export const portfolio: {
             paper: "https://tychoyoung.notion.site/EMPATH-5b60a6d427934605b320adc0e909ec47?source=copy_link",
             image: "/photos/empath.png",
             date: "Summer 2023",
-            featured: true,
+            featured: false,
+            hidden: true,
         },
         {
             title: "MathGPT",
@@ -228,7 +230,7 @@ export const portfolio: {
             paper: "https://docs.google.com/document/d/1JSRx4ArHnNyaepVnzyYovBO3OSKnY3CnBVWS2KlXrAw/edit?usp=sharing",
             image: "/photos/mathgpt.png",
             date: "May 2023",
-            featured: true,
+            featured: false,
         },
         {
             title: "EvoCraft",

@@ -184,3 +184,18 @@
 }
 
 .note p:last-child { margin-bottom: 0; }
+
+.articleImage {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: white;
+}
+
+.credit {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.credit:last-of-type { margin-bottom: 1.5rem; }

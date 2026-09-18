@@ -60,6 +60,12 @@ export default async function BlogPost({ params }: Props) {
                     <h1 className={styles.articleTitle}>
                         {post.title}
                     </h1>
+                    {post.byline && <p className={styles.credit}>By {post.byline}</p>}
+                    {post.publication && (
+                        <p className={styles.credit}>
+                            <a href={post.publication.url}>{post.publication.label}</a>
+                        </p>
+                    )}
                     <p className={styles.description}>
                         {post.description}
                     </p>
