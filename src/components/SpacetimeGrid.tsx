@@ -4,6 +4,12 @@ import { useEffect, useRef } from 'react';
 
 const SpacetimeGrid = () => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    const targetMouseRef = useRef({ x: 0, y: 0 });
+    const currentMouseRef = useRef({ x: 0, y: 0 });
+    const initializedRef = useRef(false);
+
+    // Animation State
+    const expansionRef = useRef(0);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -14,12 +20,14 @@ const SpacetimeGrid = () => {
 
         let width = window.innerWidth;
         let height = window.innerHeight;
-        const pointer = { x: width / 2, y: height / 2, active: false, pressed: false };
-        let pressure = 0;
-        let expansion = 0;
-        let previousTime = 0;
-        let animationId = 0;
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        let time = 0;
+
+        // Initialize at center
+        if (!initializedRef.current) {
+            targetMouseRef.current = { x: width / 2, y: height / 2 };
+            currentMouseRef.current = { x: width / 2, y: height / 2 };
+            initializedRef.current = true;
+        }
 
         // Starfield
         const stars = Array.from({ length: 150 }).map(() => ({
@@ -39,59 +47,56 @@ const SpacetimeGrid = () => {
             ctx.scale(dpr, dpr);
         };
 
-        const handlePointerMove = (event: PointerEvent) => {
-            pointer.x = event.clientX;
-            pointer.y = event.clientY;
-            pointer.active = true;
-        };
-        const handlePointerDown = (event: PointerEvent) => {
-            handlePointerMove(event);
-            pointer.pressed = true;
-        };
-        const handlePointerUp = (event: PointerEvent) => {
-            pointer.pressed = false;
-            if (event.pointerType === 'touch') pointer.active = false;
-        };
-        const releasePointer = () => {
-            pointer.active = false;
-            pointer.pressed = false;
+        const handleMouseMove = (e: MouseEvent) => {
+            targetMouseRef.current = { x: e.clientX, y: e.clientY };
         };
 
         window.addEventListener('resize', resize);
-        window.addEventListener('pointermove', handlePointerMove);
-        window.addEventListener('pointerdown', handlePointerDown);
-        window.addEventListener('pointerup', handlePointerUp);
-        window.addEventListener('pointercancel', releasePointer);
-        window.addEventListener('blur', releasePointer);
-        document.documentElement.addEventListener('pointerleave', releasePointer);
+        window.addEventListener('mousemove', handleMouseMove);
         resize();
 
-        const GRID_SPACING = 30;
-        const FOCAL_LENGTH = 800;
-        const WELL_STRENGTH = 25000;
-        const CORE_RADIUS = 30;
+        // ---------------------------------------------------------
+        // PHYSICS ENGINE: Embedding Diagram (Z = -G/r)
+        // ---------------------------------------------------------
+
+        const GRID_SPACING = 30; // Closer lines
+        const MOUSE_LERP = 0.12;
+
+        // Camera / Projection Constants
+        const FOCAL_LENGTH = 800; // Distance from "eye" to screen
+        // Potential well strength
+        const Z_SCALE = 25000;
+        const MIN_R = 30; // Event Horizon / Clamp to prevent infinite Z
 
         // Helper to get CSS variable color
         const getComputedColor = (varName: string) => {
             return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
         };
 
-        const draw = (timestamp: number) => {
-            const dt = previousTime ? Math.min((timestamp - previousTime) / 1000, 0.05) : 1 / 60;
-            previousTime = timestamp;
-            const targetPressure = pointer.active ? (pointer.pressed ? 1.2 : 1) : 0;
-            // The contact point follows the pointer exactly; only depth eases in and out.
-            pressure = reducedMotion.matches
-                ? targetPressure
-                : pressure + (targetPressure - pressure) * (1 - Math.exp(-dt * 12));
+        const draw = () => {
+            // physics step: inertia
+            currentMouseRef.current.x += (targetMouseRef.current.x - currentMouseRef.current.x) * MOUSE_LERP;
+            currentMouseRef.current.y += (targetMouseRef.current.y - currentMouseRef.current.y) * MOUSE_LERP;
 
-            expansion = reducedMotion.matches ? 1 : Math.min(expansion + dt * 0.48, 1);
-            const progress = 1 - Math.pow(1 - expansion, 3); // Cubic Ease Out
+            // ------------------------------------
+            // ENTRANCE ANIMATION: Radial Expansion
+            // ------------------------------------
+            expansionRef.current = Math.min(expansionRef.current + 0.008, 1);
+            const progress = 1 - Math.pow(1 - expansionRef.current, 3); // Cubic Ease Out
             const maxDist = Math.hypot(width, height) * 0.8 * progress; // expanded coverage
             const maxDistSq = maxDist * maxDist;
-            const isFullyExpanded = expansion >= 0.99;
+            const isFullyExpanded = expansionRef.current >= 0.99;
             const gridCenterX = width / 2;
             const gridCenterY = height / 2;
+
+            // Fetch current theme colors each frame (or optimize if perf issue)
+            // For smooth transition, valid to fetch per frame or use CSS transitions on canvas opacity?
+            // Actually, fetching getComputedStyle every frame is expensive.
+            // But we need to react to theme changes.
+            // Let's rely on standard colors for now, maybe fetch every 60 frames or just cache?
+            // Simpler: Just fetch them. Modern browsers are okay with this for 60fps usually.
+            // Or better: Use CSS variables directly in strokeStyle string if browser supports?
+            // Canvas needs literal color strings.
 
             const bgPrimary = getComputedColor('--grid-bg');
             const starColor = getComputedColor('--grid-star');
@@ -123,10 +128,10 @@ const SpacetimeGrid = () => {
 
             // Creative Highlight: Radial Gradient Stroke
             const gridGradient = ctx.createRadialGradient(
-                pointer.x, pointer.y, 0,
-                pointer.x, pointer.y, 300
+                currentMouseRef.current.x, currentMouseRef.current.y, 0,
+                currentMouseRef.current.x, currentMouseRef.current.y, 300
             );
-            gridGradient.addColorStop(0, pressure > 0.01 ? gridWahoColor : gridLineColor);
+            gridGradient.addColorStop(0, gridWahoColor);
             gridGradient.addColorStop(1, gridLineColor);
 
             ctx.strokeStyle = gridGradient;
@@ -136,22 +141,28 @@ const SpacetimeGrid = () => {
             const cols = Math.ceil(width / GRID_SPACING) + buffer * 2;
             const rows = Math.ceil(height / GRID_SPACING) + buffer * 2;
 
-            // Center both the well and its projection on the cursor so the
-            // entire depression stays concentric with the point of contact.
-            const wellX = pointer.x;
-            const wellY = pointer.y;
-            const cameraX = wellX;
-            const cameraY = wellY;
-
+            // 3D Projection Engine
             const project = (gx: number, gy: number) => {
-                const distance = Math.hypot(gx - wellX, gy - wellY);
-                const z = -WELL_STRENGTH * pressure / (distance + CORE_RADIUS);
+                const dx = gx - currentMouseRef.current.x;
+                const dy = gy - currentMouseRef.current.y;
+                const r = Math.sqrt(dx * dx + dy * dy);
+
+                const noise = Math.sin(gx * 0.003 + gy * 0.003 + time) * 10;
+                let z = -(Z_SCALE / (r + MIN_R)) + noise;
+
                 const scale = FOCAL_LENGTH / (FOCAL_LENGTH - z);
 
-                return {
-                    x: cameraX + (gx - cameraX) * scale,
-                    y: cameraY + (gy - cameraY) * scale,
-                };
+                // MOUSE + OFFSET (+300px)
+                const centerX = currentMouseRef.current.x;
+                const centerY = currentMouseRef.current.y + 300;
+
+                const camX = gx - centerX;
+                const camY = gy - centerY;
+
+                const screenX = camX * scale + centerX;
+                const screenY = camY * scale + centerY;
+
+                return { x: screenX, y: screenY };
             };
 
             ctx.beginPath();
@@ -215,25 +226,35 @@ const SpacetimeGrid = () => {
 
             // Vignette
             const gradient = ctx.createRadialGradient(width / 2, height / 2, width * 0.3, width / 2, height / 2, width);
+            // We need a transparent version of the bg color for the start
+            // To do this properly with CSS vars is tricky without parsing. 
+            // Workaround: Use simple transparent to full fade.
+            // Ideally should match bg color. 
+            // For now, let's assume the vignette should fade to the configured bg color.
+
+            // Hacky parsing for "rgba(5, 5, 16, 0.95)" replacement
+            // Let's just use the bg color but fully opaque at the edge, and fully transparent at center.
+            // Problem: If bg is hex, we can't easily add alpha.
+            // Solution: We won't use alpha for the center, we'll use `rgba(r,g,b,0)`.
+            // But we don't know r,g,b.
+            // Alternative: Don't draw vignette in light mode? Or just fade to white?
+            // Let's force a "transparent" start and "opaque" end.
+
             gradient.addColorStop(0, 'rgba(0,0,0,0)'); // Completely transparent center
             gradient.addColorStop(1, vignetteColor); // Fade to actual BG color
 
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, width, height);
 
-            animationId = requestAnimationFrame(draw);
+            time += 0.015;
+            requestAnimationFrame(draw);
         };
 
-        animationId = requestAnimationFrame(draw);
+        const animationId = requestAnimationFrame(draw);
 
         return () => {
             window.removeEventListener('resize', resize);
-            window.removeEventListener('pointermove', handlePointerMove);
-            window.removeEventListener('pointerdown', handlePointerDown);
-            window.removeEventListener('pointerup', handlePointerUp);
-            window.removeEventListener('pointercancel', releasePointer);
-            window.removeEventListener('blur', releasePointer);
-            document.documentElement.removeEventListener('pointerleave', releasePointer);
+            window.removeEventListener('mousemove', handleMouseMove);
             cancelAnimationFrame(animationId);
         };
     }, []);
@@ -241,7 +262,6 @@ const SpacetimeGrid = () => {
     return (
         <canvas
             ref={canvasRef}
-            aria-hidden="true"
             style={{
                 position: 'fixed',
                 top: 0,
