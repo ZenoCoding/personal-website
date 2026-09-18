@@ -41,7 +41,7 @@ export const portfolio: {
     about: {
         bio: "I’m a high-school student who is excited to use technology to help people in their everyday lives. I strive for the sense of wonder that comes from a beautiful physics problem, a masterful piece of engineering, or the deep message behind a piece of art. I am a maker at heart and have worked on many projects, starting with a treehouse when I was five. Over the years, I’ve accumulated many technical and soft skills, started 9470, a FIRST Robotics team at my school (we were #13 globally last year!), and developed an appetite for interesting problems. Check out some of my work below.",
         interests: ["Artificial Intelligence", "Robotics", "Game Development", "Mathematics"],
-        headshot: "/photos/tycho-robotics-balanced.png",
+        headshot: "/photos/tycho-robotics.jpg",
     },
     gear: [
         { name: "Sony Alpha 6400", type: "Camera" },
