@@ -103,7 +103,7 @@ export const portfolio: {
         projects: [
             {
                 title: "Split-Flap Display",
-                description: "I’m building this split-flap display for sentimental reasons. Even though I’ll be leaving home soon to go off to college or otherwise, I want to stay connected with my family and make sure they can see a bit of me every day. When complete, I’ll use the 16-character display to send messages to my family at home while I’m away. It’s a nostalgic way to make it feel like I’m still at home.\n\nI designed and manufactured every part, from the body to the flaps to the control system. I had to learn PCB design, improve my CAD skills, and study many prior examples to get to this point. The flaps are the most tedious part, and the PCB design is no joke either!",
+                description: "I’m building a 16-character split-flap display to send messages home when I leave for college. I designed the mechanism, housing, and custom PCB, combining CAD, electronics, and embedded programming to make something my family can keep.",
                 image: "/photos/split-flap-pcb.jpeg",
                 tags: ["PCB design", "Onshape", "Embedded systems"],
                 date: "Summer 2026 – Present",
