@@ -58,6 +58,9 @@ const Hero = () => {
                         About Me
                     </a>
                 </div>
+                <Link href="/students" className={styles.studentLink}>
+                    Students click here!
+                </Link>
             </div>
 
             <button

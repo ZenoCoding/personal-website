@@ -102,6 +102,20 @@
     margin: -20px;
 }
 
+.studentLink {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--color-accent-primary);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+    font-weight: 500;
+}
+
+.studentLink:focus-visible {
+    outline: 2px solid var(--color-accent-primary);
+    outline-offset: 5px;
+}
+
 .primaryBtn {
     background: var(--color-text-primary);
     color: var(--color-bg-primary);
