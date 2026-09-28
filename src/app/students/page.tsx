@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 const lessons = [
+    { stage: "[PRO] · Due Monday, September 28", title: "Java homework", href: "/students/java-homework", description: "Practice parameters, return values, and boolean conditions on CodingBat. Write and use two helper methods." },
     { stage: "Start here if you are new to Java", title: "Java foundations", href: "/students/projects/java", description: "Finish a tic-tac-toe game: reject illegal moves, detect a win, and handle a draw." },
     { stage: "Java Familiar · Walkthrough", title: "WPILib Commands in Practice", href: "/students/commands", description: "Make a button run an intake, stop it on release, and handle a second command interrupting it." },
     { stage: "Java Familiar · Walkthrough", title: "Building an Intake Subsystem", href: "/students/intake", description: "Write the motor setup, read the piece sensor, and build a command that collects and stows. Starter code and solutions are included." },
